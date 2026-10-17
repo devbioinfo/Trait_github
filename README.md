@@ -122,6 +122,43 @@ Figure: `results/fig_benchmark.png`; raw rows: `results/benchmark_v2.csv`.
   replicates and larger trees to judge.
 * Layer attribution of detected genes: AUC 0.79-0.98.
 
+## Sequence-level validation with IQ-TREE AliSim (in progress)
+
+`scripts/alisim_validation.py` simulates codon alignments (GY model) with AliSim on
+Yule trees. Convergent genes get, on foreground branches only, a higher ω
+(branch-specific `GY{ω,κ}` models), faster evolution (longer branches), or both.
+Confounding is added as gene-specific rate jumps on random clades. Branch lengths are
+then re-estimated with IQ-TREE on the fixed topology (GTR on nucleotides, LG on the
+translated protein). Layers: log nucleotide rate, log protein rate, and their
+difference (a dN/dS-like selection proxy), with a one-substitution pseudo-count and
+mean-centring per branch.
+
+Findings so far (80-200 species, 600-3,000 genes):
+
+1. **The Brownian phylogenetic LMM is miscalibrated on sequence-derived rates**
+   (per-layer FPR 0.10-0.14 at α = 0.05). Causes: unequal estimation noise across
+   branches (short branches are much noisier), correlated estimation errors between
+   neighbouring branches, and rate *jumps* rather than Brownian drift. Per-branch
+   weighting and a gene × branch measurement-error model did not fix it.
+2. **Control-lineage nulls must match clade age, not just size.** Young trait clades
+   consist of short, noisy branches; size-matched controls were three times longer
+   (median 0.039 vs 0.129), so the null understated the variance.
+3. **A covariance learned across genes gives exact calibration.** Because all genes
+   share one tree, the B × B covariance of branch values estimated from the genome
+   absorbs phylogeny, rate jumps, unequal noise and correlated errors at once.
+   GLS with this covariance: FPR 0.038-0.053 for the observed foreground and z-score
+   SD 0.99-1.03 for every control set (`mlconv/gls.py`).
+4. **Contamination:** truly convergent genes inflate the learned covariance along
+   the foreground direction, making the test conservative. Hard trimming and an EM
+   soft-removal both became anticonservative; a rank-one correction estimated from
+   excess covariance between *different* origins works for the selection layer but
+   is noisy. The plain learned covariance stays valid (conservative).
+5. **Single-lineage rate jumps** produce excess false discoveries in the raw-rate
+   layers even with the true covariance; the selection proxy is immune. Requiring
+   the signal to survive the removal of any single origin (leave-one-origin-out
+   intersection-union test, or Benjamini-Heller partial conjunction) removes these
+   false discoveries completely; its power depends on the number and size of origins.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,
