@@ -100,6 +100,28 @@ Run: `python3 -I scripts/benchmark_v2.py --out results/benchmark_v2.csv`
 5. EBCM: highest power in sparse settings, layer attribution AUC 0.79-0.99, but raw
    Bayesian FDR optimistic → calibrated against the control-lineage null.
 
+## Benchmark v2 results (3 replicates, 100-tip trees, 2,000 genes, 5% convergent)
+
+Figure: `results/fig_benchmark.png`; raw rows: `results/benchmark_v2.csv`.
+
+| Method | FPR at α = 0.05 (all scenarios) | Realised FDR at q = 0.10 | Power, effect 0.8, confounding 1 |
+|---|---|---|---|
+| Naive single layer | 0.12-0.16 under confounding | 0.63-0.82 | (invalid) |
+| Naive Fisher | 0.24-0.31 | 0.77-0.86 | (invalid) |
+| Permulation Fisher | 0.12-0.18 | 0.50-0.70 | (invalid) |
+| Phylo-LMM Fisher | 0.10-0.11 | 0.29-0.54 | (invalid) |
+| Phylo-LMM ACAT | 0.06-0.07 | 0.07-0.27 (fails: sparse 0.27, heavy tails 0.18) | 0.67 |
+| Phylo-LMM whitened sum | 0.049-0.056 | 0.03-0.10 | 0.47 |
+| **Phylo-LMM + EBCM** | **0.049-0.059** | **0.06-0.12** | **0.74** |
+
+* EBCM is the only method that keeps FDR near target in every scenario while
+  having the most power among calibrated methods in 5 of 7 scenarios.
+* Weakness: when *all* layers shift together (dense), the whitened sum is more
+  powerful (0.86 vs 0.65). An omnibus of EBCM and WC is the obvious next step.
+* Slight FDR overshoot at strong confounding (0.124 at q = 0.10); needs more
+  replicates and larger trees to judge.
+* Layer attribution of detected genes: AUC 0.79-0.98.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,

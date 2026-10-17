@@ -19,6 +19,7 @@ METHODS = [
     ("perm_fisher", "Permulation, Fisher", "#1baf7a"),
     ("lmm_fisher", "Phylo-LMM, Fisher", "#eda100"),
     ("lmm_acat", "Phylo-LMM, ACAT", "#e87ba4"),
+    ("lmm_wc_pooled", "Phylo-LMM, whitened sum", "#6250d6"),
     ("ebcm", "Phylo-LMM + EBCM (this work)", "#008300"),
 ]
 SCEN_ORDER = ["baseline", "heavy_tails", "lineage", "tree_error", "sparse", "dense"]
@@ -39,25 +40,20 @@ def style(ax):
 
 def main(path: str, out: str) -> None:
     df = pd.read_csv(path)
-    df["scen"] = df["scenario"]
-    df.loc[df.scenario == "baseline", "scen"] = None
-    base = df[df.scenario == "baseline"].copy()
-    # confounding level is not stored for baseline rows; recover from row order per rep
+    base = df[(df.scenario == "baseline") & (df.confounding == 1.0)]
     other = df[df.scenario != "baseline"]
 
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.8), constrained_layout=True)
     x = range(len(SCEN_ORDER))
-    width = 0.13
+    width = 0.11
 
     # a: false positive rate under the global null (effect 0)
     ax = axes[0]
     null = pd.concat([base.assign(scenario="baseline"), other])
     null = null[null.effect == 0].groupby(["scenario", "method"]).fpr.mean()
     for i, (m, lab, col) in enumerate(METHODS):
-        if m == "ebcm":
-            continue
         vals = [null.get((s, m), float("nan")) for s in SCEN_ORDER]
-        ax.scatter([xi + (i - 2.5) * width for xi in x], vals, s=22, color=col, label=lab, zorder=3)
+        ax.scatter([xi + (i - 3) * width for xi in x], vals, s=22, color=col, label=lab, zorder=3)
     ax.axhline(0.05, color=INK, lw=1, ls="--")
     ax.set_xticks(list(x), [SCEN_LABEL[s] for s in SCEN_ORDER], rotation=30, ha="right")
     ax.set_ylabel("False positive rate at α = 0.05", fontsize=9, color=INK)
@@ -70,7 +66,7 @@ def main(path: str, out: str) -> None:
     sig = sig[sig.effect > 0].groupby(["scenario", "method"]).fdr.mean()
     for i, (m, lab, col) in enumerate(METHODS):
         vals = [sig.get((s, m), float("nan")) for s in SCEN_ORDER]
-        ax.scatter([xi + (i - 2.5) * width for xi in x], vals, s=22, color=col, zorder=3)
+        ax.scatter([xi + (i - 3) * width for xi in x], vals, s=22, color=col, zorder=3)
     ax.axhline(0.10, color=INK, lw=1, ls="--")
     ax.set_xticks(list(x), [SCEN_LABEL[s] for s in SCEN_ORDER], rotation=30, ha="right")
     ax.set_ylabel("Realised FDR at q = 0.10", fontsize=9, color=INK)
@@ -79,18 +75,20 @@ def main(path: str, out: str) -> None:
 
     # c: power vs effect size, baseline scenario
     ax = axes[2]
-    pw = base.groupby(["effect", "method"]).power.mean().unstack()
+    pw = base.groupby(["effect", "method"]).power.mean().unstack()  # confounding = 1
+    calibrated = {"lmm_acat", "lmm_wc_pooled", "ebcm"}   # methods whose FDR is near q in panel b
     for m, lab, col in METHODS:
-        if m in pw:
+        if m in pw and m in calibrated:
             ax.plot(pw.index, pw[m], color=col, lw=2, marker="o", ms=4)
     ax.set_xlabel("Effect size (SD units)", fontsize=9, color=INK)
     ax.set_ylabel("Power at q = 0.10", fontsize=9, color=INK)
-    ax.set_title("c  Power (baseline scenarios)", loc="left", fontsize=10, color=INK)
+    ax.set_title("c  Power of FDR-controlling methods", loc="left", fontsize=10, color=INK)
     ax.set_ylim(0, 1.02)
+    ax.text(0.0, 0.93, "confounding = 1", fontsize=8, color=MUTED)
     style(ax)
 
     handles = [plt.Line2D([], [], color=c, marker="o", lw=2, ms=5) for _, _, c in METHODS]
-    fig.legend(handles, [lab for _, lab, _ in METHODS], loc="outside lower center", ncol=6,
+    fig.legend(handles, [lab for _, lab, _ in METHODS], loc="outside lower center", ncol=4,
                frameon=False, fontsize=8)
     fig.savefig(out, dpi=200, facecolor="white")
     print("wrote", out)

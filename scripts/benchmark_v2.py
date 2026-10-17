@@ -90,7 +90,7 @@ def main() -> None:
                 layer_post = pv.pop("_layer_post")
                 for name, p in pv.items():
                     rej = bh(p, args.q)
-                    rows.append(dict(rep=rep, scenario=scen, effect=eff, method=name,
+                    rows.append(dict(rep=rep, scenario=scen, confounding=cfg["confounding"], effect=eff, method=name,
                                      fpr=(p[~truth] < 0.05).mean(),
                                      fdr=(rej & ~truth).sum() / max(1, rej.sum()),
                                      power=(rej & truth).sum() / max(1, truth.sum()),
