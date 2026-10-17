@@ -181,6 +181,31 @@ FDR and power at q = 0.10 on a genome with 2% convergent genes (about 60 per tre
 * EBCM on Brownian-LMM z-scores loses power on sequence data and is not the default;
   it should be re-fitted on the GLS z-scores.
 
+### Power vs number of independent origins
+
+`scripts/origins_power.py`; figure `results/fig_origins_power.png`; rows
+`results/origins_power.csv`. 3 Yule trees of 200 species, 3,000 genes, 2% convergent,
+nested trait configurations with 2-6 origins (clades of 4-12 species) on the same tree
+and null genes.
+
+| Origins | Final test (GLS + leave-one-origin-out, ACAT): power | FDR (q = 0.10) | False calls per null genome | Power: ω shift / rate only / both |
+|---|---|---|---|---|
+| 2 | 0.63 | 0.010 | 0.3 | 0.87 / 0.17 / 0.93 |
+| 3 | 0.81 | 0.000 | 0.0 | 0.98 / 0.44 / 0.98 |
+| 4 | 0.89 | 0.000 | 0.0 | 0.99 / 0.62 / 1.00 |
+| 5 | 0.89 | 0.006 | 0.3 | 0.99 / 0.70 / 1.00 |
+| 6 | 0.95 | 0.006 | 0.3 | 1.00 / 0.82 / 1.00 |
+
+Comparison at the same settings: naive single-layer test FDR 0.83-0.88 (about 220-280
+false calls per null genome); learned-covariance GLS without leave-one-origin-out FDR
+0.26 (2 origins) falling to 0.10 (6 origins), about 20 false calls per null genome.
+
+* The final test controls false discoveries at every number of origins, including 2.
+* Changes in selection pressure (ω) are found at 87-100% power even with 2 origins.
+* Rate-only convergence needs more origins: 17% (2), 44% (3), 62-82% (4-6).
+* Implication: echolocation (2-4 origins) is feasible for selection-type convergence;
+  aquatic and high-altitude adaptation (more origins) give power for rate shifts too.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,
