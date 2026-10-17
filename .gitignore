@@ -1,5 +1,3 @@
 __pycache__/
 results/*.log
 results/smoke*.csv
-# in-progress benchmark output; committed once the run completes
-results/alisim_realistic.csv

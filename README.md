@@ -159,6 +159,28 @@ Findings so far (80-200 species, 600-3,000 genes):
    intersection-union test, or Benjamini-Heller partial conjunction) removes these
    false discoveries completely; its power depends on the number and size of origins.
 
+### Realistic design (200 species, 5 origins of 4-12 species, 3,000 genes, 2% convergent, 2 trees)
+
+Raw rows: `results/alisim_realistic.csv`. FPR at α = 0.05 on a genome with no convergence;
+FDR and power at q = 0.10 on a genome with 2% convergent genes (about 60 per tree).
+
+| Method | FPR (no convergence) | FDR | Power | Power: ω shift / rate shift / both |
+|---|---|---|---|---|
+| Naive, nucleotide rate | 0.177 | 0.857 | 0.68 | 0.20 / 1.00 / 0.95 |
+| Naive, Fisher over layers | 0.195 | 0.826 | 1.00 | (invalid) |
+| Brownian LMM, ACAT over layers | 0.064 | 0.310 | 0.98 | 1.00 / 0.95 / 1.00 |
+| Brownian LMM + EBCM | 0.064 | 0.163 | 0.53 | 0.49 / 0.10 / 0.91 |
+| Learned-covariance GLS, ACAT over layers | 0.051 | 0.122 | 0.97 | 1.00 / 0.89 / 1.00 |
+| **Learned-covariance GLS, leave-one-origin-out, ACAT** | **0.003** | **0.000** | **0.93** | **1.00 / 0.76 / 1.00** |
+
+* The leave-one-origin-out version made no false discoveries in either tree while
+  finding 93% of convergent genes. With five origins, requiring the signal to survive
+  the removal of any one lineage costs little power.
+* Layers behave as expected biologically: the selection proxy detects every ω-shift
+  gene and no pure rate-shift gene; the nucleotide rate layer does the opposite.
+* EBCM on Brownian-LMM z-scores loses power on sequence data and is not the default;
+  it should be re-fitted on the GLS z-scores.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,
