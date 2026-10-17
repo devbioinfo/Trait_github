@@ -35,29 +35,57 @@ class LMMFit:
 
 
 class PhyloLMM:
-    def __init__(self, tree: Tree, log10_delta_grid: np.ndarray | None = None):
+    def __init__(self, tree: Tree, log10_delta_grid: np.ndarray | None = None,
+                 keep: np.ndarray | None = None):
+        """keep: optional boolean mask of branches to analyse (e.g. dropping the two
+        root branches, which an unrooted estimate cannot tell apart). Inputs to
+        `fit` must then have only the kept branches."""
         K = shared_path_kernel(tree)
+        if keep is not None:
+            K = K[np.ix_(keep, keep)]
+        self.K = K
         lam, U = np.linalg.eigh(K)
         self.lam = np.clip(lam, 0.0, None)
         self.U = U
         self.grid = 10.0 ** (np.linspace(-3, 3, 31) if log10_delta_grid is None else log10_delta_grid)
 
-    def fit(self, X: np.ndarray, fg: np.ndarray) -> LMMFit:
+    def fit(self, X: np.ndarray, fg: np.ndarray, branch_sd: np.ndarray | None = None) -> LMMFit:
+        """branch_sd: optional (layers, branches) noise scale per branch. Estimated branch
+        lengths are far noisier on short branches; with e ~ N(0, s2 diag(sd^2)) the model
+        is rescaled exactly: y/sd, design/sd and K/(sd sd') (one eigendecomposition per layer).
+        """
         G, L, B = X.shape
-        Y = X.reshape(G * L, B) @ self.U                          # rotated responses
-        D = self.U.T @ np.column_stack([np.ones(B), fg.astype(float)])  # rotated design (B, 2)
+        design = np.column_stack([np.ones(B), fg.astype(float)])
+        if branch_sd is None:
+            z, beta, delta, resid = self._fit_block(X.reshape(G * L, B), design, self.U, self.lam)
+            return LMMFit(z=z.reshape(G, L), beta=beta.reshape(G, L),
+                          delta=delta.reshape(G, L), resid=resid.reshape(G, L, B))
+        out = [self._fit_block(X[:, l, :] / branch_sd[l], design / branch_sd[l][:, None],
+                               *self._eig_scaled(branch_sd[l])) for l in range(L)]
+        z, beta, delta, resid = (np.stack([o[i] for o in out], axis=1) for i in range(4))
+        return LMMFit(z=z, beta=beta, delta=delta, resid=resid)
+
+    def _eig_scaled(self, sd: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        lam, U = np.linalg.eigh(self.K / np.outer(sd, sd))
+        return U, np.clip(lam, 0.0, None)
+
+    def _fit_block(self, Y0: np.ndarray, design: np.ndarray, U: np.ndarray, lam: np.ndarray):
+        """REML grid fit for rows of Y0 (n, B) sharing one covariance structure."""
+        n, B = Y0.shape
+        Y = Y0 @ U                                                # rotated responses
+        D = U.T @ design                                          # rotated design (B, 2)
         p = D.shape[1]
-        best_ll = np.full(G * L, -np.inf)
-        out_beta = np.zeros(G * L)
-        out_se = np.zeros(G * L)
-        out_delta = np.zeros(G * L)
-        out_s2 = np.zeros(G * L)
+        best_ll = np.full(n, -np.inf)
+        out_beta = np.zeros(n)
+        out_se = np.zeros(n)
+        out_delta = np.zeros(n)
+        out_s2 = np.zeros(n)
         for d in self.grid:
-            w = 1.0 / (d * self.lam + 1.0)                       # (B,)
-            DtWD = (D * w[:, None]).T @ D                         # (2, 2), shared by all genes
+            w = 1.0 / (d * lam + 1.0)                            # (B,)
+            DtWD = (D * w[:, None]).T @ D                         # (2, 2), shared by all rows
             inv = np.linalg.inv(DtWD)
-            DtWy = (Y * w) @ D                                    # (GL, 2)
-            b = DtWy @ inv                                        # (GL, 2)
+            DtWy = (Y * w) @ D                                    # (n, 2)
+            b = DtWy @ inv                                        # (n, 2)
             rss = (Y ** 2 * w).sum(1) - (b * DtWy).sum(1)
             s2 = np.maximum(rss / (B - p), 1e-12)
             ll = -0.5 * ((B - p) * np.log(s2) - np.log(w).sum() + np.linalg.slogdet(DtWD)[1])
@@ -69,17 +97,25 @@ class PhyloLMM:
             out_s2 = np.where(better, s2, out_s2)
         t = out_beta / out_se
         z = st.norm.isf(st.t.sf(t, df=B - p))                     # t -> N(0,1) scale, one-sided
-        # whitened residuals at each gene/layer's own delta, for cross-layer correlation
-        w = 1.0 / (out_delta[:, None] * self.lam[None, :] + 1.0)
-        bfull = np.zeros((G * L, p))
+        # whitened residuals at each row's own delta, for cross-layer correlation
+        w = 1.0 / (out_delta[:, None] * lam[None, :] + 1.0)
+        bfull = np.zeros((n, p))
         for d in np.unique(out_delta):
             m = out_delta == d
-            wd = 1.0 / (d * self.lam + 1.0)
+            wd = 1.0 / (d * lam + 1.0)
             DtWD = (D * wd[:, None]).T @ D
             bfull[m] = ((Y[m] * wd) @ D) @ np.linalg.inv(DtWD)
         R = (Y - bfull @ D.T) * np.sqrt(w) / np.sqrt(out_s2)[:, None]
-        return LMMFit(z=z.reshape(G, L), beta=out_beta.reshape(G, L),
-                      delta=out_delta.reshape(G, L), resid=R.reshape(G, L, B))
+        return z, out_beta, out_delta, R
+
+
+def branch_noise_sd(X: np.ndarray, floor: float = 1e-3) -> np.ndarray:
+    """Robust per-layer, per-branch spread across genes (1.4826 x MAD), shape (layers, branches),
+    rescaled to geometric mean 1 per layer."""
+    med = np.median(X, axis=0)
+    sd = 1.4826 * np.median(np.abs(X - med), axis=0)
+    sd = np.maximum(sd, floor)
+    return sd / np.exp(np.log(sd).mean(1, keepdims=True))
 
 
 def layer_correlation(resid: np.ndarray, shrink: float = 0.1) -> np.ndarray:

@@ -47,8 +47,13 @@ class Tree:
         return A
 
 
-def kingman_tree(n_tips: int, rng: np.random.Generator) -> Tree:
-    """Random ultrametric tree from the Kingman coalescent (heights in N units)."""
+def kingman_tree(n_tips: int, rng: np.random.Generator, process: str = "coalescent") -> Tree:
+    """Random ultrametric tree, normalised to height 1.
+
+    process="coalescent": Kingman coalescent (long internal branches near the root).
+    process="yule": pure-birth tree (waiting time with k lineages ~ Exp(k)),
+    closer in shape to species phylogenies.
+    """
     n_nodes = 2 * n_tips - 1
     parent = -np.ones(n_nodes, dtype=int)
     height = np.zeros(n_nodes)
@@ -57,7 +62,8 @@ def kingman_tree(n_tips: int, rng: np.random.Generator) -> Tree:
     nxt = n_tips
     while len(active) > 1:
         k = len(active)
-        t += rng.exponential(1.0 / (k * (k - 1) / 2))
+        rate = k * (k - 1) / 2 if process == "coalescent" else k
+        t += rng.exponential(1.0 / rate)
         i, j = rng.choice(k, size=2, replace=False)
         a, b = active[i], active[j]
         parent[a] = parent[b] = nxt
@@ -132,6 +138,77 @@ def clade_permute(tree: Tree, origin_sizes: list[int], n_perm: int, rng: np.rand
     return out
 
 
+def node_heights(tree: Tree) -> np.ndarray:
+    """Distance from each node to its deepest descendant tip."""
+    h = np.zeros(tree.n_nodes)
+    for c in range(tree.n_nodes - 1):
+        p = tree.parent[c]
+        h[p] = max(h[p], h[c] + tree.length[c])
+    return h
+
+
+def origin_nodes(tree: Tree, tip_trait: np.ndarray) -> list[int]:
+    """Top node (branch) of each maximal trait-positive clade, i.e. each independent origin."""
+    fg = foreground_branches(tree, tip_trait)
+    return [b for b in range(tree.n_branches)
+            if fg[b] and (tree.parent[b] == tree.root or not fg[tree.parent[b]])]
+
+
+def origin_index(tree: Tree, tip_trait: np.ndarray) -> np.ndarray:
+    """(n_branches,) index of the independent origin each foreground branch belongs to; -1 otherwise."""
+    D = tree.tip_sets()
+    out = -np.ones(tree.n_branches, dtype=int)
+    for i, o in enumerate(origin_nodes(tree, tip_trait)):
+        inside = ~(D[: tree.n_branches] & ~D[o]).any(1)
+        out[inside] = i
+    return out
+
+
+def matched_clade_permute(tree: Tree, origins: list[int], n_perm: int, rng: np.random.Generator,
+                          exclude: np.ndarray | None = None, size_tol: int = 1,
+                          age_ratio: float = 1.5, min_candidates: int = 5,
+                          max_tries: int = 1000) -> np.ndarray:
+    """Control-lineage null foregrounds matched on number of origins, clade size and clade age.
+
+    For each observed origin with k tips and crown-plus-stem age a (the height of its
+    parent node), candidates are control clades with |size - k| <= size_tol and age
+    within a factor `age_ratio`. Matching age matters because young clades are made of
+    short branches, whose estimated rates are noisier; a size-only null then
+    understates the variance of the observed foreground. If fewer than
+    `min_candidates` qualify, the age window is widened stepwise.
+    """
+    D = tree.tip_sets()
+    sizes = D.sum(1)
+    h = node_heights(tree)
+    stem_age = np.array([h[tree.parent[v]] for v in range(tree.root)])
+    allowed = np.ones(tree.root, dtype=bool) if exclude is None else ~(D[: tree.root] & exclude).any(1)
+    pools = []
+    for o in origins:
+        r = age_ratio
+        while True:
+            ok = (allowed & (np.abs(sizes[: tree.root] - sizes[o]) <= size_tol)
+                  & (stem_age >= stem_age[o] / r) & (stem_age <= stem_age[o] * r))
+            if ok.sum() >= min_candidates or r > 64:
+                break
+            r *= 1.5
+        pools.append(np.nonzero(ok)[0])
+    out = np.zeros((n_perm, tree.n_branches), dtype=bool)
+    for i in range(n_perm):
+        for _ in range(max_tries):
+            trait = np.zeros(tree.n_tips, dtype=bool)
+            ok = True
+            for pool in pools:
+                v = pool[rng.integers(len(pool))]
+                if (trait & D[v]).any():
+                    ok = False
+                    break
+                trait |= D[v]
+            if ok:
+                break
+        out[i] = foreground_branches(tree, trait, D)
+    return out
+
+
 def origin_sizes(tree: Tree, tip_trait: np.ndarray) -> list[int]:
     """Tip counts of the maximal trait-positive clades (one per independent origin)."""
     D = tree.tip_sets()
@@ -169,4 +246,81 @@ def permulate(tree: Tree, observed_fg: np.ndarray, n_perm: int, rng: np.random.G
         if abs(int(fg.sum()) - target) <= tol or tries > max_tries * n_perm:
             out[filled] = fg
             filled += 1
+    return out
+
+
+def yule_tree(n_tips: int, rng: np.random.Generator) -> Tree:
+    return kingman_tree(n_tips, rng, process="yule")
+
+
+def to_newick(tree: Tree, scale: float = 1.0, lengths: np.ndarray | None = None,
+              annotations: dict[int, str] | None = None) -> str:
+    """Newick string with tips named t0..t{n-1}; optional per-branch lengths and
+    per-branch comment annotations (e.g. AliSim branch-specific models)."""
+    lengths = tree.length if lengths is None else lengths
+    annotations = annotations or {}
+    children = [[] for _ in range(tree.n_nodes)]
+    for c in range(tree.n_nodes - 1):
+        children[tree.parent[c]].append(c)
+
+    def rec(v: int) -> str:
+        s = f"t{v}" if v < tree.n_tips else "(" + ",".join(rec(c) for c in children[v]) + ")"
+        if v != tree.root:
+            s += f":{lengths[v] * scale:.8f}" + annotations.get(v, "")
+        return s
+
+    return rec(tree.root) + ";"
+
+
+def parse_newick_splits(newick: str, n_tips: int) -> dict[frozenset, float]:
+    """Branch lengths of an (unrooted or rooted) Newick tree keyed by canonical split:
+    the set of tip indices on the side that does not contain tip t0."""
+    pos = 0
+    out: dict[frozenset, float] = {}
+    everything = frozenset(range(n_tips))
+
+    def canon(tips: frozenset) -> frozenset:
+        return everything - tips if 0 in tips else tips
+
+    def node() -> frozenset:
+        nonlocal pos
+        if newick[pos] == "(":
+            pos += 1
+            tips = frozenset()
+            while True:
+                tips |= node()
+                if newick[pos] == ",":
+                    pos += 1
+                    continue
+                pos += 1          # ')'
+                break
+        else:
+            start = pos
+            while newick[pos] not in ",):;":
+                pos += 1
+            tips = frozenset([int(newick[start:pos].strip()[1:])])
+        while newick[pos] not in ":,);":
+            pos += 1               # internal node labels
+        if newick[pos] == ":":
+            pos += 1
+            start = pos
+            while newick[pos] not in ",);":
+                pos += 1
+            key = canon(tips)
+            if 0 < len(key) < n_tips - 1 or len(tips) == 1:
+                out[key] = out.get(key, 0.0) + float(newick[start:pos])
+        return tips
+
+    node()
+    return out
+
+
+def branch_splits(tree: Tree) -> list[frozenset]:
+    """Canonical split for every branch of the rooted tree (root children share one)."""
+    D = tree.tip_sets()
+    everything = frozenset(range(tree.n_tips))
+    out = []
+    for b in range(tree.n_branches):
+        tips = frozenset(np.nonzero(D[b])[0].tolist())
+        out.append(everything - tips if 0 in tips else tips)
     return out

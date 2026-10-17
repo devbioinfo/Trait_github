@@ -108,7 +108,8 @@ def relative_transform(X: np.ndarray) -> np.ndarray:
     return X - np.median(X, axis=0, keepdims=True)
 
 
-def run_lmm_methods(lmm, X: np.ndarray, fg: np.ndarray, null_fgs: np.ndarray) -> dict[str, np.ndarray]:
+def run_lmm_methods(lmm, X: np.ndarray, fg: np.ndarray, null_fgs: np.ndarray,
+                    branch_sd: np.ndarray | None = None) -> dict[str, np.ndarray]:
     """Model-based tests on the phylogenetic LMM z-scores.
 
     lmm:<layer>     per-layer Wald test
@@ -121,7 +122,7 @@ def run_lmm_methods(lmm, X: np.ndarray, fg: np.ndarray, null_fgs: np.ndarray) ->
     """
     from .configs import fit_configurations, lfdr_given_fit
     from .lmm import layer_correlation, whitened_combination
-    fit = lmm.fit(X, fg)
+    fit = lmm.fit(X, fg, branch_sd)
     cfg = fit_configurations(fit.z, layer_correlation(fit.resid))
     out = {"_layer_post": cfg.layer_post}
     out.update({f"lmm:{i}": st.norm.sf(fit.z[:, i]) for i in range(X.shape[1])})
@@ -130,7 +131,7 @@ def run_lmm_methods(lmm, X: np.ndarray, fg: np.ndarray, null_fgs: np.ndarray) ->
     out["lmm_acat"] = acat(p_layers)
     S = whitened_combination(fit.z, fit.resid)
     out["lmm_wc"] = st.norm.sf(S)
-    null_fits = [lmm.fit(X, nf) for nf in null_fgs]
+    null_fits = [lmm.fit(X, nf, branch_sd) for nf in null_fgs]
     S_null = np.stack([whitened_combination(f.z, f.resid) for f in null_fits], axis=1)
     out["lmm_wc_pooled"] = pooled_null_p(S, S_null)
     # EBCM ranks genes by lfdr; calibrate against lfdr on control-lineage foregrounds
