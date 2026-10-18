@@ -9,8 +9,11 @@ Traits (--trait), defined from the taxonomic lineage before any test:
   marine        fully marine mammals: Cetacea, Pinnipedia (Otariidae, Phocidae, Odobenidae)
                 and Sirenia; semi-aquatic species (otters, hippopotamus, beaver, muskrat,
                 polar bear) are kept out of the control trait sets
-  aquatic       marine plus semi-aquatic lineages (otters, beaver, muskrat); hippopotamus
-                and polar bear are kept out of the control sets
+  aquatic       marine plus semi-aquatic rodents (beaver, muskrat); hippopotamus, otters and
+                polar bear are kept out of the control sets. Otters are not trait species
+                because, without other musteloids in the species set, the giant otter is
+                sister to the pinnipeds and the two would merge into one origin with a
+                (wrongly) aquatic common ancestor
 Each trait has a list of genes of interest (literature candidates), reported separately.
 
 Pipeline (as validated on simulations):
@@ -67,6 +70,7 @@ from mlconv.tree import (foreground_branches, from_newick, matched_clade_permute
 LAYERS = ("rate_nucleotide", "rate_protein", "selection_proxy")
 MARINE = ("Cetacea", "Otariidae", "Phocidae", "Odobenidae", "Sirenia")
 SEMI_AQUATIC = ("Lutrinae", "Castor_", "Ondatra_")
+AQUATIC_RODENTS = ("Castor_", "Ondatra_")
 TRAITS = {  # name: (trait test on (species, lineage), species kept out of control sets, genes of interest)
     "echolocation": (
         lambda sp, l: ("Chiroptera" in l and "Pteropodidae" not in l) or "Odontoceti" in l,
@@ -81,8 +85,8 @@ TRAITS = {  # name: (trait test on (species, lineage), species kept out of contr
         ["PON1", "MMP12", "KLK8", "MTNR1A", "MTNR1B", "AANAT", "ASMT", "F12", "SEC14L3", "DSG4",
          "GSDMA", "TGM3", "SLC6A18", "POLM", "NAT16", "TAS1R1", "TAS1R2", "TAS1R3", "OMP"]),
     "aquatic": (
-        lambda sp, l: any(k in l for k in MARINE) or any(k in l or sp.startswith(k) for k in SEMI_AQUATIC),
-        lambda sp, l: "Hippopotamidae" in l or sp == "Ursus_maritimus",
+        lambda sp, l: any(k in l for k in MARINE) or any(sp.startswith(k) for k in AQUATIC_RODENTS),
+        lambda sp, l: "Hippopotamidae" in l or "Lutrinae" in l or sp == "Ursus_maritimus",
         ["PON1", "MMP12", "KLK8", "MTNR1A", "MTNR1B", "AANAT", "ASMT", "F12", "SEC14L3", "DSG4",
          "GSDMA", "TGM3", "SLC6A18", "POLM", "NAT16", "TAS1R1", "TAS1R2", "TAS1R3", "OMP"]),
 }
