@@ -13,4 +13,6 @@ Orcinus_orca
 Zalophus_californianus
 Odobenus_rosmarus
 Neomonachus_schauinslandi
+Leptonychotes_weddellii
+Mirounga_angustirostris
 Trichechus_manatus
