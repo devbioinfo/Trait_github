@@ -88,6 +88,8 @@ def main() -> None:
     ap.add_argument("--confounding", default="0,1,2")
     ap.add_argument("--effects", default="moderate")
     ap.add_argument("--perms", type=int, default=0)
+    ap.add_argument("--perm-layers", default="protein",
+                    help="layers on which RERconverge permulations are run")
     ap.add_argument("--candidates", type=int, default=150,
                     help="permulate only the top-N genes by parametric P (0 = all genes)")
     ap.add_argument("--reps", type=int, default=1)
@@ -132,10 +134,11 @@ def main() -> None:
                     pv = {"final": acat(np.column_stack(
                         [leave_one_origin_out_p(X[:, l], learn_covariance(X[:, l]), ok) for l in range(3)]))}
                     for layer, L in (("protein", aa), ("nucleotide", nt)):
-                        df = rerconverge(tree, L, trait, args.perms, tmp, f"r{rep}c{conf}{eff}{layer}",
+                        n_perm = args.perms if layer in args.perm_layers.split(",") else 0
+                        df = rerconverge(tree, L, trait, n_perm, tmp, f"r{rep}c{conf}{eff}{layer}",
                                          args.candidates)
                         pv[f"RERconverge_{layer}"] = p_from_rer(df, "p")
-                        if args.perms > 0:
+                        if n_perm > 0:
                             pv[f"RERconverge_{layer}_permulation"] = p_from_rer(df, "perm_p")
                     for name, p in pv.items():
                         rej = bh(p, 0.1)

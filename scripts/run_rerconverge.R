@@ -26,8 +26,16 @@ if (n_perms > 0) {
     rer_p <- rer[cand, , drop = FALSE]
     cors_p <- cors[cand, ]
   }
-  perms <- getPermsBinary(n_perms, inp$fg_vec, inp$sisters_list, root_sp, rer_p, trees,
-                          trees$masterTree, permmode = "cc")
+  # permulations in parallel chunks (fork), then merged
+  n_cores <- max(1, min(parallel::detectCores(), 4))
+  chunk <- ceiling(n_perms / n_cores)
+  parts <- parallel::mclapply(seq_len(n_cores), function(i) {
+    set.seed(1000 + i)
+    getPermsBinary(chunk, inp$fg_vec, inp$sisters_list, root_sp, rer_p, trees,
+                   trees$masterTree, permmode = "cc")
+  }, mc.cores = n_cores)
+  perms <- parts[[1]]
+  perms$corRho <- do.call(cbind, lapply(parts, function(x) x$corRho))
   pp <- permpvalcor(cors_p, perms)
   out$perm_p <- pp[out$gene, "permpval"]      # (num + 1) / (denom + 1) on the side of the median
   out$perm_stat <- pp[out$gene, "permstats"]  # -log10(perm_p) * sign(Rho - median permuted Rho)
