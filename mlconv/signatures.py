@@ -30,6 +30,29 @@ class SignatureFit:
     patterns: list            # list of (name, U) prior covariance patterns
     pattern_weights: np.ndarray  # (K,) summed over scales
     top_pattern: np.ndarray   # (G,) index of the most probable pattern (-1 = null)
+    loglik: float
+    n_params: int             # free mixture weights, for BIC
+
+
+def pattern_active(fit: SignatureFit, threshold: float = 0.3) -> np.ndarray:
+    """(G, L) layers active in each gene's most probable pattern. A learned direction u
+    marks layer l active when |u_l| > threshold; a canonical pattern marks its own layers."""
+    act = np.array([np.sqrt(np.diag(U)) > threshold for _, U in fit.patterns])
+    out = np.zeros((len(fit.top_pattern), act.shape[1]), dtype=bool)
+    m = fit.top_pattern >= 0
+    out[m] = act[fit.top_pattern[m]]
+    return out
+
+
+def bic(fit: SignatureFit, n_genes: int) -> float:
+    return -2 * fit.loglik + fit.n_params * np.log(n_genes)
+
+
+def fit_signatures_bic(z: np.ndarray, R: np.ndarray, layer_names: list[str],
+                       candidates=(0, 1, 2, 3, 4, 5, 6), **kw) -> SignatureFit:
+    """Choose the number of learned directions by BIC."""
+    fits = [fit_signatures(z, R, layer_names, n_patterns=k, **kw) for k in candidates]
+    return min(fits, key=lambda f: bic(f, len(z)))
 
 
 def data_driven_patterns(z: np.ndarray, n_patterns: int = 4, min_strength: float = 4.0,
@@ -66,7 +89,7 @@ def fit_signatures(z: np.ndarray, R: np.ndarray, layer_names: list[str], n_patte
         if any(cfg):
             name = "+".join(n for n, c in zip(layer_names, cfg) if c)
             patterns.append((name, np.diag(np.array(cfg, dtype=float))))
-    for i, u in enumerate(data_driven_patterns(z, n_patterns)):
+    for i, u in enumerate(data_driven_patterns(z, n_patterns) if n_patterns > 0 else []):
         name = "learned:" + ",".join(f"{n}={v:+.2f}" for n, v in zip(layer_names, u))
         patterns.append((name, np.outer(u, u)))
     comps = [(k, w) for k in range(len(patterns)) for w in scales]
@@ -113,4 +136,5 @@ def fit_signatures(z: np.ndarray, R: np.ndarray, layer_names: list[str], n_patte
     pw = np.zeros(len(patterns))
     np.add.at(pw, comp_k[1:], pi[1:])
     return SignatureFit(lfdr=post[:, 0], post_mean=mean, lfsr=lfsr, patterns=patterns,
-                        pattern_weights=pw, top_pattern=pat_post.argmax(1) - 1)
+                        pattern_weights=pw, top_pattern=pat_post.argmax(1) - 1,
+                        loglik=ll, n_params=len(pi) - 1)
