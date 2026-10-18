@@ -11,13 +11,12 @@ For each gene alignment (human hg38 reference, TOGA MultipleCodonAlignments):
 Results are appended to a JSON-lines file (one gene per line) so the run can resume.
 
 Usage:
-  python -I scripts/toga_branch_lengths.py --species species.txt --out-dir results/toga \
-      --mca /path/MultipleCodonAlignments --overview overview.table.tsv --tree hg38.447way.scientificNames.nh.txt
+  python -I scripts/toga_branch_lengths.py --species species.tsv --out-dir results/toga \
+      --mca /path/MultipleCodonAlignments --tree hg38.447way.scientificNames.nh.txt
 """
 from __future__ import annotations
 
 import argparse
-import csv
 import gzip
 import json
 import shutil
@@ -52,7 +51,8 @@ def translate(seq: str) -> str:
     return "".join(out).replace("*", "X")
 
 
-def read_alignment(path: Path, asm2sp: dict, selected: set) -> dict[str, str]:
+def read_alignment(path: Path, asm2sp: dict) -> dict[str, str]:
+    """Sequences of the chosen assembly of each selected species (1:1 orthologs only)."""
     seqs: dict[str, list] = {}
     seen: dict[str, int] = {}
     cur = None
@@ -60,8 +60,7 @@ def read_alignment(path: Path, asm2sp: dict, selected: set) -> dict[str, str]:
         for ln in fh:
             if ln.startswith(">"):
                 lab = ln[1:].split()[0]
-                sp = "Homo_sapiens" if lab == "REFERENCE" else asm2sp.get(lab[3:] if lab.startswith("vs_") else lab)
-                cur = sp if sp in selected else None
+                cur = asm2sp.get(lab[3:] if lab.startswith("vs_") else lab)
                 if cur:
                     seen[cur] = seen.get(cur, 0) + 1
                     seqs.setdefault(cur, [])
@@ -81,7 +80,7 @@ def process(path_str: str) -> dict | None:
     path = Path(path_str)
     gene = path.name.replace(".fasta.gz", "")
     try:
-        seqs = read_alignment(path, CTX["asm2sp"], CTX["selected"])
+        seqs = read_alignment(path, CTX["asm2sp"])
     except (OSError, EOFError):
         return {"gene": gene, "status": "unreadable"}
     present = sorted(seqs)
@@ -139,9 +138,10 @@ def process(path_str: str) -> dict | None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--species", required=True, help="one species name per line (Zoonomia tree names)")
+    ap.add_argument("--species", required=True,
+                    help="species<TAB>assembly per line (Zoonomia tree names; human = REFERENCE)")
     ap.add_argument("--mca", required=True)
-    ap.add_argument("--overview", required=True)
+    ap.add_argument("--overview", help="unused; kept for compatibility")
     ap.add_argument("--tree", required=True)
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--min-frac", type=float, default=0.8)
@@ -151,7 +151,9 @@ def main() -> None:
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    species = [s.strip() for s in Path(args.species).read_text().splitlines() if s.strip()]
+    pairs = [ln.split("\t") for ln in Path(args.species).read_text().splitlines() if ln.strip()]
+    species = [sp for sp, _ in pairs]
+    asm2sp = {asm: sp for sp, asm in pairs}
     full, full_names = from_newick(Path(args.tree).read_text())
     master_nwk = prune_newick(full, full_names, set(species))
     (out_dir / "master.nwk").write_text(master_nwk + "\n")
@@ -159,9 +161,7 @@ def main() -> None:
     index = {n: i for i, n in enumerate(names)}
     D = master.tip_sets()
     tipsets = [frozenset(np.nonzero(D[b])[0].tolist()) for b in range(master.n_branches)]
-    asm2sp = {r["Assembly name"]: r["Species"].replace(" ", "_")
-              for r in csv.DictReader(open(args.overview), delimiter="\t")}
-    ctx = dict(asm2sp=asm2sp, selected=set(species), tree=full, names=full_names, index=index,
+    ctx = dict(asm2sp=asm2sp, tree=full, names=full_names, index=index,
                master_tipsets=tipsets, min_n=int(np.ceil(args.min_frac * len(species))))
 
     done_file = out_dir / "branch_lengths.jsonl"
