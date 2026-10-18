@@ -64,6 +64,7 @@ def main() -> None:
     ap.add_argument("--reps", type=int, default=2)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--seed", type=int, default=23)
+    ap.add_argument("--save-z", default="", help="prefix for per-replicate z/R arrays")
     args = ap.parse_args()
 
     rng = np.random.default_rng(args.seed)
@@ -91,7 +92,11 @@ def main() -> None:
             resid[:, l] = gls_residuals(X[:, l], S, fk)
             p_looo.append(leave_one_origin_out_p(X[:, l], S, ok))
         detected = bh(acat(np.column_stack(p_looo)), 0.1)
-        cfg = fit_configurations(z, layer_correlation_from(resid))
+        R = layer_correlation_from(resid)
+        if args.save_z:
+            np.savez_compressed(f"{args.save_z}_rep{rep}.npz", z=z, R=R, kinds=kinds.astype(str),
+                                truth=truth, detected=detected)
+        cfg = fit_configurations(z, R)
 
         expected = np.array([EXPECTED.get(k, (0, 0, 0)) for k in kinds], dtype=bool)
         tp = detected & truth
