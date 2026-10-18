@@ -301,6 +301,33 @@ a null genome and a genome with 2% convergent genes (moderate effect).
 Caveats: one tree only; permulations restricted to 150 candidates for run time
 (about 1 s per permulation at 200 species on 4 cores).
 
+## Real-data pilot: echolocation on RERconverge's mammal gene trees
+
+`scripts/echolocation_pilot.py` (+ `scripts/export_rerconverge_trees.R`,
+`scripts/rer_foregrounds.R`); results in `results/echolocation_pilot/`. Data: the protein
+gene trees bundled with RERconverge (`mamTreesSub`), 761 genes present in all 62 species,
+exported to `data/rerconverge_mammals/`. Trait: echolocation in vespertilionid bats
+(eptFus1, myoDav1, myoLuc2) and toothed whales (turTru2, orcOrc1): 2 origins, 8 foreground
+branches; pteropodid bats are non-echolocating. One layer only (log protein branch length).
+
+Real-data calibration: the same analysis on 100 control trait sets (two non-echolocating
+clades matched to the echolocating origins in size and age; any call is false).
+
+| Method | Mean false calls per control set | Control sets with any call | Max | Echolocation calls |
+|---|---|---|---|---|
+| Naive (branches independent) | 73.8 | 100% | 170 | 12 |
+| RERconverge (parametric) | 0.85 | 22% | 17 | 0 |
+| Learned-covariance GLS | 0.75 | 43% | 9 | 0 |
+| **Final (GLS + leave-one-origin-out)** | **0** | **0%** | **0** | **0** |
+
+* On real genomes the final test made no false calls on any of the 100 control trait sets.
+* No gene is significant for echolocation with any calibrated method in this subset
+  (the naive test's 12 calls are well inside its control distribution). Expected: 761
+  genes, 5 echolocating species in 2 origins, one layer, and none of the classic
+  echolocation genes except CDH23 (final p = 0.40).
+* This pilot tests calibration on real data, not biology; the echolocation analysis
+  needs the full Zoonomia/TOGA data, which this environment's network policy blocks.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,

@@ -324,3 +324,80 @@ def branch_splits(tree: Tree) -> list[frozenset]:
         tips = frozenset(np.nonzero(D[b])[0].tolist())
         out.append(everything - tips if 0 in tips else tips)
     return out
+
+
+def from_newick(newick: str) -> tuple[Tree, list[str]]:
+    """Parse a rooted Newick tree (multifurcations allowed) into a Tree.
+
+    Tips are numbered 0..n-1 in the order they appear; internal nodes are numbered in
+    post-order, so every child has a smaller index than its parent and the root is last.
+    Returns the tree and the tip names in index order.
+    """
+    s = newick.strip().rstrip(";")
+    pos = 0
+    names: list[str] = []
+    edges: list[tuple[object, float]] = []     # (node key, branch length) recorded per node
+
+    def parse() -> tuple[object, float]:
+        nonlocal pos
+        if s[pos] == "(":
+            pos += 1
+            kids = []
+            while True:
+                kids.append(parse())
+                if s[pos] == ",":
+                    pos += 1
+                    continue
+                pos += 1                       # ')'
+                break
+            node = ("internal", kids)
+        else:
+            start = pos
+            while s[pos] not in ",):":
+                pos += 1
+            names.append(s[start:pos].strip())
+            node = ("tip", len(names) - 1)
+        while pos < len(s) and s[pos] not in ":,)":
+            pos += 1                           # internal node label
+        length = 0.0
+        if pos < len(s) and s[pos] == ":":
+            pos += 1
+            start = pos
+            while pos < len(s) and s[pos] not in ",)":
+                pos += 1
+            length = float(s[start:pos])
+        return node, length
+
+    root, _ = parse()
+    n_tips = len(names)
+    parent: list[int] = [-1] * n_tips
+    length: list[float] = [0.0] * n_tips
+
+    def number(node) -> int:
+        kind, payload = node
+        if kind == "tip":
+            return payload
+        child_ids = [(number(child), bl) for child, bl in payload]
+        idx = len(parent)
+        parent.append(-1)
+        length.append(0.0)
+        for cid, bl in child_ids:
+            parent[cid] = idx
+            length[cid] = bl
+        return idx
+
+    number(root)
+    return Tree(parent=np.array(parent), length=np.array(length), n_tips=n_tips), names
+
+
+def named_splits(newick: str, index: dict[str, int], n_tips: int) -> dict[frozenset, float]:
+    """Branch lengths keyed by canonical split, for a Newick tree whose tips are named."""
+    tree, names = from_newick(newick)
+    D = tree.tip_sets()
+    everything = frozenset(range(n_tips))
+    out: dict[frozenset, float] = {}
+    for b in range(tree.n_branches):
+        tips = frozenset(index[names[t]] for t in np.nonzero(D[b])[0])
+        key = everything - tips if 0 in tips else tips
+        out[key] = out.get(key, 0.0) + float(tree.length[b])
+    return out

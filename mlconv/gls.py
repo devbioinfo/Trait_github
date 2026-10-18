@@ -156,6 +156,9 @@ def leave_one_origin_out_p(Y: np.ndarray, Sigma: np.ndarray, origin: np.ndarray)
     for i in range(m):
         keep = origin != i
         f = (origin[keep] >= 0)
+        if not f.any():                                   # nothing left to test
+            p[:, i] = 1.0
+            continue
         z = gls_z(Y[:, keep], Sigma[np.ix_(keep, keep)], f[None])[:, 0]
         p[:, i] = st.norm.sf(z)
     return p.max(1)
