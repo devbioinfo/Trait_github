@@ -162,3 +162,59 @@ def leave_one_origin_out_p(Y: np.ndarray, Sigma: np.ndarray, origin: np.ndarray)
         z = gls_z(Y[:, keep], Sigma[np.ix_(keep, keep)], f[None])[:, 0]
         p[:, i] = st.norm.sf(z)
     return p.max(1)
+
+
+# ---------------------------------------------------------------------------
+# Missing branches (genes in which some species have no ortholog)
+# ---------------------------------------------------------------------------
+
+def learn_covariance_missing(Y: np.ndarray, min_pairs: int = 50) -> np.ndarray:
+    """Pairwise-complete covariance of per-gene standardised branch values; NaN = missing.
+
+    Each gene is centred and scaled on its observed branches; covariances use all genes
+    observed at both branches (at least `min_pairs`, else the pair is set to 0). The result
+    is projected to the nearest positive-definite matrix by eigenvalue clipping.
+    """
+    Z = Y - np.nanmean(Y, 1, keepdims=True)
+    Z = Z / np.nanstd(Z, 1, keepdims=True)
+    M = (~np.isnan(Z)).astype(float)
+    Z0 = np.nan_to_num(Z)
+    n = M.T @ M
+    S = (Z0.T @ Z0) / np.maximum(n - 1, 1)
+    S[n < min_pairs] = 0.0
+    S = (S + S.T) / 2
+    w, V = np.linalg.eigh(S)
+    w = np.maximum(w, 1e-4 * w.max())
+    return (V * w) @ V.T
+
+
+def gls_z_missing(Y: np.ndarray, Sigma: np.ndarray, f: np.ndarray, min_branches: int = 20,
+                  min_fg: int = 2) -> np.ndarray:
+    """One-sided GLS z-scores per gene using only its observed branches (NaN = missing).
+
+    Genes sharing a missing-data pattern are fitted together. Genes with fewer than
+    `min_branches` observed branches or `min_fg` observed foreground branches get NaN.
+    """
+    G, B = Y.shape
+    obs = ~np.isnan(Y)
+    z = np.full(G, np.nan)
+    patterns, inverse = np.unique(obs, axis=0, return_inverse=True)
+    for k, pat in enumerate(patterns):
+        rows = np.nonzero(inverse.ravel() == k)[0]
+        if pat.sum() < min_branches or (f[pat] > 0).sum() < min_fg:
+            continue
+        z[rows] = gls_z(Y[np.ix_(rows, pat)], Sigma[np.ix_(pat, pat)], f[pat][None])[:, 0]
+    return z
+
+
+def leave_one_origin_out_p_missing(Y: np.ndarray, Sigma: np.ndarray, origin: np.ndarray,
+                                   **kw) -> np.ndarray:
+    """Leave-one-origin-out intersection-union test allowing missing branches."""
+    m = int(origin.max()) + 1
+    p = np.ones((Y.shape[0], m))
+    for i in range(m):
+        keep = origin != i
+        f = (origin[keep] >= 0).astype(float)
+        z = gls_z_missing(Y[:, keep], Sigma[np.ix_(keep, keep)], f, **kw)
+        p[:, i] = np.where(np.isnan(z), 1.0, st.norm.sf(np.nan_to_num(z)))
+    return p.max(1)

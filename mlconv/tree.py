@@ -333,7 +333,7 @@ def from_newick(newick: str) -> tuple[Tree, list[str]]:
     post-order, so every child has a smaller index than its parent and the root is last.
     Returns the tree and the tip names in index order.
     """
-    s = newick.strip().rstrip(";")
+    s = "".join(newick.split()).rstrip(";")             # whitespace and line breaks are not significant
     pos = 0
     names: list[str] = []
     edges: list[tuple[object, float]] = []     # (node key, branch length) recorded per node
@@ -401,3 +401,31 @@ def named_splits(newick: str, index: dict[str, int], n_tips: int) -> dict[frozen
         key = everything - tips if 0 in tips else tips
         out[key] = out.get(key, 0.0) + float(tree.length[b])
     return out
+
+
+def prune_newick(tree: Tree, names: list[str], keep: set[str], scale: float = 1.0) -> str:
+    """Newick of `tree` restricted to the tips in `keep`; nodes left with one child are
+    collapsed and their branch lengths summed. Tip labels are the names themselves."""
+    children = [[] for _ in range(tree.n_nodes)]
+    for c in range(tree.n_nodes - 1):
+        children[tree.parent[c]].append(c)
+
+    def rec(v: int):
+        if v < tree.n_tips:
+            return (names[v], tree.length[v]) if names[v] in keep else None
+        parts = [p for p in (rec(c) for c in children[v]) if p is not None]
+        if not parts:
+            return None
+        if len(parts) == 1:                                   # collapse unary node
+            sub, bl = parts[0]
+            return sub, bl + tree.length[v]
+        sub = "(" + ",".join(f"{s}:{bl * scale:.8f}" for s, bl in parts) + ")"
+        return sub, tree.length[v]
+
+    out = rec(tree.root)
+    return (out[0] if out[0].startswith("(") else f"({out[0]})") + ";"
+
+
+def subtree(tree: Tree, names: list[str], keep: list[str]) -> tuple[Tree, list[str]]:
+    """The species tree restricted to `keep` (as a Tree, with branch lengths)."""
+    return from_newick(prune_newick(tree, names, set(keep)))
