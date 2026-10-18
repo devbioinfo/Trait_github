@@ -18,6 +18,15 @@ Pipeline (as validated on simulations):
           one substitution per alignment; mean-centred per branch; root edges excluded
   test    per layer GLS with a genome-learned covariance (pairwise-complete, missing branches
           allowed), leave-one-origin-out intersection-union test, ACAT over layers, BH FDR
+  loss    optional (--loss): convergent gene loss from TOGA's ortholog classification
+          (scripts/toga_loss_matrix.py). Each species is coded lost (1; --loss-states,
+          default L and UL), intact (0; I and PI) or missing (M). The same GLS is fitted
+          across species instead of branches, with a species x species covariance learned
+          from the loss patterns of all genes (it absorbs phylogeny and assembly quality: a
+          poor assembly with many spurious losses is down-weighted), and the same
+          leave-one-origin-out test, so a loss counts as convergent only if it is shared by
+          at least two independent origins. Genes need >= 2 lost and >= 2 intact species
+          (a filter blind to the trait). Rate and loss evidence are combined by ACAT.
   signatures  mash-style model with learned directions on pooled per-layer z-scores
   calibration the same test on control trait sets (clades without the trait, matched to the
           origins in size and age); every call for a control set is false
@@ -100,6 +109,34 @@ def final_test(X, Sig, origin):
     return acat(np.clip(p, 1e-300, 1 - 1e-12))
 
 
+def loss_data(path, names, lost_states):
+    """(symbols, Y) with Y (genes, species): 1 lost, 0 intact, NaN missing; testable genes only."""
+    m = pd.read_csv(path, sep="\t", index_col=0).reindex(columns=names).fillna("M")
+    Y = np.where(m.isin(lost_states), 1.0, np.where(m.isin(["I", "PI"]), 0.0, np.nan))
+    n_lost, n_intact = (Y == 1).sum(1), (Y == 0).sum(1)
+    ok = (n_lost >= 2) & (n_intact >= 2)
+    return m.index[ok].to_numpy(), Y[ok]
+
+
+def combine(p_rate, p_loss):
+    """ACAT of the rate and loss p-values where both exist, else whichever exists."""
+    P = np.column_stack([p_rate, p_loss])
+    out = np.full(len(P), np.nan)
+    both = ~np.isnan(P).any(1)
+    out[both] = acat(np.clip(P[both], 1e-300, 1 - 1e-12))
+    one = ~both & ~np.isnan(P).all(1)
+    out[one] = np.nanmin(P[one], 1)
+    return out
+
+
+def bh_nan(p, q):
+    """BH over the genes with a p-value; NaN never rejected."""
+    rej = np.zeros(len(p), dtype=bool)
+    ok = ~np.isnan(p)
+    rej[ok] = bh(p[ok], q)
+    return rej
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--trait", required=True, choices=sorted(TRAITS))
@@ -110,6 +147,8 @@ def main() -> None:
     ap.add_argument("--controls", type=int, default=20)
     ap.add_argument("--q", type=float, default=0.1)
     ap.add_argument("--seed", type=int, default=11)
+    ap.add_argument("--loss", help="gene-loss status matrix from scripts/toga_loss_matrix.py")
+    ap.add_argument("--loss-states", default="L,UL", help="TOGA classes counted as lost")
     args = ap.parse_args()
     out = Path(args.out or ROOT / "results" / f"{args.trait}_toga")
     is_trait, is_excluded, genes_of_interest = TRAITS[args.trait]
@@ -137,28 +176,53 @@ def main() -> None:
 
     t0 = time.time()
     Sig = [learn_covariance_missing(X[:, l]) for l in range(3)]
-    p_final = final_test(X, Sig, origin)
+    p_rate = final_test(X, Sig, origin)
     z = np.column_stack([gls_z_missing(X[:, l], Sig[l], fg[keep].astype(float)) for l in range(3)])
-    rej = bh(p_final, args.q)
-    print(f"{args.trait}: {rej.sum()} genes at q = {args.q} ({time.time() - t0:.0f}s)", flush=True)
+    res = pd.DataFrame({"gene": genes, "symbol": symbols, "p_rate": p_rate,
+                        **{f"z_{n}": z[:, i] for i, n in enumerate(LAYERS)}})
+    res = res.drop_duplicates("symbol")
+    tip_origin = origin_index(tree, trait)[: tree.n_tips]
+    if args.loss:
+        lost_states = args.loss_states.split(",")
+        loss_sym, Yl = loss_data(args.loss, names, lost_states)
+        Sig_l = learn_covariance_missing(Yl)
+        p_loss = leave_one_origin_out_p_missing(Yl, Sig_l, tip_origin)
+        z_loss = gls_z_missing(Yl, Sig_l, trait.astype(float))
+        lost_in = [";".join(np.array(names)[(row == 1) & trait]) for row in Yl]
+        loss = pd.DataFrame({"symbol": loss_sym, "p_loss": p_loss, "z_loss": z_loss,
+                             "trait_species_lost": lost_in,
+                             "n_lost_trait": ((Yl == 1) & trait).sum(1), "n_lost_other": ((Yl == 1) & ~trait).sum(1)})
+        res = res.merge(loss, on="symbol", how="outer")
+        print(f"loss layer: {len(loss_sym)} testable genes (lost = {'+'.join(lost_states)})", flush=True)
+    else:
+        res["p_loss"] = np.nan
+    res["p_final"] = combine(res.p_rate.to_numpy(), res.p_loss.to_numpy())
+    for col in ("p_rate", "p_loss", "p_final"):
+        rej_c = bh_nan(res[col].to_numpy(), args.q)
+        res[col.replace("p_", "call_")] = rej_c
+        print(f"{args.trait}: {rej_c.sum()} genes at q = {args.q} [{col[2:]}]", flush=True)
+    print(f"({time.time() - t0:.0f}s)", flush=True)
+    rej = res.call_final.to_numpy()
 
-    # signatures: genome-wide cross-layer null correlation from all genes' z-scores
-    zc = np.nan_to_num(z)
+    # signatures: rate layers (+ loss) z-scores, genome-wide null correlation from all genes
+    lay = list(LAYERS) + (["loss"] if args.loss else [])
+    zc = np.nan_to_num(res[[f"z_{n}" for n in lay]].to_numpy())
     R = np.corrcoef(zc.T)
-    sig = fit_signatures(zc, np.broadcast_to(R, (len(zc), 3, 3)).copy(), list(LAYERS))
+    sig = fit_signatures(zc, np.broadcast_to(R, (len(zc), len(lay), len(lay))).copy(), lay)
     active = pattern_active(sig)
-    res = pd.DataFrame({"gene": genes, "symbol": symbols, "p_final": p_final,
-                        "q_final": st.false_discovery_control(np.clip(p_final, 1e-300, 1)),
-                        **{f"z_{n}": z[:, i] for i, n in enumerate(LAYERS)},
-                        "signature": ["+".join(n for n, a in zip(LAYERS, row) if a) for row in active]})
+    res["signature"] = ["+".join(n for n, a in zip(lay, row) if a) for row in active]
     res.loc[~rej, "signature"] = ""
-    res.sort_values("p_final").to_csv(out / f"{args.trait}_genes.csv", index=False)
+    res = res.sort_values("p_final")
+    res.to_csv(out / f"{args.trait}_genes.csv", index=False)
     pd.Series({"_".join(n.split(":")[0:1]) + str(i): float(w) for i, ((n, _), w) in
                enumerate(zip(sig.patterns, sig.pattern_weights))}).to_csv(out / "signature_patterns.csv")
+    show = ["symbol", "p_rate", "p_loss", "p_final"] + [f"z_{n}" for n in lay] + \
+           (["n_lost_trait", "n_lost_other"] if args.loss else []) + ["signature"]
+    fmt = dict(index=False, float_format=lambda v: f"{v:.3g}")
     print("\nGenes of interest:")
-    print(res[res.symbol.isin(genes_of_interest)].sort_values("p_final").to_string(index=False, float_format=lambda v: f"{v:.3g}"))
-    print("\nTop 20:")
-    print(res.sort_values("p_final").head(20).to_string(index=False, float_format=lambda v: f"{v:.3g}"))
+    print(res[res.symbol.isin(genes_of_interest)][show].to_string(**fmt))
+    print("\nTop 30:")
+    print(res[show].head(30).to_string(**fmt))
 
     # calibration on matched control trait sets
     ctrl = matched_clade_permute(tree, origins, 10 * args.controls, rng, exclude=trait | excluded, size_tol=1)
@@ -169,19 +233,35 @@ def main() -> None:
         tips = np.array([D[np.nonzero(c)[0], t].any() for t in range(tree.n_tips)])
         if len(origin_nodes(tree, tips)) != len(origins):
             continue
-        oc = origin_index(tree, tips)[keep]
-        pc = final_test(X, Sig, oc)
-        rows.append(dict(control=len(rows), calls=int(bh(pc, args.q).sum()), min_p=float(pc.min()),
-                         species=";".join(n for n, t in zip(names, tips) if t)))
-        print(f"control {len(rows)}: {rows[-1]['calls']} calls", flush=True)
+        oc = origin_index(tree, tips)
+        pr = pd.Series(final_test(X, Sig, oc[keep]), index=symbols)
+        pr = pr[~pr.index.duplicated()]
+        row = dict(control=len(rows), calls_rate=int(bh(pr.to_numpy(), args.q).sum()), min_p_rate=float(pr.min()))
+        if args.loss:
+            pl = pd.Series(leave_one_origin_out_p_missing(Yl, Sig_l, oc[: tree.n_tips]), index=loss_sym)
+            u = pr.index.union(pl.index)
+            pf = combine(pr.reindex(u).to_numpy(), pl.reindex(u).to_numpy())
+            row.update(calls_loss=int(bh(pl.to_numpy(), args.q).sum()), min_p_loss=float(pl.min()),
+                       calls_final=int(bh_nan(pf, args.q).sum()))
+        else:
+            row["calls_final"] = row["calls_rate"]
+        row["species"] = ";".join(n for n, t in zip(names, tips) if t)
+        rows.append(row)
+        print(f"control {len(rows)}: " + ", ".join(f"{k} {v}" for k, v in row.items() if k.startswith("calls")),
+              flush=True)
         pd.DataFrame(rows).to_csv(out / "control_calls.csv", index=False)
         if len(rows) == args.controls:
             break
     cc = pd.DataFrame(rows)
     summary = dict(trait=args.trait, genes=len(genes), species=tree.n_tips, trait_species=int(trait.sum()),
-                   origins=len(origins), calls=int(rej.sum()), control_sets=len(cc),
-                   control_mean_calls=float(cc.calls.mean()) if len(cc) else None,
-                   control_sets_with_any_call=float((cc.calls > 0).mean()) if len(cc) else None)
+                   origins=len(origins), loss_states=args.loss_states if args.loss else None,
+                   control_sets=len(cc))
+    for k in ("rate", "loss", "final"):
+        if f"call_{k}" in res and (k != "loss" or args.loss):
+            summary[f"calls_{k}"] = int(res[f"call_{k}"].sum())
+        if f"calls_{k}" in cc:
+            summary[f"control_mean_calls_{k}"] = float(cc[f"calls_{k}"].mean())
+            summary[f"control_sets_with_any_call_{k}"] = float((cc[f"calls_{k}"] > 0).mean())
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary, indent=2))
 
