@@ -80,10 +80,14 @@ def _logpdf(z: np.ndarray, S: np.ndarray) -> np.ndarray:
                    + z.shape[1] * np.log(2 * np.pi))
 
 
-def fit_signatures(z: np.ndarray, R: np.ndarray, layer_names: list[str], n_patterns: int = 4,
+def fit_signatures(z: np.ndarray, R: np.ndarray, layer_names: list[str], n_patterns: int | None = None,
                    scales=(1.0, 2.0, 3.0, 5.0, 8.0, 12.0, 20.0, 30.0), null_prior: float = 10.0,
                    n_iter: int = 300, tol: float = 1e-7) -> SignatureFit:
     G, L = z.shape
+    if n_patterns is None:
+        # fixed in advance: one learned direction per possible non-empty layer pattern;
+        # EM shrinks unused ones (BIC under-selects, as ~98% of genes are null)
+        n_patterns = 2 ** L - 1
     patterns: list[tuple[str, np.ndarray]] = []
     for cfg in itertools.product([0, 1], repeat=L):
         if any(cfg):
