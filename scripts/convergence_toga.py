@@ -26,7 +26,12 @@ Pipeline (as validated on simulations):
           poor assembly with many spurious losses is down-weighted), and the same
           leave-one-origin-out test, so a loss counts as convergent only if it is shared by
           at least two independent origins. Genes need >= 2 lost and >= 2 intact species
-          (a filter blind to the trait). Rate and loss evidence are combined by ACAT.
+          (a filter blind to the trait). The GLS p-value is not calibrated for 0/1 data
+          (clade-inherited losses; 60% of marine control sets had calls), so the loss
+          p-value is empirical: the gene's leave-one-origin-out statistic is ranked against
+          the same statistic for all genes with a similar number of losses on --loss-null
+          matched control trait sets, which are disjoint from the control sets used to
+          check calibration. Rate and loss evidence are combined by ACAT.
   signatures  mash-style model with learned directions on pooled per-layer z-scores
   calibration the same test on control trait sets (clades without the trait, matched to the
           origins in size and age); every call for a control set is false
@@ -118,6 +123,33 @@ def loss_data(path, names, lost_states):
     return m.index[ok].to_numpy(), Y[ok]
 
 
+LOSS_BINS = np.array([2, 3, 4, 5, 7, 10, 15, 25, 40, 60])
+
+
+def loss_strata(Y):
+    """Stratum of each gene by its number of lost species (the null spread depends on it)."""
+    return np.searchsorted(LOSS_BINS, (Y == 1).sum(1), side="right") - 1
+
+
+def loss_stat(Y, Sig, tip_origin):
+    """-log of the leave-one-origin-out GLS p-value (0 when untestable)."""
+    return -np.log(np.clip(leave_one_origin_out_p_missing(Y, Sig, tip_origin), 1e-300, 1))
+
+
+def empirical_p(stat, null, strata):
+    """P(null statistic >= observed) within each stratum, pooling genes and null sets.
+
+    null: (K, G) statistics on K control trait sets; p = (1 + #exceed) / (1 + #null).
+    """
+    p = np.ones(len(stat))
+    for k in np.unique(strata):
+        g = strata == k
+        pool = np.sort(null[:, g].ravel())
+        exceed = len(pool) - np.searchsorted(pool, stat[g], side="left")
+        p[g] = (1 + exceed) / (1 + len(pool))
+    return p
+
+
 def combine(p_rate, p_loss):
     """ACAT of the rate and loss p-values where both exist, else whichever exists.
 
@@ -154,6 +186,8 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=11)
     ap.add_argument("--loss", help="gene-loss status matrix from scripts/toga_loss_matrix.py")
     ap.add_argument("--loss-states", default="L,UL", help="TOGA classes counted as lost")
+    ap.add_argument("--loss-null", type=int, default=200,
+                    help="control trait sets used to calibrate the loss layer (disjoint from --controls)")
     args = ap.parse_args()
     out = Path(args.out or ROOT / "results" / f"{args.trait}_toga")
     is_trait, is_excluded, genes_of_interest = TRAITS[args.trait]
@@ -179,6 +213,20 @@ def main() -> None:
           flush=True)
     (out / "trait_species.txt").write_text("\n".join(n for n, t in zip(names, trait) if t) + "\n")
 
+    # matched control trait sets: the first --controls check calibration, the rest calibrate
+    # the loss layer
+    D = tree.tip_sets()
+    cand = np.unique(matched_clade_permute(tree, origins, 10 * (args.controls + args.loss_null), rng,
+                                           exclude=trait | excluded, size_tol=1), axis=0)
+    ctrl_tips = []
+    for c in cand[rng.permutation(len(cand))]:
+        tips = np.array([D[np.nonzero(c)[0], t].any() for t in range(tree.n_tips)])
+        if len(origin_nodes(tree, tips)) == len(origins):
+            ctrl_tips.append(tips)
+    eval_tips, null_tips = ctrl_tips[: args.controls], ctrl_tips[args.controls: args.controls + args.loss_null]
+    print(f"control trait sets: {len(eval_tips)} for checking, {len(null_tips)} for loss calibration",
+          flush=True)
+
     t0 = time.time()
     Sig = [learn_covariance_missing(X[:, l]) for l in range(3)]
     p_rate = final_test(X, Sig, origin)
@@ -191,10 +239,13 @@ def main() -> None:
         lost_states = args.loss_states.split(",")
         loss_sym, Yl = loss_data(args.loss, names, lost_states)
         Sig_l = learn_covariance_missing(Yl)
-        p_loss = leave_one_origin_out_p_missing(Yl, Sig_l, tip_origin)
+        strata = loss_strata(Yl)
+        null = np.array([loss_stat(Yl, Sig_l, origin_index(tree, tips)[: tree.n_tips]) for tips in null_tips])
+        p_loss_gls = np.exp(-loss_stat(Yl, Sig_l, tip_origin))
+        p_loss = empirical_p(-np.log(p_loss_gls), null, strata)
         z_loss = gls_z_missing(Yl, Sig_l, trait.astype(float))
         lost_in = [";".join(np.array(names)[(row == 1) & trait]) for row in Yl]
-        loss = pd.DataFrame({"symbol": loss_sym, "p_loss": p_loss, "z_loss": z_loss,
+        loss = pd.DataFrame({"symbol": loss_sym, "p_loss": p_loss, "p_loss_gls": p_loss_gls, "z_loss": z_loss,
                              "trait_species_lost": lost_in,
                              "n_lost_trait": ((Yl == 1) & trait).sum(1), "n_lost_other": ((Yl == 1) & ~trait).sum(1)})
         res = res.merge(loss, on="symbol", how="outer")
@@ -229,21 +280,15 @@ def main() -> None:
     print("\nTop 30:")
     print(res[show].head(30).to_string(**fmt))
 
-    # calibration on matched control trait sets
-    ctrl = matched_clade_permute(tree, origins, 10 * args.controls, rng, exclude=trait | excluded, size_tol=1)
-    ctrl = np.unique(ctrl, axis=0)
-    D = tree.tip_sets()
+    # calibration check on matched control trait sets (never used to calibrate)
     rows = []
-    for c in ctrl:
-        tips = np.array([D[np.nonzero(c)[0], t].any() for t in range(tree.n_tips)])
-        if len(origin_nodes(tree, tips)) != len(origins):
-            continue
+    for tips in eval_tips:
         oc = origin_index(tree, tips)
         pr = pd.Series(final_test(X, Sig, oc[keep]), index=symbols)
         pr = pr[~pr.index.duplicated()]
         row = dict(control=len(rows), calls_rate=int(bh(pr.to_numpy(), args.q).sum()), min_p_rate=float(pr.min()))
         if args.loss:
-            pl = pd.Series(leave_one_origin_out_p_missing(Yl, Sig_l, oc[: tree.n_tips]), index=loss_sym)
+            pl = pd.Series(empirical_p(loss_stat(Yl, Sig_l, oc[: tree.n_tips]), null, strata), index=loss_sym)
             u = pr.index.union(pl.index)
             pf = combine(pr.reindex(u).to_numpy(), pl.reindex(u).to_numpy())
             row.update(calls_loss=int(bh(pl.to_numpy(), args.q).sum()), min_p_loss=float(pl.min()),
@@ -255,8 +300,6 @@ def main() -> None:
         print(f"control {len(rows)}: " + ", ".join(f"{k} {v}" for k, v in row.items() if k.startswith("calls")),
               flush=True)
         pd.DataFrame(rows).to_csv(out / "control_calls.csv", index=False)
-        if len(rows) == args.controls:
-            break
     cc = pd.DataFrame(rows)
     summary = dict(trait=args.trait, genes=len(genes), species=tree.n_tips, trait_species=int(trait.sum()),
                    origins=len(origins), loss_states=args.loss_states if args.loss else None,
