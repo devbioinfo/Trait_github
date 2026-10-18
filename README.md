@@ -355,6 +355,25 @@ Calibration: 20 control trait sets matched to the three origins in size and age
 * Next: traits with more origins (secondary aquatic adaptation, hypoxia tolerance) and a
   site-level convergent-substitution layer.
 
+## Marine adaptation on Zoonomia / TOGA (101 species, preliminary)
+
+Same data and pipeline as the echolocation analysis (`scripts/convergence_toga.py --trait marine`,
+results in `results/marine_toga/`). Trait: Cetacea, Pinnipedia (walrus, sea lion, monk seal) and
+the manatee; 16 species, 3 origins, 29 foreground branches. Hippopotamus and giant otter
+(semi-aquatic) are kept out of the 20 control trait sets.
+
+* No gene at q = 0.1; control sets: 0 calls in all 20.
+* Strongest gene: MYH13 (extraocular/superfast muscle myosin), p = 2.6e-5, q = 0.41, with
+  z = 5-6.6 in all three layers. The top 20 are rich in epidermis genes (TGM3, TGM7, DSC1,
+  KRTDAP, CALML3, ITGB4) and muscle glycogen/contraction genes (PYGM, PHKG1, MYOF); all are
+  nominal only.
+* The best-known marine gene losses (PON1, MMP12, KLK8, F12, MTNR1A, DSG4, SLC6A18) cannot be
+  tested by a rate test: they have no intact 1:1 ortholog in most or all cetaceans, so those
+  foreground branches are missing; MTNR1B, AANAT, ASMT, POLM, NAT16 and TAS1R1-3 failed the
+  80%-of-species filter altogether. Convergent loss needs its own layer (presence/absence).
+* A 105-species run with 6 aquatic origins (adds elephant seal, Weddell seal, beaver, muskrat;
+  `results/toga/species_aquatic.tsv`) is in progress.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,

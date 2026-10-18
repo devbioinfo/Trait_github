@@ -1,0 +1,11 @@
+{
+  "trait": "marine",
+  "genes": 15757,
+  "species": 101,
+  "trait_species": 16,
+  "origins": 3,
+  "calls": 0,
+  "control_sets": 20,
+  "control_mean_calls": 0.0,
+  "control_sets_with_any_call": 0.0
+}
