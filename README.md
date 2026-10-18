@@ -398,6 +398,26 @@ with the same species-level GLS and leave-one-origin-out test.
 * Known marine losses recovered: PON1, KLK8, TAAR5, TAS2R1 and olfactory receptors;
   nominal: MMP12 (p = 0.004), GSDMA, TAS1R1-3, AANAT, ASMT.
 
+### 105-species runs (5 pinnipeds; beaver and muskrat added)
+
+| Trait | Species / origins | Rate calls | Loss calls | Combined calls | Control sets: mean combined calls |
+|---|---|---|---|---|---|
+| Marine (101 species) | 16 / 3 | 0 | 14 | 6 | 0.05 |
+| Marine (105 species) | 18 / 3 | 0 | 1 (ANKRD23) | 0 | 0 |
+| Aquatic (105 species) | 20 / 5 | 0 | 0 | 0 | 0 |
+
+* All runs are calibrated (rate layers: 0 false calls in every control set).
+* The same genes lead in every run (PON1, KLK8, ANKRD23, MYH13, TAAR5, MYBPHL, GSDMA,
+  taste and olfactory receptors), but the 105-species marine p-values are weaker: PON1
+  (lost in all 16 marine species with data, in no other) has GLS p = 6e-10 but empirical
+  p = 1.7e-4. Only 142 distinct matched control sets exist for this species set (200 for
+  the 101-species set), and they share clades, so a few clade-specific losses recur across
+  many null sets and fatten the pooled null tail. The empirical null is valid but
+  conservative; a simulation-based null for gene loss is the planned fix.
+* Aquatic: beaver and muskrat do not share the marine losses (PON1 and KLK8 are intact in
+  both), so adding them dilutes the cross-origin signal: the convergent losses are
+  specific to fully marine lineages.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,

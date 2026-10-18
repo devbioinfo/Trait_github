@@ -1,0 +1,18 @@
+{
+  "trait": "aquatic",
+  "genes": 15778,
+  "species": 105,
+  "trait_species": 20,
+  "origins": 5,
+  "loss_states": "L,UL",
+  "control_sets": 20,
+  "calls_rate": 0,
+  "control_mean_calls_rate": 0.0,
+  "control_sets_with_any_call_rate": 0.0,
+  "calls_loss": 0,
+  "control_mean_calls_loss": 0.0,
+  "control_sets_with_any_call_loss": 0.0,
+  "calls_final": 0,
+  "control_mean_calls_final": 0.0,
+  "control_sets_with_any_call_final": 0.0
+}
