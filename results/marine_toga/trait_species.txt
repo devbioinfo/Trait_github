@@ -1,0 +1,16 @@
+Eubalaena_japonica
+Eschrichtius_robustus
+Balaenoptera_bonaerensis
+Kogia_breviceps
+Mesoplodon_bidens
+Inia_geoffrensis
+Lipotes_vexillifer
+Phocoena_phocoena
+Delphinapterus_leucas
+Monodon_monoceros
+Tursiops_truncatus
+Orcinus_orca
+Zalophus_californianus
+Odobenus_rosmarus
+Neomonachus_schauinslandi
+Trichechus_manatus
