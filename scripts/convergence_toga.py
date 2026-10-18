@@ -119,11 +119,16 @@ def loss_data(path, names, lost_states):
 
 
 def combine(p_rate, p_loss):
-    """ACAT of the rate and loss p-values where both exist, else whichever exists."""
+    """ACAT of the rate and loss p-values where both exist, else whichever exists.
+
+    Inputs are capped at 0.99: a Cauchy term for p -> 1 tends to -infinity and would cancel
+    any evidence in the other layer (e.g. a gene lost in the trait lineages has no rate data
+    there, so its leave-one-origin-out rate p-value is 1).
+    """
     P = np.column_stack([p_rate, p_loss])
     out = np.full(len(P), np.nan)
     both = ~np.isnan(P).any(1)
-    out[both] = acat(np.clip(P[both], 1e-300, 1 - 1e-12))
+    out[both] = acat(np.clip(P[both], 1e-300, 0.99))
     one = ~both & ~np.isnan(P).all(1)
     out[one] = np.nanmin(P[one], 1)
     return out
