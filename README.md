@@ -269,6 +269,38 @@ FDR with 2% convergent genes:
   without confounding because per-gene null moments come from a limited pool of clades.
   The manuscript should also compare against RERconverge itself.
 
+## Head-to-head comparison with RERconverge
+
+`scripts/rerconverge_compare.py` + `scripts/run_rerconverge.R`; rows
+`results/rerconverge_compare.csv`. RERconverge 0.3.0 (github.com/nclark-lab/RERconverge,
+commit 682ac34) with `scripts/rerconverge_no_ggtree.patch` (ggtree made optional; it is
+used only for plotting). Settings: `getAllResiduals(transform = "sqrt", norm = "scale")`,
+`foreground2Tree(clade = "all")`, `correlateWithBinaryPhenotype(weighted = "auto")`;
+binary permulations (`getPermsBinary`, permmode "cc", inputs from
+`getBinaryPermulationInputsFromTree`) with 1,000 permulations on the 150 genes with the
+smallest parametric P (other genes treated as not significant). Same AliSim genomes as the
+final pipeline: 1 Yule tree of 200 species, 5 origins, 3,000 genes; confounding 0 / 1 / 2;
+a null genome and a genome with 2% convergent genes (moderate effect).
+
+| Method | False calls, null genome (conf 0 / 1 / 2) | FDR, 2% convergent (target 0.10) | Power |
+|---|---|---|---|
+| RERconverge, nucleotide trees | 0 / 37 / 119 | 0.07 / 0.54 / 0.75 | 0.65 / 0.67 / 0.60 |
+| RERconverge, protein trees | 0 / 28 / 78 | 0.00 / 0.43 / 0.61 | 0.93 / 0.87 / 0.82 |
+| RERconverge, protein + permulations | 0 / 0 / 0 | 0.39 / 0.39 / 0.33 | 0.93 / 0.72 / 0.60 |
+| **Final pipeline** | **0 / 0 / 0** | **0.00 / 0.00 / 0.00** | **0.87 / 0.72 / 0.65** |
+
+* Without lineage-specific rate jumps (confounding 0), RERconverge on protein trees is
+  calibrated and slightly more powerful than the final pipeline (0.93 vs 0.87).
+* With rate jumps, parametric RERconverge loses FDR control (0.43-0.61).
+* Permulations removed all false calls on the null genomes, but on the convergent genomes
+  18-35 null genes were called (FDR 0.33-0.39). This needs checking before it is
+  reported (see caveats): it may reflect the candidate-only permulation design rather
+  than permulations themselves.
+* The final pipeline made no false calls in any of the six genomes.
+
+Caveats: one tree only; permulations restricted to 150 candidates for run time
+(about 1 s per permulation at 200 species on 4 cores).
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,
