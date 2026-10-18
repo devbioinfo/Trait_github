@@ -238,6 +238,8 @@ def main() -> None:
                          "(disjoint from --controls)")
     ap.add_argument("--loss-sims", type=int, default=100, help="sim mode: simulated replicates")
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--resume", action="store_true",
+                    help="keep control sets already in <out>/control_calls.csv (same seed) and run the rest")
     args = ap.parse_args()
     out = Path(args.out or ROOT / "results" / f"{args.trait}_toga")
     is_trait, is_excluded, genes_of_interest = TRAITS[args.trait]
@@ -346,7 +348,10 @@ def main() -> None:
 
     # calibration check on matched control trait sets (never used to calibrate)
     rows = []
-    for tips in eval_tips:
+    if args.resume and (out / "control_calls.csv").exists():
+        rows = pd.read_csv(out / "control_calls.csv").to_dict("records")
+        print(f"resuming after {len(rows)} control sets", flush=True)
+    for tips in eval_tips[len(rows):]:
         oc = origin_index(tree, tips)
         pr = pd.Series(final_test(X, Sig, oc[keep]), index=symbols)
         pr = pr[~pr.index.duplicated()]
