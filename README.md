@@ -206,6 +206,36 @@ false calls per null genome); learned-covariance GLS without leave-one-origin-ou
 * Implication: echolocation (2-4 origins) is feasible for selection-type convergence;
   aquatic and high-altitude adaptation (more origins) give power for rate shifts too.
 
+### Convergence signatures: which layers converged
+
+Detection uses the final test above. To describe *how* each detected gene converged,
+`mlconv/signatures.py` fits a mash-style mixture (Urbut et al. 2019) to the per-layer
+GLS z-scores: canonical on/off patterns plus directions learned from the strongest
+genes, effect scales up to z = 30, weights by EM. Each gene is assigned its most
+probable pattern; a learned direction marks a layer active when its loading exceeds 0.3.
+The number of learned directions is fixed in advance at 2^L - 1 (7 for three layers);
+BIC under-selects because about 98% of genes are null.
+
+Evaluation (`scripts/signature_eval.py`, output `results/signatures/evaluation.txt`):
+200 species, 5 origins, 3,000 genes, 2% convergent. Tree B was generated after the
+rule was fixed and was not used for any tuning.
+
+| Method | Tree A | Tree B (blind) |
+|---|---|---|
+| **Learned directions (k = 2^L - 1)** | **0.90** | **0.98** |
+| Per-layer rule, p < 0.05 | 0.78 | 0.86 |
+| EBCM (on/off configurations, wide effect grid) | 0.80 | 0.42 |
+
+Exact accuracy = share of correctly detected convergent genes whose predicted set of
+active layers equals the set implied by the simulation (selection shift: protein rate +
+selection proxy; rate shift: nucleotide + protein rate; both: all three). Detection on
+both trees: 92 true, 0 false.
+
+Without being told the simulation, both trees learn the same three directions
+(nucleotide, protein, selection loadings): rate shift ≈ (0.84, 0.55, 0.0), selection
+shift ≈ (0.1, 0.55, 0.82), both ≈ (0.5, 0.65, 0.6). EBCM is unstable across trees and
+is no longer the default signature method.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,

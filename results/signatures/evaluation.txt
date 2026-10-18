@@ -1,0 +1,21 @@
+== treeA_z: 49 true detections, 0 false
+  learned directions (k = 2^L - 1): 0.90 (omega 0.95, rate 0.69, both 1.00)
+  EBCM, wide grid:                  0.80 (omega 0.77, rate 0.62, both 1.00)
+  per-layer rule p < 0.05:          0.78 (omega 0.68, rate 0.69, both 1.00)
+  learned directions with weight > 0.002:
+    0.0085  learned:rate_nucleotide=+0.84,rate_protein=+0.54,selection_proxy=+0.04
+    0.0058  learned:rate_nucleotide=+0.47,rate_protein=+0.64,selection_proxy=+0.60
+    0.0049  learned:rate_nucleotide=+0.06,rate_protein=+0.55,selection_proxy=+0.83
+    0.0042  learned:rate_nucleotide=+0.95,rate_protein=+0.28,selection_proxy=-0.12
+    0.0025  learned:rate_nucleotide=+0.23,rate_protein=+0.58,selection_proxy=+0.78
+== treeB_z: 43 true detections, 0 false
+  learned directions (k = 2^L - 1): 0.98 (omega 0.94, rate 1.00, both 1.00)
+  EBCM, wide grid:                  0.42 (omega 0.00, rate 0.00, both 1.00)
+  per-layer rule p < 0.05:          0.86 (omega 0.69, rate 0.89, both 1.00)
+  learned directions with weight > 0.002:
+    0.0063  learned:rate_nucleotide=+0.16,rate_protein=+0.56,selection_proxy=+0.81
+    0.0056  learned:rate_nucleotide=+0.51,rate_protein=+0.65,selection_proxy=+0.57
+    0.0049  learned:rate_nucleotide=+0.82,rate_protein=+0.57,selection_proxy=-0.04
+    0.0048  learned:rate_nucleotide=+0.85,rate_protein=+0.52,selection_proxy=+0.13
+    0.0048  learned:rate_nucleotide=-0.83,rate_protein=-0.55,selection_proxy=-0.05
+    0.0023  learned:rate_nucleotide=+0.41,rate_protein=+0.63,selection_proxy=+0.66
