@@ -10,7 +10,9 @@ Rules (fixed before looking at any convergence result):
   * a backbone of the best-covered species from each other mammalian group, up to the
     quota for that group.
 
-Usage: python -I scripts/toga_select_species.py coverage.tsv out_species.tsv
+Usage: python -I scripts/toga_select_species.py coverage.tsv out_species.tsv [min_cov] [extra]
+  extra: comma-separated species added on top of the quotas (e.g. the semi-aquatic and
+  additional marine species for the aquatic analysis)
 """
 import sys
 
@@ -26,7 +28,7 @@ QUOTAS = [  # (lineage keyword, maximum species)
 EXCLUDE = ("Soricidae", "Tenrecidae", "Solenodontidae")
 
 
-def main(cov_file: str, out_file: str, min_cov: float = 0.85) -> None:
+def main(cov_file: str, out_file: str, min_cov: float = 0.85, extra: str = "") -> None:
     d = pd.read_csv(cov_file, sep="\t")
     d = d[d.in_zoonomia_tree & (d.coverage >= min_cov)]
     d = d[~d.lineage.str.contains("|".join(EXCLUDE))]
@@ -35,6 +37,7 @@ def main(cov_file: str, out_file: str, min_cov: float = 0.85) -> None:
     for key, quota in QUOTAS:
         grp = d[d.lineage.str.contains(key) & ~d.species.isin(chosen)]
         chosen += grp.species.head(quota).tolist()
+    chosen += [sp for sp in extra.split(",") if sp]
     chosen = list(dict.fromkeys(chosen))
     best = d.set_index("species").assembly                 # highest-coverage assembly per species
     with open(out_file, "w") as fh:                        # "species<TAB>assembly" (human = REFERENCE)
@@ -47,4 +50,4 @@ def main(cov_file: str, out_file: str, min_cov: float = 0.85) -> None:
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], *(float(a) for a in sys.argv[3:4]))
+    main(sys.argv[1], sys.argv[2], *(float(a) for a in sys.argv[3:4]), *sys.argv[4:5])

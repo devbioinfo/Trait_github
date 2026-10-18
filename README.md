@@ -337,7 +337,7 @@ per-gene branch lengths on the pruned Zoonomia tree with IQ-TREE 2 (GTR+G4, LG+G
 4.9% of branch values are missing. Trait: echolocating bats (Rhinolophoidea,
 Yangochiroptera) and toothed whales, 25 species, 3 origins, 47 foreground branches.
 Calibration: 20 control trait sets matched to the three origins in size and age
-(`scripts/echolocation_toga.py`, results in `results/echolocation_toga/`).
+(`scripts/convergence_toga.py --trait echolocation`, results in `results/echolocation_toga/`).
 
 | | Calls (q = 0.1) | Smallest p |
 |---|---|---|
