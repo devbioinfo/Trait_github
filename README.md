@@ -325,8 +325,35 @@ clades matched to the echolocating origins in size and age; any call is false).
   (the naive test's 12 calls are well inside its control distribution). Expected: 761
   genes, 5 echolocating species in 2 origins, one layer, and none of the classic
   echolocation genes except CDH23 (final p = 0.40).
-* This pilot tests calibration on real data, not biology; the echolocation analysis
-  needs the full Zoonomia/TOGA data, which this environment's network policy blocks.
+* This pilot tests calibration on real data, not biology.
+
+## Echolocation on Zoonomia / TOGA (genome-wide)
+
+Data: TOGA multiple codon alignments (hg38 reference, 17,439 genes), 101 species chosen by
+fixed rules before any test (`scripts/toga_select_species.py`: all well-covered bats and
+cetaceans, a backbone from every other order, shrews/tenrecs/solenodons excluded);
+per-gene branch lengths on the pruned Zoonomia tree with IQ-TREE 2 (GTR+G4, LG+G4;
+`scripts/toga_branch_lengths.py`). 15,757 genes passed (>= 80% of species, >= 50 codons);
+4.9% of branch values are missing. Trait: echolocating bats (Rhinolophoidea,
+Yangochiroptera) and toothed whales, 25 species, 3 origins, 47 foreground branches.
+Calibration: 20 control trait sets matched to the three origins in size and age
+(`scripts/echolocation_toga.py`, results in `results/echolocation_toga/`).
+
+| | Calls (q = 0.1) | Smallest p |
+|---|---|---|
+| Echolocation | 0 | 0.0014 |
+| Control sets (20) | mean 0.2; 4 of 20 sets with one call | median 0.001 |
+
+* No gene shows genome-wide convergence in rates for echolocation. Prestin/SLC26A5:
+  p = 0.47. The 17 hearing genes present (MYO15A missing) are not enriched
+  (Mann-Whitney p = 0.40); the best are TMC1 (0.026) and LOXHD1 (0.029).
+* The echolocation top gene is weaker than the top gene of 14 of the 20 control sets.
+* With three origins the leave-one-origin-out test rests on two origins at a time, where
+  simulated power is lowest; the p-value distribution is skewed towards 1
+  (conservative). Prestin's reported convergence is at specific amino-acid sites, which
+  a whole-gene rate test is not designed to detect.
+* Next: traits with more origins (secondary aquatic adaptation, hypoxia tolerance) and a
+  site-level convergent-substitution layer.
 
 ## Roadmap to the manuscript
 

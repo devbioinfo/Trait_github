@@ -1,0 +1,10 @@
+{
+  "genes": 15757,
+  "species": 101,
+  "echolocating_species": 25,
+  "origins": 3,
+  "echolocation_calls": 0,
+  "control_sets": 20,
+  "control_mean_calls": 0.2,
+  "control_sets_with_any_call": 0.2
+}
