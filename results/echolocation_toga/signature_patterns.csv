@@ -1,0 +1,15 @@
+,0
+selection_proxy0,0.00017423236686654972
+rate_protein1,8e-12
+rate_protein+selection_proxy2,8e-12
+rate_nucleotide3,0.006162806965177091
+rate_nucleotide+selection_proxy4,1.4147868037551463e-09
+rate_nucleotide+rate_protein5,8e-12
+rate_nucleotide+rate_protein+selection_proxy6,8e-12
+learned7,0.0021359575208039203
+learned8,0.009133173566420717
+learned9,0.0026548829963933002
+learned10,0.008187376269860387
+learned11,0.023597684687981763
+learned12,0.00010157277021651929
+learned13,0.0018710492338305925
