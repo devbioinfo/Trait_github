@@ -22,11 +22,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
 
-import numpy as np
+# many small (~200 x 200) factorisations: multithreaded BLAS only adds overhead, and is ~200x
+# slower when other jobs share the CPU
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
+
+import numpy as np  # noqa: E402
 import pandas as pd
 from scipy import stats as st
 
