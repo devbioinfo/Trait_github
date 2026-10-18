@@ -4,8 +4,15 @@
   "species": 101,
   "trait_species": 16,
   "origins": 3,
-  "calls": 0,
+  "loss_states": "L,UL",
   "control_sets": 20,
-  "control_mean_calls": 0.0,
-  "control_sets_with_any_call": 0.0
+  "calls_rate": 0,
+  "control_mean_calls_rate": 0.0,
+  "control_sets_with_any_call_rate": 0.0,
+  "calls_loss": 14,
+  "control_mean_calls_loss": 0.25,
+  "control_sets_with_any_call_loss": 0.2,
+  "calls_final": 6,
+  "control_mean_calls_final": 0.05,
+  "control_sets_with_any_call_final": 0.05
 }

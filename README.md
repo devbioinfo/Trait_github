@@ -374,6 +374,30 @@ the manatee; 16 species, 3 origins, 29 foreground branches. Hippopotamus and gia
 * A 105-species run with 6 aquatic origins (adds elephant seal, Weddell seal, beaver, muskrat;
   `results/toga/species_aquatic.tsv`) is in progress.
 
+### Gene-loss layer (marine, 101 species)
+
+`scripts/toga_loss_matrix.py` builds a gene x species status matrix from TOGA's ortholog
+classification (`results/toga/loss_status_aquatic.tsv.gz`; 19,457 genes, 105 species);
+`convergence_toga.py --loss` tests convergent loss (lost = L and UL; 11,815 testable genes)
+with the same species-level GLS and leave-one-origin-out test.
+
+* The raw GLS p-value is anticonservative on 0/1 data: 20 marine control sets averaged
+  5.1 false loss calls and 60% had at least one. Loss p-values are therefore calibrated
+  empirically against 200 matched control trait sets (stratified by number of lost
+  species), and checked on 20 further control sets that the calibration never sees.
+
+| Layer | Marine calls (q = 0.1) | Control sets: mean calls | with any call |
+|---|---|---|---|
+| Rate (3 layers) | 0 | 0 | 0% |
+| Loss (calibrated) | 14 | 0.25 | 20% |
+| Combined (rate + loss, ACAT) | 6 | 0.05 | 5% |
+
+* Combined calls: PON1 (lost in all 15 marine species with data, in no other species),
+  TAAR5, HTRA4, MYH13 (signal in all four layers), ANKRD23, OR51A7. Loss calls add
+  TAS2R1, KLK8, GBA3, SULT6B1, OR51I2, MYBPHL, GLYATL3, ATP13A5.
+* Known marine losses recovered: PON1, KLK8, TAAR5, TAS2R1 and olfactory receptors;
+  nominal: MMP12 (p = 0.004), GSDMA, TAS1R1-3, AANAT, ASMT.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,
