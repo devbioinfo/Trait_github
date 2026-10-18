@@ -1,0 +1,25 @@
+diff --git a/DESCRIPTION b/DESCRIPTION
+index a05659b..db1fba1 100644
+--- a/DESCRIPTION
++++ b/DESCRIPTION
+@@ -9,6 +9,6 @@ License: GNU General Public License v3.0
+ Encoding: UTF-8
+ LazyData: true
+ RoxygenNote: 7.3.2
+-Depends: RColorBrewer, gplots,  phytools, geiger, knitr, Rcpp, RcppArmadillo, weights, phangorn, ggplot2, dplyr, FSA, castor, Matrix, TreeTools, progress, impute, ggtree
++Depends: RColorBrewer, gplots,  phytools, geiger, knitr, Rcpp, RcppArmadillo, weights, phangorn, ggplot2, dplyr, FSA, castor, Matrix, TreeTools, progress, impute
+ Imports: Rcpp (>= 0.11.0), ape
+ LinkingTo: Rcpp, RcppArmadillo, ape
+diff --git a/R/plottingFuncs.R b/R/plottingFuncs.R
+index a9deed4..b5b8562 100644
+--- a/R/plottingFuncs.R
++++ b/R/plottingFuncs.R
+@@ -10,7 +10,7 @@
+ 
+ require(dplyr)
+ require(ggplot2)
+-require(ggtree)
++# require(ggtree)  # optional: plotting only (removed for headless install)
+ require(ape)
+ 
+ if(F){
