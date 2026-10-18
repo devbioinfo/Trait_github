@@ -236,6 +236,39 @@ Without being told the simulation, both trees learn the same three directions
 shift ≈ (0.1, 0.55, 0.82), both ≈ (0.5, 0.65, 0.6). EBCM is unstable across trees and
 is no longer the default signature method.
 
+## Manuscript benchmark (Figure 2)
+
+`scripts/final_benchmark.py`; figure `results/fig_final_benchmark.png`; rows
+`results/final_benchmark.csv`. AliSim codon data, 3 Yule trees of 200 species, 5 origins
+(4-12 species each), 3,000 genes, 2% convergent; confounding 0/1/2; effect sizes weak
+(ω x1.5, rate x1.2), moderate (x2, x1.35), strong (x3, x1.5). Paired design: per tree and
+confounding level one null genome, convergent genes swapped in per effect size.
+
+False calls on a genome with no convergence (BH q = 0.10, mean per genome) and realised
+FDR with 2% convergent genes:
+
+| Method | False calls, conf 0 / 1 / 2 | FDR, conf 0 / 1 / 2 | Power, weak / moderate / strong |
+|---|---|---|---|
+| Naive (RERconverge-style) | 0.3 / 216 / 401 | 0.08 / 0.83 / 0.90 | 0.44 / 0.63 / 0.66 |
+| Control-lineage permutation | 182 / 228 / 239 | 0.77 / 0.84 / 0.88 | 0.44 / 0.57 / 0.64 |
+| Naive, Fisher over layers | 13 / 311 / 497 | 0.25 / 0.82 / 0.88 | 0.88 / 0.97 / 0.99 |
+| Brownian phylo-LMM | 0 / 10 / 25 | 0.04 / 0.31 / 0.40 | 0.76 / 0.93 / 0.98 |
+| Learned-covariance GLS | 0 / 17 / 13 | 0.00 / 0.19 / 0.19 | 0.75 / 0.91 / 0.95 |
+| **GLS + leave-one-origin-out (final)** | **0 / 0 / 0.7** | **0.00 / 0.00 / 0.01** | **0.56 / 0.84 / 0.90** |
+
+* Only the final test keeps false discoveries below target at every confounding level;
+  it made at most 2 false calls in any of the 9 null genomes (most had none).
+* Power of the final test falls with confounding (0.89 / 0.74 / 0.67 at conf 0 / 1 / 2);
+  that is the price of rejecting single-lineage rate jumps.
+* By kind (final test, weak / moderate / strong): selection shift 0.56 / 0.95 / 1.00;
+  selection + rate 0.80 / 0.97 / 1.00; rate shift only 0.24 / 0.57 / 0.62.
+* Signature accuracy (exact pattern of active layers, detected genes): 0.76 / 0.87 / 0.94
+  (range over the 9 settings 0.47-0.90 / 0.53-0.98 / 0.88-0.98).
+* "Control-lineage permutation" is our implementation (Welch t standardised by 100
+  age-matched control foregrounds), not the RERconverge package; it is inflated even
+  without confounding because per-gene null moments come from a limited pool of clades.
+  The manuscript should also compare against RERconverge itself.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,
