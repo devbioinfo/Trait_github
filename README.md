@@ -418,6 +418,36 @@ with the same species-level GLS and leave-one-origin-out test.
   both), so adding them dilutes the cross-origin signal: the convergent losses are
   specific to fully marine lineages.
 
+### Simulation null for gene loss (marine, 105 species)
+
+`mlconv/loss.py`: each gene is lost along the species tree at its own rate and never
+regained (Dollo); each species reports intact genes as lost at its own false-loss rate
+(0.2-4%, estimated from losses seen in one species only); missing data are kept as
+observed. Loss rates are fitted by maximum likelihood (pruning, all genes at once). The
+test statistic on 100 simulated genomes, pooled within 10 bins of fitted loss rate, is the
+null; the far tail is extrapolated with a generalized Pareto fit. This replaces the
+control-set null, which was limited by the number of distinct control sets.
+
+| Loss null | Marine loss calls (q = 0.1) | Control sets: mean false calls | with any call |
+|---|---|---|---|
+| Control sets (142 available) | 1 | 0.15 | 10% |
+| **Simulation** | **53** | **0.05** | **5%** |
+
+* 53 convergent losses: PON1, ACSM4, ANKRD23, TGM7, GNAT3, TAS2R1, KLK8, MRGPRX2, GLYATL3,
+  TAAR5, MYBPHL, CCDC170, KRT10, PTGR1, ATP13A5, OR51A7, MYH13, SULT6B1, KRT79, OR9Q2,
+  OR2T1, OR5H15, OR5M9, TLE7, OR51D1, OR51B6, GBA3, OR5C1, GSDMA, OR5M3, HTRA4,
+  SERPINB12, SLC4A9, KRTAP24-1, KRT1, OR5H1, OR51G1, KIAA0513, TEAD1, MRPS9, MSS51, CRYZ,
+  RPL26, ANXA9, OR2K2, OR5H2, SLC5A4, OR51I2, OR51I1, TAS1R3, SLC25A45, OR5H14, RAET1E.
+* Themes: chemosensation (20 olfactory, taste and trace-amine receptor genes plus the
+  taste G protein GNAT3), epidermis (TGM7, KRT1, KRT10, KRT79, KRTAP24-1, SERPINB12,
+  GSDMA), known marine losses (PON1, KLK8, SLC4A9).
+* Several of the lowest-ranked calls (KIAA0513, TEAD1, MRPS9, CRYZ, RPL26) are lost in only
+  two marine species and nowhere else, more likely annotation errors than biology; at
+  q = 0.1 about five false calls are expected among 53.
+* The combined rate + loss test makes no call: it covers 19,208 genes and the rate
+  layer adds nothing for genes lost in the trait lineages, so the per-layer lists, each
+  with its own FDR and control check, are the ones to report.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,
