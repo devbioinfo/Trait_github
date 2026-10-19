@@ -73,7 +73,7 @@ from scipy import stats as st
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from mlconv.loss import false_loss_rates, fit_loss_rates, simulate_losses, tail_p  # noqa: E402
+from mlconv.loss import false_loss_rates, fit_loss_rates, gene_false_loss, simulate_losses, tail_p  # noqa: E402
 from mlconv.gls import gls_z_missing, learn_covariance_missing, leave_one_origin_out_p_missing  # noqa: E402
 from mlconv.signatures import fit_signatures, pattern_active  # noqa: E402
 from mlconv.stats import acat, bh  # noqa: E402
@@ -321,11 +321,13 @@ def main() -> None:
         Sig_l = learn_covariance_missing(Yl)
         p_loss_gls = np.exp(-loss_stat(Yl, Sig_l, tip_origin))
         if args.loss_null_mode == "sim":
-            lam = fit_loss_rates(tree, Yl, e_false)
+            lam, kappa = fit_loss_rates(tree, Yl, e_false)
+            print(f"loss model: fragility kappa > 1 for {np.mean(kappa > 1):.0%} of genes", flush=True)
             strata = np.searchsorted(np.quantile(lam, np.linspace(0, 1, 11)[1:-1]), lam, side="right")
             from multiprocessing import Pool
             sim_pool = Pool(args.workers, initializer=_sim_init,
-                            initargs=(dict(tree=tree, lam=lam, e=e_false, missing=np.isnan(Yl)),))
+                            initargs=(dict(tree=tree, lam=lam, e=gene_false_loss(e_false, kappa),
+                                          missing=np.isnan(Yl)),))
 
             def loss_p(tip_orig):
                 return sim_p(loss_stat(Yl, Sig_l, tip_orig), sim_null(sim_pool, tip_orig, args.loss_sims), strata)

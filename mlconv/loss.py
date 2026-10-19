@@ -3,11 +3,12 @@
 Model (per gene g, on the species tree with its branch lengths):
   * the gene is present at the root; along a branch of length t it is lost with
     probability 1 - exp(-lam_g t) and never regained (Dollo);
-  * an intact gene in species s is reported lost with probability e_s (assembly gaps,
-    annotation errors: a species-level false-loss rate shared by all genes);
+  * an intact gene in species s is reported lost with probability min(e_s kappa_g, 0.5):
+    e_s is a species-level false-loss rate (assembly gaps, annotation errors) and kappa_g a
+    gene-level fragility (long or hard-to-assemble genes are misannotated more often);
   * the observed missing-data pattern of the gene is kept as it is.
-lam_g is the maximum-likelihood rate on a log grid (pruning algorithm, all genes at once);
-e_s is estimated from losses seen in one species only. Data simulated from the fitted
+(lam_g, kappa_g) are maximum-likelihood values on a grid (pruning algorithm, all genes at
+once); e_s is estimated from losses seen in one species only. Data simulated from the fitted
 model contain no association with any trait but keep each gene's loss rate, the tree,
 species-specific noise and missingness, so the test statistic computed on them is a null
 that does not depend on how many distinct control trait sets the tree offers.
@@ -35,15 +36,20 @@ def false_loss_rates(Y: np.ndarray, floor: float = 1e-4) -> np.ndarray:
     return np.maximum(single.sum(0) / np.maximum(obs.sum(0), 1), floor)
 
 
+KAPPAS = np.array([1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0])
+
+
 def loss_loglik(tree: Tree, Y: np.ndarray, e: np.ndarray, lams: np.ndarray) -> np.ndarray:
-    """Log-likelihood (genes, grid) of the irreversible-loss model by pruning."""
+    """Log-likelihood (genes, grid) of the irreversible-loss model by pruning.
+    e: (species,) or (genes, species) false-loss probabilities."""
+    e = np.broadcast_to(e, Y.shape)
     G, N = Y.shape
     K = len(lams)
     lik = {}
     logscale = np.zeros((G, K))
     for t in range(N):
         y = Y[:, t]
-        l0 = np.where(np.isnan(y), 1.0, np.where(y == 1, e[t], 1 - e[t]))
+        l0 = np.where(np.isnan(y), 1.0, np.where(y == 1, e[:, t], 1 - e[:, t]))
         l1 = np.where(np.isnan(y), 1.0, np.where(y == 1, 1 - FALSE_INTACT, FALSE_INTACT))
         lik[t] = np.stack([np.repeat(l0[:, None], K, 1), np.repeat(l1[:, None], K, 1)], -1)
     for node in range(N, tree.n_nodes):
@@ -59,16 +65,27 @@ def loss_loglik(tree: Tree, Y: np.ndarray, e: np.ndarray, lams: np.ndarray) -> n
     return logscale + np.log(lik[tree.root][..., 0])                 # present at the root
 
 
-def fit_loss_rates(tree: Tree, Y: np.ndarray, e: np.ndarray, n_grid: int = 60) -> np.ndarray:
-    """Per-gene ML loss rate on a log grid spanning 0.01 to 100 losses per tree length."""
+def gene_false_loss(e: np.ndarray, kappa: np.ndarray) -> np.ndarray:
+    """(genes, species) false-loss probabilities e_s kappa_g, capped at 0.5."""
+    return np.minimum(np.outer(kappa, e), 0.5)
+
+
+def fit_loss_rates(tree: Tree, Y: np.ndarray, e: np.ndarray, n_grid: int = 60,
+                   kappas: np.ndarray = KAPPAS) -> tuple[np.ndarray, np.ndarray]:
+    """Per-gene ML (loss rate, fragility): rate on a log grid spanning 0.01 to 100 losses per
+    tree length, fragility on `kappas` (1 = the species' baseline false-loss rate)."""
     T = tree.length.sum()
     lams = np.logspace(np.log10(0.01 / T), np.log10(100 / T), n_grid)
-    return lams[loss_loglik(tree, Y, e, lams).argmax(1)]
+    ll = np.stack([loss_loglik(tree, Y, np.minimum(k * e, 0.5)[None], lams) for k in kappas], -1)
+    best = ll.reshape(len(Y), -1).argmax(1)
+    il, ik = np.unravel_index(best, (n_grid, len(kappas)))
+    return lams[il], kappas[ik]
 
 
 def simulate_losses(tree: Tree, lam: np.ndarray, e: np.ndarray, missing: np.ndarray,
                     rng: np.random.Generator) -> np.ndarray:
-    """One replicate (genes, species): 1 lost, 0 intact, NaN where the real gene is missing."""
+    """One replicate (genes, species): 1 lost, 0 intact, NaN where the real gene is missing.
+    e: (species,) or (genes, species) false-loss probabilities."""
     G = len(lam)
     state = np.zeros((G, tree.n_nodes), dtype=bool)
     for node in range(tree.n_nodes - 2, -1, -1):                   # parents before children
@@ -77,7 +94,7 @@ def simulate_losses(tree: Tree, lam: np.ndarray, e: np.ndarray, missing: np.ndar
         state[:, node] = state[:, p] | (rng.random(G) < q)
     true = state[:, : tree.n_tips]
     u = rng.random(true.shape)
-    obs = np.where(true, u >= FALSE_INTACT, u < e[None]).astype(float)
+    obs = np.where(true, u >= FALSE_INTACT, u < np.broadcast_to(e, true.shape)).astype(float)
     obs[missing] = np.nan
     return obs
 
