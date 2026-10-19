@@ -14,6 +14,13 @@ Traits (--trait), defined from the taxonomic lineage before any test:
                 because, without other musteloids in the species set, the giant otter is
                 sister to the pinnipeds and the two would merge into one origin with a
                 (wrongly) aquatic common ancestor
+  hypoxia_subterranean  burrowing mammals living in hypoxic, hypercapnic burrows: African
+                mole-rats (Bathyergidae), tuco-tuco, blind mole-rat, mole vole, moles (Talpidae),
+                golden mole
+  hypoxia_altitude      high-altitude mammals: wild yak, Tibetan antelope, American pika,
+                alpaca (Andean, vicuna-derived)
+  hypoxia       both groups. In all three, diving mammals (marine and semi-aquatic) are kept
+                out of the control sets: they are hypoxia-tolerant too, but are the marine trait
 Each trait has a list of genes of interest (literature candidates), reported separately.
 
 Pipeline (as validated on simulations):
@@ -77,6 +84,21 @@ LAYERS = ("rate_nucleotide", "rate_protein", "selection_proxy")
 MARINE = ("Cetacea", "Otariidae", "Phocidae", "Odobenidae", "Sirenia")
 SEMI_AQUATIC = ("Lutrinae", "Castor_", "Ondatra_")
 AQUATIC_RODENTS = ("Castor_", "Ondatra_")
+SUBTERRANEAN = ("Heterocephalus_", "Fukomys_", "Ctenomys_", "Nannospalax_", "Ellobius_", "Scalopus_",
+                "Condylura_", "Chrysochloris_")
+ALTITUDE = ("Bos_mutus", "Pantholops_", "Ochotona_princeps", "Vicugna_")
+HYPOXIA_GENES = ["EPAS1", "EGLN1", "HIF1A", "HBB", "HBA1", "HBA2", "NGB", "CYGB"]  # fixed before testing
+
+
+def _diver(sp, l):
+    return (any(k in l for k in MARINE) or any(k in l or sp.startswith(k) for k in SEMI_AQUATIC)
+            or "Hippopotamidae" in l or sp == "Ursus_maritimus")
+
+
+def _is(prefixes):
+    return lambda sp, l: any(sp.startswith(k) for k in prefixes)
+
+
 TRAITS = {  # name: (trait test on (species, lineage), species kept out of control sets, genes of interest)
     "echolocation": (
         lambda sp, l: ("Chiroptera" in l and "Pteropodidae" not in l) or "Odontoceti" in l,
@@ -95,6 +117,11 @@ TRAITS = {  # name: (trait test on (species, lineage), species kept out of contr
         lambda sp, l: "Hippopotamidae" in l or "Lutrinae" in l or sp == "Ursus_maritimus",
         ["PON1", "MMP12", "KLK8", "MTNR1A", "MTNR1B", "AANAT", "ASMT", "F12", "SEC14L3", "DSG4",
          "GSDMA", "TGM3", "SLC6A18", "POLM", "NAT16", "TAS1R1", "TAS1R2", "TAS1R3", "OMP"]),
+    "hypoxia_subterranean": (_is(SUBTERRANEAN),
+                             lambda sp, l: _diver(sp, l) or _is(ALTITUDE)(sp, l), HYPOXIA_GENES),
+    "hypoxia_altitude": (_is(ALTITUDE),
+                         lambda sp, l: _diver(sp, l) or _is(SUBTERRANEAN)(sp, l), HYPOXIA_GENES),
+    "hypoxia": (_is(SUBTERRANEAN + ALTITUDE), _diver, HYPOXIA_GENES),
 }
 
 

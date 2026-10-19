@@ -11,8 +11,8 @@ Rules (fixed before looking at any convergence result):
     quota for that group.
 
 Usage: python -I scripts/toga_select_species.py coverage.tsv out_species.tsv [min_cov] [extra]
-  extra: comma-separated species added on top of the quotas (e.g. the semi-aquatic and
-  additional marine species for the aquatic analysis)
+  extra: comma-separated species added on top of the quotas (e.g. trait species of the
+  aquatic and hypoxia analyses); they need not pass min_cov
 """
 import sys
 
@@ -30,20 +30,20 @@ EXCLUDE = ("Soricidae", "Tenrecidae", "Solenodontidae")
 
 def main(cov_file: str, out_file: str, min_cov: float = 0.85, extra: str = "") -> None:
     d = pd.read_csv(cov_file, sep="\t")
-    d = d[d.in_zoonomia_tree & (d.coverage >= min_cov)]
-    d = d[~d.lineage.str.contains("|".join(EXCLUDE))]
-    d = d.sort_values("coverage", ascending=False).drop_duplicates("species")
+    d = d[d.in_zoonomia_tree].sort_values("coverage", ascending=False).drop_duplicates("species")
+    best = d.set_index("species").assembly                 # highest-coverage assembly per species
+    d = d[(d.coverage >= min_cov) & ~d.lineage.str.contains("|".join(EXCLUDE))]
     chosen = ["Homo_sapiens"]                      # the TOGA reference is always present
     for key, quota in QUOTAS:
         grp = d[d.lineage.str.contains(key) & ~d.species.isin(chosen)]
         chosen += grp.species.head(quota).tolist()
     chosen += [sp for sp in extra.split(",") if sp]
     chosen = list(dict.fromkeys(chosen))
-    best = d.set_index("species").assembly                 # highest-coverage assembly per species
     with open(out_file, "w") as fh:                        # "species<TAB>assembly" (human = REFERENCE)
         for sp in chosen:
             fh.write(f"{sp}\t{'REFERENCE' if sp == 'Homo_sapiens' else best[sp]}\n")
-    sel = d[d.species.isin(chosen)]
+    sel = pd.read_csv(cov_file, sep="\t").drop_duplicates("species")
+    sel = sel[sel.species.isin(chosen)]
     print(f"{len(chosen)} species; median coverage {sel.coverage.median():.3f}")
     for key, _ in QUOTAS:
         print(f"  {key:15s} {sel.lineage.str.contains(key).sum()}")
