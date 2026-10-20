@@ -448,6 +448,27 @@ control-set null, which was limited by the number of distinct control sets.
   layer adds nothing for genes lost in the trait lineages, so the per-layer lists, each
   with its own FDR and control check, are the ones to report.
 
+## Paper dataset: three traits, five analyses (115 species)
+
+Species set `results/toga/species_paper.tsv` (adds mole-rats, tuco-tuco, blind mole-rat,
+mole vole, wild yak, Tibetan antelope, alpaca, cane rat, honey badger); loss matrix
+`results/toga/loss_status_paper.tsv.gz`; loss null = simulation with species false-loss
+rate x gene fragility (`mlconv/loss.py`); 20 matched control trait sets per analysis.
+
+| Trait | Origins | Rate calls | Loss calls | Combined calls | Results |
+|---|---|---|---|---|---|
+| Marine | 3 | 0 | 48 | 0 | `results/marine_toga/` |
+| Hypoxia, subterranean | 6 | 0 | 15 | 10 | `results/hypoxia_subterranean_toga/` |
+| Hypoxia, combined | 10 | 0 | 11 | 1 | `results/hypoxia_toga/` |
+| Hypoxia, high altitude | 4 | 0 | 1 | 0 | `results/hypoxia_altitude_toga/` |
+| Echolocation | 3 | 0 | 0 | 0 | `results/echolocation_toga/` |
+
+Control sets (100 pooled): any call in 2% (rate), 8% (loss), 4% (combined).
+Marine losses: chemosensation (21), epidermis (8), muscle (5: MYH13, MYH6, MYBPHL, ANKRD23,
+MSS51), PON1, KLK8, SLC4A9 and others. Subterranean losses: lens and retina genes (LGSN,
+LCTL, CRYGS, CRYBA4, BFSP1, GJA8, ROM1, MPP4, RGS11, CABP5, OPTC). No hypoxia or hearing
+positive control was called. Earlier sections above document how each step was reached.
+
 ## Roadmap to the manuscript
 
 1. **Benchmark** (in progress): calibration and power across confounding,
