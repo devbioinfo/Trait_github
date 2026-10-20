@@ -1,7 +1,7 @@
 {
   "trait": "marine",
-  "genes": 15778,
-  "species": 105,
+  "genes": 15703,
+  "species": 115,
   "trait_species": 18,
   "origins": 3,
   "loss_states": "L,UL",
@@ -10,9 +10,9 @@
   "calls_rate": 0,
   "control_mean_calls_rate": 0.0,
   "control_sets_with_any_call_rate": 0.0,
-  "calls_loss": 53,
-  "control_mean_calls_loss": 0.05,
-  "control_sets_with_any_call_loss": 0.05,
+  "calls_loss": 48,
+  "control_mean_calls_loss": 0.15,
+  "control_sets_with_any_call_loss": 0.15,
   "calls_final": 0,
   "control_mean_calls_final": 0.05,
   "control_sets_with_any_call_final": 0.05
