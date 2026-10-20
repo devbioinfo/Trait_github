@@ -1,10 +1,19 @@
 {
-  "genes": 15757,
-  "species": 101,
-  "echolocating_species": 25,
+  "trait": "echolocation",
+  "genes": 15703,
+  "species": 115,
+  "trait_species": 25,
   "origins": 3,
-  "echolocation_calls": 0,
+  "loss_states": "L,UL",
+  "loss_null": "sim",
   "control_sets": 20,
-  "control_mean_calls": 0.2,
-  "control_sets_with_any_call": 0.2
+  "calls_rate": 0,
+  "control_mean_calls_rate": 0.0,
+  "control_sets_with_any_call_rate": 0.0,
+  "calls_loss": 0,
+  "control_mean_calls_loss": 0.0,
+  "control_sets_with_any_call_loss": 0.0,
+  "calls_final": 0,
+  "control_mean_calls_final": 0.0,
+  "control_sets_with_any_call_final": 0.0
 }
