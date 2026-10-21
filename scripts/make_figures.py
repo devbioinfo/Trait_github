@@ -10,6 +10,7 @@ Figure 7  marine losses in detail: lineage funnels, PON1 mutation map, exon synt
 Figure 8  codon alignments of two losses, genome-wide volcano plots, functional map
 Supplementary Figure 2  loss model: data quality and goodness of fit
 Supplementary Figure 1  comparison with RERconverge
+Supplementary Figure 3  number of origins: subterranean losses recovered from subsets of origins
 
 Usage: python -I scripts/make_figures.py
 """
@@ -1135,6 +1136,40 @@ def figure8(pon1_windows=((84, 96), (217, 229)), lgsn_windows=((184, 192), (374,
     save(fig, "Figure8")
 
 
+# ---------------------------------------------------------------------------------------
+# Supplementary Figure 3: how many origins the loss test needs (subterranean trait)
+# ---------------------------------------------------------------------------------------
+
+SIGHTED = {"Ctenomys", "Ellobius"}          # subterranean lineages that keep functional eyes
+
+
+def supp3():
+    d = pd.read_csv(RES / "extra" / "origin_subsampling.csv")
+    parts = d.subset.str.split(";")
+    d["sighted"] = parts.map(lambda p: sum(x in SIGHTED for x in p))
+    d["blind"] = parts.map(lambda p: sum(x not in SIGHTED for x in p))
+    d["new"] = d.calls - d.recovered
+    cols = {0: C3, 1: C1, 2: C2}
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 2.7), gridspec_kw=dict(wspace=0.32))
+    rng = np.random.default_rng(1)
+    for ax, col, ylab, letter, title in ((axes[0], "recovered", "Calls of the full analysis recovered (of 15)", "a",
+                                          "Recovery depends on blind lineages"),
+                                         (axes[1], "new", "Calls not made with all six origins", "b", "Calls not in the full analysis")):
+        for k, c in cols.items():
+            g = d[d.sighted == k]
+            x = g.blind + (k - 1) * 0.18 + rng.uniform(-0.05, 0.05, len(g))
+            ax.scatter(x, g[col], s=22, color=c, edgecolor="white", lw=0.7, zorder=3,
+                       label=f"{k} sighted lineage{'s' if k != 1 else ''} kept")
+        ax.set_xticks(range(1, 5))
+        ax.set_xlabel("Blind subterranean lineages kept (of 4)")
+        ax.set_ylabel(ylab, fontsize=7)
+        grid(ax)
+        panel(ax, letter, title)
+    axes[0].axhline(15, color=INK2, lw=0.6, ls="--")
+    axes[0].legend(loc="center left", bbox_to_anchor=(0.0, 0.62), fontsize=6)
+    save(fig, "SupplementaryFigure3")
+
+
 if __name__ == "__main__":
     figure_tree()
     figure1()
@@ -1146,3 +1181,4 @@ if __name__ == "__main__":
     figure8()
     supp1()
     supp2()
+    supp3()
