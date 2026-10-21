@@ -1,9 +1,12 @@
 """Numbered manuscript figures (PNG at 300 dpi and PDF) in results/figures/.
 
-Figure 1  method overview (schematic)
-Figure 2  rate layers on simulated codon alignments (calibration, power, signatures, origins)
-Figure 3  gene-loss layer: simulation benchmark and calibration of loss nulls on real genomes
-Figure 4  genome-wide results for three traits: calls, calibration, and the convergent losses
+Figure 1  the 115 species, the four traits and their independent origins (circular tree)
+Figure 2  method overview (schematic)
+Figure 3  rate layers on simulated codon alignments (calibration, power, signatures, origins)
+Figure 4  gene-loss layer: simulation benchmark and calibration of loss nulls on real genomes
+Figure 5  genome-wide results for three traits: calls, calibration, and the convergent losses
+Figure 6  timing of convergent losses and partitioning of correlated traits
+Supplementary Figure 2  loss model: data quality and goodness of fit
 Supplementary Figure 1  comparison with RERconverge
 
 Usage: python -I scripts/make_figures.py
@@ -26,6 +29,7 @@ from matplotlib.transforms import blended_transform_factory  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
 from mlconv.tree import foreground_branches, from_newick  # noqa: E402
 
 RES = ROOT / "results"
@@ -93,10 +97,105 @@ TOY = "((((A:1,B:1):1,(C:1,D:1):1):1,((E:1,F:1):1,G:2):1):1,((H:1.5,I:1.5):1.5,J
 
 
 # ---------------------------------------------------------------------------------------
+# Figure 1: the 115 species, the four traits and their independent origins
+# ---------------------------------------------------------------------------------------
+
+ORDERS = [("Chiroptera", "Bats"), ("Cetacea", "Whales and dolphins"), ("Hippopotamidae", "Hippo"),
+          ("Tylopoda", "Camelids"), ("Artiodactyla", "Ruminants, pigs"),
+          ("Carnivora", "Carnivores"), ("Perissodactyla", "Perissodactyls"), ("Pholidota", "Pangolins"),
+          ("Eulipotyphla", "Moles, hedgehog"), ("Primates", "Primates"), ("Rodentia", "Rodents"),
+          ("Lagomorpha", "Rabbits, pika"), ("Scandentia", "Treeshrews"), ("Dermoptera", "Colugo"),
+          ("Afrotheria", "Afrotherians"), ("Xenarthra", "Xenarthrans"), ("Metatheria", "Marsupials"),
+          ("Prototheria", "Monotreme")]
+SHORT_NAMES = {"Homo_sapiens": "human", "Nannospalax_galili": "blind mole-rat",
+               "Choloepus_hoffmanni": "two-toed sloth", "Choloepus_didactylus": "southern two-toed sloth",
+               "Peromyscus_maniculatus_bairdii": "deer mouse"}
+TREE_TRAITS = [("echolocation", "Echolocation", C2), ("marine", "Marine", C1),
+               ("hypoxia_subterranean", "Subterranean", C3), ("hypoxia_altitude", "High altitude", C4)]
+
+
+def figure_tree():
+    import convergence_toga as CT
+    from mlconv.tree import origin_nodes as onodes
+    tree, names = from_newick((RES / "toga" / "master_paper.nwk").read_text())
+    cov = pd.read_csv(RES / "toga" / "coverage_paper.tsv", sep="\t").drop_duplicates("species").set_index("species")
+    lineage = cov.lineage.reindex(names).fillna("")
+    lineage[names.index("Homo_sapiens")] = "Eutheria; Euarchontoglires; Primates; Haplorrhini"
+    common = pd.read_csv(RES / "toga" / "assemblies_paper.tsv", sep="\t").set_index("species")["Common name"]
+    n = tree.n_tips
+    _, y = tree_xy(tree)
+    # cladogram: radius from the number of nodes between a node and its deepest tip, tips at 1
+    height = np.zeros(tree.n_nodes)
+    for v in range(tree.n_nodes - 1):
+        height[tree.parent[v]] = max(height[tree.parent[v]], height[v] + 1)
+    x = 1 - height / height.max()
+    R = 1.0
+    span = 2 * np.pi * 0.965
+    theta = lambda v: np.pi / 2 - y[v] / (n - 1) * span          # noqa: E731  clockwise from the top
+    fig = plt.figure(figsize=(7.2, 7.6))
+    ax = fig.add_axes([0.06, 0.08, 0.88, 0.88], projection="polar")
+    ax.set_axis_off()
+    for v in range(tree.n_nodes - 1):
+        p = tree.parent[v]
+        ax.plot([theta(v), theta(v)], [x[p] * R, x[v] * R], color=MUTED, lw=0.7, solid_capstyle="butt")
+    for v in range(n, tree.n_nodes):
+        ch = np.nonzero(tree.parent == v)[0]
+        a = np.linspace(min(theta(c) for c in ch), max(theta(c) for c in ch), 30)
+        ax.plot(a, np.full_like(a, x[v] * R), color=MUTED, lw=0.7)
+    # trait rings and origin markers
+    width = span / (n - 1)
+    ring0, ring_w = 1.04, 0.055
+    D = tree.tip_sets()
+    for k, (key, label, col) in enumerate(TREE_TRAITS):
+        tr = np.array([CT.TRAITS[key][0](s_, l) for s_, l in zip(names, lineage)])
+        r0 = ring0 + k * (ring_w + 0.008)
+        th = np.array([theta(t) for t in range(n)])
+        ax.bar(th, ring_w, width=width * 0.98, bottom=r0, color=np.where(tr, col, "#f1f0ec"), lw=0)
+        for o in onodes(tree, tr):
+            p = tree.parent[o]
+            ax.scatter([theta(o)], [(x[p] + x[o]) / 2 * R], s=34, color=col, edgecolor="white", lw=0.8, zorder=5)
+    # order arcs and species names
+    group = []
+    for l in lineage:
+        group.append(next((lab for key, lab in ORDERS if key in l), ""))
+    rl = ring0 + 4 * (ring_w + 0.008) + 0.02
+    for t in range(n):
+        ang = theta(t)
+        deg = np.degrees(ang)
+        flip = 90 < (deg % 360) < 270
+        label = SHORT_NAMES.get(names[t], common.get(names[t], names[t].replace("_", " ")))
+        label = label if len(label) <= 22 else label[:21].rstrip() + "\u2026"
+        ax.text(ang, rl, label, fontsize=3.9, color=INK2,
+                rotation=deg + (180 if flip else 0), rotation_mode="anchor", ha="right" if flip else "left",
+                va="center")
+    start = 0
+    ro = rl + 0.33
+    for t in range(1, n + 1):
+        if t == n or group[t] != group[start]:
+            if group[start] and t - start >= 1:
+                a = np.linspace(theta(start) + width * 0.4, theta(t - 1) - width * 0.4, 40)
+                ax.plot(a, np.full_like(a, ro), color=INK, lw=1.2)
+                mid = (theta(start) + theta(t - 1)) / 2
+                deg = np.degrees(mid) % 360
+                flip = 180 < deg < 360
+                ax.text(mid, ro + 0.04, group[start] if t - start >= 3 else "", fontsize=5.8, color=INK, ha="center",
+                        va="top" if flip else "bottom", rotation=deg - 90 + (180 if flip else 0),
+                        rotation_mode="anchor")
+            start = t
+    ax.set_ylim(0, ro + 0.2)
+    handles = [plt.Line2D([], [], marker="s", ls="", color=c, ms=7, label=f"{lab} ({len(onodes(tree, np.array([CT.TRAITS[k][0](s_, l) for s_, l in zip(names, lineage)])))} origins)")
+               for k, lab, c in TREE_TRAITS]
+    handles.append(plt.Line2D([], [], marker="o", ls="", color=INK2, ms=5, markeredgecolor="white",
+                              label="independent origin (stem branch)"))
+    fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0.0), fontsize=7)
+    save(fig, "Figure1")
+
+
+# ---------------------------------------------------------------------------------------
 # Figure 1: method overview
 # ---------------------------------------------------------------------------------------
 
-def figure1():
+def figure1():           # saved as Figure2 (method overview)
     tree, names = from_newick(TOY)
     fig = plt.figure(figsize=(7.2, 5.2))
     gs = fig.add_gridspec(2, 3, hspace=0.75, wspace=0.45)
@@ -182,7 +281,7 @@ def figure1():
                                     fc="white", ec=c, lw=1.4))
         ax.text(5.0, yy, text, ha="center", va="center", fontsize=6.2, color=INK)
     panel(ax, "e", "Calibration")
-    save(fig, "Figure1")
+    save(fig, "Figure2")
 
 
 # ---------------------------------------------------------------------------------------
@@ -281,7 +380,7 @@ def figure2():
 
     handles = [plt.Line2D([], [], marker="o", ls="", color=c, ms=5, label=lab) for _, lab, c in METHODS_RATE]
     fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.06))
-    save(fig, "Figure2")
+    save(fig, "Figure3")
 
 
 # ---------------------------------------------------------------------------------------
@@ -340,7 +439,7 @@ def figure3():
     ax.set_xlabel("Matched control trait sets with any loss call (%), real genomes")
     grid(ax, "x")
     panel(ax, "g", "Calibration of loss nulls on real data")
-    save(fig, "Figure3")
+    save(fig, "Figure4")
 
 
 # ---------------------------------------------------------------------------------------
@@ -431,7 +530,7 @@ def figure4():
                Rectangle((0, 0), 1, 1, fc="white", ec=MUTED, lw=0.5, label="missing"),
                Rectangle((0, 0), 1, 1, color=C5, label="trait species")]
     fig.legend(handles=handles, loc="lower center", ncol=4, bbox_to_anchor=(0.5, 0.06))
-    save(fig, "Figure4")
+    save(fig, "Figure5")
 
 
 # ---------------------------------------------------------------------------------------
@@ -524,7 +623,7 @@ def figure5():
     joint_panel(ax, mar, "beta_marine", "beta_semiaquatic", mg, ["PON1", "MMP12"], "e",
                 "Marine vs semi-aquatic", "Partial effect: marine", "Partial effect: semi-aquatic")
     ax.legend(loc="upper right", fontsize=6, markerscale=1.2)
-    save(fig, "Figure5")
+    save(fig, "Figure6")
 
 
 # ---------------------------------------------------------------------------------------
@@ -624,6 +723,7 @@ def supp1():
 
 
 if __name__ == "__main__":
+    figure_tree()
     figure1()
     figure2()
     figure3()
