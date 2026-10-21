@@ -9,6 +9,7 @@ Figure 6  timing of convergent losses and partitioning of correlated traits
 Figure 7  marine losses in detail: lineage funnels, PON1 mutation map, exon synteny
 Figure 8  codon alignments of two losses, genome-wide volcano plots, functional map
 Figure 9  tissue, pathway and GO enrichment of the convergent losses
+Figure 10 pathway maps: taste and smell in marine mammals, the eye in subterranean mammals
 Supplementary Figure 2  loss model: data quality and goodness of fit
 Supplementary Figure 1  comparison with RERconverge
 Supplementary Figure 3  number of origins: subterranean losses recovered from subsets of origins
@@ -1213,6 +1214,158 @@ def figure9():
     save(fig, "Figure9")
 
 
+# ---------------------------------------------------------------------------------------
+# Figure 10: pathway maps of the senses lost (taste and smell in marine, the eye underground)
+# ---------------------------------------------------------------------------------------
+
+def gene_status(key, genes, tree, names, Y, trait):
+    from mlconv.tree import origin_nodes
+    d = pd.read_csv(RES / f"{key}_toga" / f"{key}_genes.csv").drop_duplicates("symbol").set_index("symbol")
+    t = trait[key]
+    D = tree.tip_sets()
+    orig = origin_nodes(tree, t)
+    out = {}
+    for g in genes:
+        y = Y.loc[g].to_numpy() if g in Y.index else np.full(len(names), np.nan)
+        out[g] = dict(called=bool(d.call_loss.get(g, False)) if g in d.index else False,
+                      lost=int(np.nansum(y[t] == 1)), n=int((~np.isnan(y[t])).sum()),
+                      origins=[bool(np.nansum(y[D[o]] == 1) > 0) for o in orig])
+    return out
+
+
+def gene_node(ax, x, y, g, st, colour, w=9.0, h=3.2, fs=5.6):
+    s = st[g]
+    if s["called"]:
+        fc, ec, tc, lw = colour, colour, "white", 0.8
+    elif s["lost"] > 0:
+        fc, ec, tc, lw = "white", colour, INK, 1.1
+    else:
+        fc, ec, tc, lw = PALE, GRID, INK2, 0.6
+    ax.add_patch(FancyBboxPatch((x - w / 2, y - h / 2), w, h, boxstyle="round,pad=0,rounding_size=0.8",
+                                fc=fc, ec=ec, lw=lw, zorder=3))
+    ax.text(x, y + 0.35, g, ha="center", va="center", fontsize=fs, color=tc, zorder=4,
+            fontweight="bold" if s["called"] else "normal")
+    k = len(s["origins"])
+    for i, lost in enumerate(s["origins"]):
+        ax.add_patch(plt.Circle((x + (i - (k - 1) / 2) * 0.95, y - 0.95), 0.32, zorder=4,
+                                color=(("white" if s["called"] else colour) if lost else (GRID if not s["called"] else "#ffffff55")),
+                                lw=0))
+
+
+def arrow(ax, a, b, style="-|>", ls="-", col=INK2, rad=0.0):
+    ax.annotate("", b, a, arrowprops=dict(arrowstyle=style, color=col, lw=0.8, ls=ls, shrinkA=0, shrinkB=0,
+                                          connectionstyle=f"arc3,rad={rad}"), zorder=2)
+
+
+def note(ax, x, y, txt, **kw):
+    ax.text(x, y, txt, fontsize=kw.pop("fs", 5.4), color=kw.pop("color", INK2), ha=kw.pop("ha", "center"),
+            va=kw.pop("va", "center"), style=kw.pop("style", "italic"), zorder=4, **kw)
+
+
+def figure10():
+    from matplotlib.patches import Ellipse
+    tree, names, Y, trait = loss_setup()
+    marine_genes = ["TAS1R1", "TAS1R2", "TAS1R3", "TAS2R1", "TAS2R38", "GNAT3", "PLCB2", "ITPR3", "TRPM5", "CALHM1",
+                    "CALHM3", "TAAR5", "OR7A17", "GNAL", "ADCY3", "CNGA2", "CNGA4", "CNGB1", "ANO2", "PON1", "PON2", "PON3"]
+    eye_genes = ["CRYAA", "CRYBA1", "CRYBA4", "CRYBB2", "CRYGC", "CRYGS", "BFSP1", "BFSP2", "LGSN", "MIP", "GJA3", "GJA8",
+                 "LCTL", "OPTC", "RHO", "GNAT1", "PDE6A", "PDE6B", "CNGA1", "PRPH2", "ROM1", "MPP4", "GRM6", "GNAO1", "TRPM1",
+                 "RGS11", "RGS7", "GNB5", "NYX", "CABP5"]
+    sm = gene_status("marine", marine_genes, tree, names, Y, trait)
+    se = gene_status("hypoxia_subterranean", eye_genes, tree, names, Y, trait)
+    fig, (a, b) = plt.subplots(2, 1, figsize=(7.2, 9.4), gridspec_kw=dict(hspace=0.12))
+    for ax in (a, b):
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 62)
+        ax.set_aspect("equal")
+        ax.set_axis_off()
+
+    # ---- a: marine. taste receptor cell, olfactory sensory neuron, liver
+    c = C1
+    ax = a
+    panel(ax, "a", "Marine mammals: taste, smell and detoxification")
+    ax.add_patch(FancyBboxPatch((3, 4), 44, 52, boxstyle="round,pad=0,rounding_size=8", fc="#eef4fc", ec="#c9dcf5", lw=1))
+    note(ax, 25, 53.5, "Taste receptor cell (type II)", style="normal", color=INK, fs=6.5)
+    for x, g in ((9, "TAS1R1"), (19, "TAS1R3"), (29, "TAS1R2"), (39.5, "TAS2R1")):
+        gene_node(ax, x, 47, g, sm, c)
+    gene_node(ax, 39.5, 42.5, "TAS2R38", sm, c)
+    note(ax, 14, 50.6, "umami"); note(ax, 24, 50.6, "sweet"); note(ax, 39.5, 50.6, "bitter")
+    gene_node(ax, 25, 36, "GNAT3", sm, c)
+    for x in (9, 19, 29):
+        arrow(ax, (x, 45.3), (25 + (x - 19) * 0.35, 37.7))
+    arrow(ax, (37, 41), (29.6, 37.2))
+    gene_node(ax, 25, 29, "PLCB2", sm, c)
+    arrow(ax, (25, 34.3), (25, 30.7))
+    gene_node(ax, 25, 22, "ITPR3", sm, c)
+    arrow(ax, (25, 27.3), (25, 23.7)); note(ax, 28.5, 25.5, "IP₃", ha="left")
+    gene_node(ax, 25, 15, "TRPM5", sm, c)
+    arrow(ax, (25, 20.3), (25, 16.7)); note(ax, 28.5, 18.5, "Ca²⁺", ha="left")
+    gene_node(ax, 15, 8, "CALHM1", sm, c); gene_node(ax, 35, 8, "CALHM3", sm, c)
+    arrow(ax, (23, 13.3), (17, 9.7)); arrow(ax, (27, 13.3), (33, 9.7))
+    note(ax, 25, 5.3, "ATP release to the gustatory nerve")
+    ax.add_patch(FancyBboxPatch((51, 22), 46, 34, boxstyle="round,pad=0,rounding_size=8", fc="#eef4fc", ec="#c9dcf5", lw=1))
+    note(ax, 74, 53.5, "Olfactory sensory neuron", style="normal", color=INK, fs=6.5)
+    gene_node(ax, 59, 47, "OR7A17", sm, c); gene_node(ax, 73, 47, "TAAR5", sm, c)
+    note(ax, 59, 50.6, "16 lost receptors, e.g.")
+    gene_node(ax, 66, 40, "GNAL", sm, c)
+    arrow(ax, (60, 45.3), (64.5, 41.7)); arrow(ax, (72, 45.3), (67.5, 41.7))
+    gene_node(ax, 66, 33, "ADCY3", sm, c); arrow(ax, (66, 38.3), (66, 34.7))
+    for x, g in ((57, "CNGA2"), (66, "CNGA4"), (75, "CNGB1")):
+        gene_node(ax, x, 26, g, sm, c, w=8)
+    arrow(ax, (66, 31.3), (66, 27.7)); note(ax, 69.5, 29.6, "cAMP", ha="left")
+    gene_node(ax, 90, 26, "ANO2", sm, c, w=8)
+    arrow(ax, (79, 26), (85.9, 26)); note(ax, 82.5, 28.2, "Ca²⁺")
+    ax.add_patch(FancyBboxPatch((51, 4), 46, 14, boxstyle="round,pad=0,rounding_size=6", fc="#eef4fc", ec="#c9dcf5", lw=1))
+    note(ax, 74, 15.6, "Liver and blood: hydrolysis of organophosphates and oxidised lipids", style="normal", color=INK, fs=6)
+    for x, g in ((61, "PON1"), (74, "PON2"), (87, "PON3")):
+        gene_node(ax, x, 9.5, g, sm, c)
+    # legend (applies to both panels)
+    for i, (lab, fc, ec) in enumerate((("convergent loss (q = 0.1)", c, c), ("lost in some trait species", "white", c),
+                                       ("intact in all trait species", PALE, GRID))):
+        lx = 3 + i * 25
+        ax.add_patch(FancyBboxPatch((lx, 59.1), 4.5, 2.4, boxstyle="round,pad=0,rounding_size=0.6", fc=fc, ec=ec, lw=0.9))
+        ax.text(lx + 5.5, 60.3, lab, fontsize=5.6, color=INK, va="center")
+    ax.text(97, 57.4, "dots: lost in manatee, cetaceans, pinnipeds", fontsize=5.4, color=INK2, va="center", ha="right")
+
+    # ---- b: subterranean. lens, vitreous, retina
+    c = C3
+    ax = b
+    panel(ax, "b", "Subterranean mammals: the eye")
+    ax.add_patch(Ellipse((50, 30), 92, 56, fc="#eaf7f1", ec="#bfe6d4", lw=1.2))
+    ax.add_patch(Ellipse((16, 30), 22, 36, fc="#ffffff", ec="#bfe6d4", lw=1))
+    note(ax, 16, 46.5, "Lens fibre cells", style="normal", color=INK, fs=6.5)
+    note(ax, 16, 43.2, "crystallins")
+    for i, g in enumerate(["CRYAA", "CRYBA1", "CRYBA4", "CRYBB2", "CRYGC", "CRYGS"]):
+        gene_node(ax, 11 + (i % 2) * 10, 39.5 - (i // 2) * 4.3, g, se, c)
+    note(ax, 16, 26.6, "beaded filaments, membrane, junctions")
+    for i, g in enumerate(["BFSP1", "BFSP2", "LGSN", "MIP", "GJA3", "GJA8"]):
+        gene_node(ax, 11 + (i % 2) * 10, 23 - (i // 2) * 4.3, g, se, c)
+    gene_node(ax, 16, 10, "LCTL", se, c)
+    note(ax, 37, 44, "Vitreous", style="normal", color=INK, fs=6.5)
+    gene_node(ax, 37, 40, "OPTC", se, c)
+    note(ax, 70, 53.5, "Retina", style="normal", color=INK, fs=6.5)
+    note(ax, 50, 50, "rod photoreceptor", style="normal", color=INK, fs=6)
+    gene_node(ax, 52, 45, "RHO", se, c); gene_node(ax, 52, 38.5, "GNAT1", se, c)
+    gene_node(ax, 47.5, 32, "PDE6A", se, c, w=8); gene_node(ax, 56.5, 32, "PDE6B", se, c, w=8)
+    gene_node(ax, 52, 25.5, "CNGA1", se, c)
+    arrow(ax, (52, 43.3), (52, 40.2)); arrow(ax, (52, 36.8), (52, 33.7)); arrow(ax, (52, 30.3), (52, 27.2), style="-[")
+    note(ax, 58, 22.6, "outer-segment discs")
+    gene_node(ax, 58, 19, "PRPH2", se, c); gene_node(ax, 58, 14.5, "ROM1", se, c)
+    note(ax, 70, 49.6, "photoreceptor synapse")
+    gene_node(ax, 70, 45.5, "MPP4", se, c)
+    note(ax, 86, 41.6, "ON bipolar cell", style="normal", color=INK, fs=6)
+    gene_node(ax, 84, 38, "GRM6", se, c); gene_node(ax, 84, 31, "GNAO1", se, c)
+    gene_node(ax, 84, 24, "TRPM1", se, c); gene_node(ax, 84, 17, "NYX", se, c)
+    arrow(ax, (84, 36.3), (84, 32.7)); arrow(ax, (84, 29.3), (84, 25.7), style="-[")
+    arrow(ax, (74.5, 44.5), (79.4, 39.3)); note(ax, 79.5, 46.3, "glutamate")
+    ax.add_patch(FancyBboxPatch((67.6, 21.6), 9, 15.6, boxstyle="round,pad=0,rounding_size=1", fc="none", ec=GRID, lw=0.7, ls="--"))
+    for y, g in ((34.5, "RGS11"), (29.5, "RGS7"), (24.5, "GNB5")):
+        gene_node(ax, 72.1, y, g, se, c, w=8)
+    arrow(ax, (76.7, 31), (79.4, 31), style="-[")
+    gene_node(ax, 72, 16, "CABP5", se, c)
+    note(ax, 50, 6.5, "colours as in a; dots: lost in each of the six subterranean origins", style="normal")
+    save(fig, "Figure10")
+
+
 if __name__ == "__main__":
     figure_tree()
     figure1()
@@ -1223,6 +1376,7 @@ if __name__ == "__main__":
     figure7()
     figure8()
     figure9()
+    figure10()
     supp1()
     supp2()
     supp3()
