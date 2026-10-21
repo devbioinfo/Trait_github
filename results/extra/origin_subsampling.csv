@@ -37,3 +37,7 @@ n_origins,subset,calls,recovered,full_calls,new,genes
 3,Nannospalax;Chrysochloris;Heterocephalus+Fukomys,16,9,15,7,ASB16;CRYBA1;CRYBA4;CRYBB2;CRYGS;ERAS;GRIFIN;KLRC3;LACTBL1;LCTL;LGSN;MPP4;PDE6H;RGS11;ROM1;RSKR
 3,Nannospalax;Chrysochloris;Condylura+Scalopus,11,9,15,2,BFSP1;CRYBA4;CRYGS;GJA8;GUCA1B;LCTL;LGSN;RGS11;ROM1;RSKR;SLC16A8
 3,Nannospalax;Heterocephalus+Fukomys;Condylura+Scalopus,9,9,15,0,CABP5;CRYBA4;CRYGS;LACTBL1;LCTL;LGSN;RGS11;ROM1;RSKR
+3,Ellobius;Chrysochloris;Heterocephalus+Fukomys,0,0,15,0,
+3,Ellobius;Chrysochloris;Condylura+Scalopus,0,0,15,0,
+3,Ellobius;Heterocephalus+Fukomys;Condylura+Scalopus,1,1,15,0,LGSN
+3,Chrysochloris;Heterocephalus+Fukomys;Condylura+Scalopus,14,11,15,3,AFM;BFSP1;CABP5;CRYBA4;CRYBB3;CRYGS;GJA8;LACTBL1;LCTL;LENEP;LGSN;RGS11;ROM1;RSKR

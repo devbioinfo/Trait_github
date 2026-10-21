@@ -986,19 +986,20 @@ def volcano_panel(ax, key, label, colour, Y, trait, letter, n_label=8):
     if call.any():
         thr = y[call].min()
         ax.axhline(thr, color=INK2, lw=0.6, ls="--")
+    ymax = max(5.0, float(y.max()) + 0.4)
     top = d[call].sort_values("p_loss").index[:n_label]
     for i, g in enumerate(top):
         j = d.index.get_loc(g)
-        ax.annotate(g, (diff[j], y.iloc[j]), xytext=(-4 - 26 * (i % 2), 5 - 9 * (i % 3)), textcoords="offset points",
-                    fontsize=5, color=INK, ha="right", arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.4))
+        ax.annotate(g, (diff[j], y.iloc[j]), xytext=(-0.52, ymax * (0.86 - 0.075 * i)), textcoords="data",
+                    fontsize=5, color=INK, ha="left", va="center",
+                    arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.35, shrinkA=1, shrinkB=1))
     ax.set_xlim(-0.6, 1.05)
-    ax.set_ylim(0, 5.6)
+    ax.set_ylim(0, ymax * 1.08)
     ax.set_xlabel("Loss in trait − other species", fontsize=6.5)
     ax.tick_params(labelsize=6)
     grid(ax)
-    ax.text(0.03, 0.97, f"{call.sum()} calls", transform=ax.transAxes, fontsize=6.5, va="top", color=colour if call.any() else INK2,
-            fontweight="bold")
-    panel(ax, letter, label)
+    n = int(call.sum())
+    panel(ax, letter, f"{label} ({n})")
 
 
 def origin_losses(tree, names, Y, t, genes):
@@ -1015,21 +1016,22 @@ def origin_losses(tree, names, Y, t, genes):
 def function_map(ax, tree, names, Y, trait, letter):
     ax.set_axis_off()
     ax.set_xlim(0, 100)
-    ax.set_ylim(0, 40)
+    H = 60
+    ax.set_ylim(0, H)
     panel(ax, letter, "Functions of the convergent losses")
-    blocks = [("marine", "Marine (48 genes)", C1, ["cetaceans", "pinnipeds", "manatee"], 0, 64),
-              ("hypoxia_subterranean", "Subterranean (15 genes)", C3, None, 66, 100)]
+    blocks = [("marine", "Marine (48 genes)", C1, ["cetaceans", "pinnipeds", "manatee"], 0, 61),
+              ("hypoxia_subterranean", "Subterranean (15 genes)", C3, None, 63, 100)]
     for key, title, colour, onames, x0, x1 in blocks:
         groups = FUNCTION_GROUPS[key]
         genes = [g for _, gs in groups for g in gs]
         ol = origin_losses(tree, names, Y, trait[key], genes)
         n_or = len(next(iter(ol.values())))
-        ax.add_patch(FancyBboxPatch((x0 + 0.3, 0.3), x1 - x0 - 0.6, 38.6, boxstyle="round,pad=0,rounding_size=1.2",
+        ax.add_patch(FancyBboxPatch((x0 + 0.3, 0.3), x1 - x0 - 0.6, H - 1.4, boxstyle="round,pad=0,rounding_size=1.2",
                                     fc="none", ec=colour, lw=1.0))
-        ax.text(x0 + 1.5, 37.3, title, fontsize=7.5, color=colour, fontweight="bold", va="center")
-        cols = 6 if key == "marine" else 3
+        ax.text(x0 + 1.5, H - 2.7, title, fontsize=7.5, color=colour, fontweight="bold", va="center")
+        cols = 5 if key == "marine" else 2
         cw = (x1 - x0 - 3) / cols
-        y = 34.6
+        y = H - 6.0
         for name, gs in groups:
             ax.text(x0 + 1.5, y, name, fontsize=6.3, color=INK, va="center", fontweight="bold")
             y -= 2.6
@@ -1045,8 +1047,11 @@ def function_map(ax, tree, names, Y, trait, letter):
                                             color=colour if lost else GRID, lw=0))
             y -= 2.9 * ((len(gs) - 1) // cols + 1) + 0.6
         note = (f"dots: lost in {', '.join(onames)}" if onames else f"dots: lost in each of the {n_or} origins")
-        ax.text(x1 - 1.2, 1.3, note, fontsize=5.4, color=INK2, ha="right")
-    ax.text(0.5, -1.4, "Black outline: loss reported in earlier studies.", fontsize=5.4, color=INK2)
+        if onames:
+            ax.text(x1 - 1.2, H - 2.7, note, fontsize=5.4, color=INK2, ha="right", va="center")
+        else:
+            ax.text(x0 + 1.5, 6.2, note, fontsize=5.4, color=INK2, va="center")
+    ax.text(64.5, 1.6, "Black outline: loss reported\nin earlier studies", fontsize=5.4, color=INK2)
 
 
 AL_STYLE = {"fs": C5, "stop": C2, "gap": PALE}
@@ -1101,7 +1106,7 @@ def alignment_panel(ax, gene, windows, species, common, marine_like, colour, let
     panel(ax, letter, title)
 
 
-def figure8(pon1_windows=((84, 96), (217, 229)), lgsn_windows=None):
+def figure8(pon1_windows=((84, 96), (217, 229)), lgsn_windows=((184, 192), (374, 388))):
     from mlconv.tree import subtree
     import alignment_detail as AD
     import marine_detail as MD
@@ -1114,12 +1119,12 @@ def figure8(pon1_windows=((84, 96), (217, 229)), lgsn_windows=None):
     t1, n1 = subtree(tree, names, list(marine) + MD.RELATIVES)
     t2, n2 = subtree(tree, names, list(subt) + AD.SUBTERRANEAN_RELATIVES)
 
-    fig = plt.figure(figsize=(7.2, 11.6))
-    gs = fig.add_gridspec(4, 1, height_ratios=[3.4, 1.9, 1.5, 3.0], hspace=0.32)
+    fig = plt.figure(figsize=(7.2, 12.6))
+    gs = fig.add_gridspec(4, 1, height_ratios=[3.4, 1.9, 1.6, 4.0], hspace=0.3)
     alignment_panel(fig.add_subplot(gs[0]), "PON1", pon1_windows, n1, common, marine, C1, "a",
                     "PON1: frameshifts shared by all cetaceans (dashed)", shared=(91, 224))
     alignment_panel(fig.add_subplot(gs[1]), "LGSN", lgsn_windows, n2, common, subt, C3, "b",
-                    "LGSN: independent mutations in blind subterranean species")
+                    "LGSN: independent mutations in blind subterranean species", shared=(376,))
     vs = gs[2].subgridspec(1, 4, wspace=0.28)
     for i, (k, lab, c) in enumerate(VOLCANO_TRAITS):
         ax = fig.add_subplot(vs[i])
