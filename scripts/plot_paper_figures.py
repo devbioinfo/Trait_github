@@ -110,7 +110,7 @@ def fig_loss_benchmark():
     axes[1, 0].set_ylabel("False discovery proportion")
     axes[0, 0].set_ylim(0, 1)
     axes[1, 0].set_ylim(0, 0.6)
-    axes[1, 0].text(0.5, 0.115, "q = 0.1", fontsize=7, color=INK2)
+    axes[1, 0].text(1.0, 0.085, "q = 0.1", fontsize=7, color=INK2, ha="right", va="top")
     axes[0, -1].legend(frameon=False, fontsize=8, loc="lower right")
     fig.savefig(RES / "fig_loss_benchmark.png", dpi=300, bbox_inches="tight", facecolor="white")
     print("written", RES / "fig_loss_benchmark.png")
