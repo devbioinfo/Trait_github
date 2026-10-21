@@ -7,6 +7,7 @@ Figure 4  gene-loss layer: simulation benchmark and calibration of loss nulls on
 Figure 5  genome-wide results for three traits: calls, calibration, and the convergent losses
 Figure 6  timing of convergent losses and partitioning of correlated traits
 Figure 7  marine losses in detail: lineage funnels, PON1 mutation map, exon synteny
+Figure 8  codon alignments of two losses, genome-wide volcano plots, functional map
 Supplementary Figure 2  loss model: data quality and goodness of fit
 Supplementary Figure 1  comparison with RERconverge
 
@@ -939,6 +940,196 @@ def figure7():
     save(fig, "Figure7")
 
 
+# ---------------------------------------------------------------------------------------
+# Figure 8: alignments of convergent losses, genome-wide volcano plots, functional map
+# ---------------------------------------------------------------------------------------
+
+FUNCTION_GROUPS = {
+    "marine": [("Smell", ["OR7A17", "OR5M9", "OR2T1", "OR51G1", "OR5H15", "OR9Q2", "OR5C1", "OR5M3", "OR6C2", "OR51I1",
+                          "OR51D1", "OR51I2", "OR5H1", "OR51A7", "OR2K2", "OR5H14", "TAAR5"]),
+               ("Taste", ["GNAT3", "CALHM1", "TAS1R3", "TAS2R1"]),
+               ("Skin and hair", ["KRT1", "KRT10", "KRT79", "KRTAP24-1", "KLK8", "GSDMA", "SERPINB12", "ANXA9"]),
+               ("Muscle", ["MYH6", "MYH13", "MYBPHL", "MSS51", "ANKRD23"]),
+               ("Detoxification and metabolism", ["PON1", "ACSM4", "GLYATL3", "SULT6B1", "PTGR1", "GBA3"]),
+               ("Other", ["SLC4A9", "ATP13A5", "TGM7", "HTRA4", "MRGPRX2", "ADGRF2", "CCDC170", "TLE7"])],
+    "hypoxia_subterranean": [("Lens", ["LGSN", "LCTL", "CRYGS", "CRYBA4", "BFSP1", "GJA8"]),
+                             ("Retina", ["MPP4", "ROM1", "RGS11", "CABP5"]),
+                             ("Vitreous", ["OPTC"]),
+                             ("Other", ["RSKR", "LACTBL1", "B3GNT4", "TPD52L3"])]}
+REPORTED_BEFORE = {"PON1", "SLC4A9", "TAS1R3", "TAS2R1"}     # cited in the Results [11,30,31]
+VOLCANO_TRAITS = [("marine", "Marine", C1), ("hypoxia_subterranean", "Subterranean", C3),
+                  ("echolocation", "Echolocation", C2), ("hypoxia_altitude", "High altitude", C4)]
+
+
+def loss_setup():
+    import convergence_toga as CT
+    tree, names = from_newick((RES / "toga" / "master_paper.nwk").read_text())
+    cov = pd.read_csv(RES / "toga" / "coverage_paper.tsv", sep="\t").drop_duplicates("species").set_index("species")
+    lineage = cov.lineage.reindex(names).fillna("")
+    m = pd.read_csv(RES / "toga" / "loss_status_paper.tsv.gz", sep="\t", index_col=0).reindex(columns=names).fillna("M")
+    Y = pd.DataFrame(np.where(m.isin(["L", "UL"]), 1.0, np.where(m.isin(["I", "PI"]), 0.0, np.nan)),
+                     index=m.index, columns=names)
+    trait = {k: np.array([CT.TRAITS[k][0](s, lineage[s]) for s in names]) for k, _, _ in VOLCANO_TRAITS}
+    return tree, names, Y, trait
+
+
+def volcano_panel(ax, key, label, colour, Y, trait, letter, n_label=8):
+    d = pd.read_csv(RES / f"{key}_toga" / f"{key}_genes.csv").dropna(subset=["p_loss"]).set_index("symbol")
+    d = d[~d.index.duplicated()]
+    t = trait[key]
+    Yg = Y.reindex(d.index)
+    diff = np.nanmean(Yg.loc[:, t], 1) - np.nanmean(Yg.loc[:, ~t], 1)
+    y = -np.log10(d.p_loss.clip(lower=1e-12))
+    call = d.call_loss.astype(bool).to_numpy()
+    ax.scatter(diff[~call], y[~call], s=3, color=MUTED, alpha=0.35, lw=0, rasterized=True)
+    ax.scatter(diff[call], y[call], s=9, color=colour, lw=0, zorder=3)
+    if call.any():
+        thr = y[call].min()
+        ax.axhline(thr, color=INK2, lw=0.6, ls="--")
+    top = d[call].sort_values("p_loss").index[:n_label]
+    for i, g in enumerate(top):
+        j = d.index.get_loc(g)
+        ax.annotate(g, (diff[j], y.iloc[j]), xytext=(-4 - 26 * (i % 2), 5 - 9 * (i % 3)), textcoords="offset points",
+                    fontsize=5, color=INK, ha="right", arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.4))
+    ax.set_xlim(-0.6, 1.05)
+    ax.set_ylim(0, 5.6)
+    ax.set_xlabel("Loss in trait − other species", fontsize=6.5)
+    ax.tick_params(labelsize=6)
+    grid(ax)
+    ax.text(0.03, 0.97, f"{call.sum()} calls", transform=ax.transAxes, fontsize=6.5, va="top", color=colour if call.any() else INK2,
+            fontweight="bold")
+    panel(ax, letter, label)
+
+
+def origin_losses(tree, names, Y, t, genes):
+    """gene -> list of booleans, one per origin: lost in at least one species of that origin."""
+    from mlconv.tree import origin_nodes
+    D = tree.tip_sets()
+    out = {}
+    for g in genes:
+        y = Y.loc[g].to_numpy() if g in Y.index else np.full(len(names), np.nan)
+        out[g] = [bool(np.nansum(y[D[o]] == 1) > 0) for o in origin_nodes(tree, t)]
+    return out
+
+
+def function_map(ax, tree, names, Y, trait, letter):
+    ax.set_axis_off()
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 40)
+    panel(ax, letter, "Functions of the convergent losses")
+    blocks = [("marine", "Marine (48 genes)", C1, ["cetaceans", "pinnipeds", "manatee"], 0, 64),
+              ("hypoxia_subterranean", "Subterranean (15 genes)", C3, None, 66, 100)]
+    for key, title, colour, onames, x0, x1 in blocks:
+        groups = FUNCTION_GROUPS[key]
+        genes = [g for _, gs in groups for g in gs]
+        ol = origin_losses(tree, names, Y, trait[key], genes)
+        n_or = len(next(iter(ol.values())))
+        ax.add_patch(FancyBboxPatch((x0 + 0.3, 0.3), x1 - x0 - 0.6, 38.6, boxstyle="round,pad=0,rounding_size=1.2",
+                                    fc="none", ec=colour, lw=1.0))
+        ax.text(x0 + 1.5, 37.3, title, fontsize=7.5, color=colour, fontweight="bold", va="center")
+        cols = 6 if key == "marine" else 3
+        cw = (x1 - x0 - 3) / cols
+        y = 34.6
+        for name, gs in groups:
+            ax.text(x0 + 1.5, y, name, fontsize=6.3, color=INK, va="center", fontweight="bold")
+            y -= 2.6
+            for i, g in enumerate(gs):
+                cx = x0 + 1.5 + (i % cols) * cw
+                cy = y - (i // cols) * 2.9
+                ax.add_patch(FancyBboxPatch((cx, cy - 1.0), cw - 0.6, 2.2, boxstyle="round,pad=0,rounding_size=0.5",
+                                            fc=PALE, ec=INK if g in REPORTED_BEFORE else GRID,
+                                            lw=0.9 if g in REPORTED_BEFORE else 0.5))
+                ax.text(cx + 0.6, cy + 0.1, g, fontsize=5.2, color=INK, va="center")
+                for k, lost in enumerate(ol[g]):
+                    ax.add_patch(plt.Circle((cx + cw - 1.4 - (n_or - 1 - k) * 0.75, cy + 0.1), 0.28,
+                                            color=colour if lost else GRID, lw=0))
+            y -= 2.9 * ((len(gs) - 1) // cols + 1) + 0.6
+        note = (f"dots: lost in {', '.join(onames)}" if onames else f"dots: lost in each of the {n_or} origins")
+        ax.text(x1 - 1.2, 1.3, note, fontsize=5.4, color=INK2, ha="right")
+    ax.text(0.5, -1.4, "Black outline: loss reported in earlier studies.", fontsize=5.4, color=INK2)
+
+
+AL_STYLE = {"fs": C5, "stop": C2, "gap": PALE}
+
+
+def alignment_panel(ax, gene, windows, species, common, marine_like, colour, letter, title, shared=()):
+    a = pd.read_csv(RES / "extra" / "codon_alignment_detail.csv")
+    a = a[a.gene == gene]
+    ref = a.drop_duplicates("ref_pos").set_index("ref_pos").ref
+    cols = []
+    for w0, w1 in windows:
+        cols += list(range(w0, w1 + 1)) + [None]
+    cols = cols[:-1]
+    ax.set_xlim(-0.5, len(cols) * 3.6)
+    ax.set_ylim(len(species) + 0.2, -1.8)
+    ax.set_axis_off()
+    for j, c in enumerate(cols):
+        x = j * 3.6
+        if c is None:
+            ax.text(x + 1.5, -1, "//", ha="center", va="center", fontsize=6, color=MUTED)
+            continue
+        if c in shared:
+            ax.add_patch(Rectangle((x - 0.4, -0.55), 3.4, len(species) + 0.1, fc="none", ec=colour, lw=0.9, ls="--"))
+        if c % 5 == 0:
+            ax.text(x + 1.3, -1.5, str(c), ha="center", va="center", fontsize=4.8, color=INK2)
+        for k in range(3):
+            ax.text(x + k, -0.6, ref.get(c, "   ")[k], ha="center", va="center", fontsize=4.8, family="DejaVu Sans Mono",
+                    color=INK)
+    ax.text(-1, -0.6, "human", ha="right", va="center", fontsize=5.4, color=INK)
+    by = {s: g.set_index("ref_pos").query_ for s, g in a.rename(columns={"query": "query_"}).groupby("species")}
+    for i, s in enumerate(species):
+        yy = i + 0.5
+        ax.text(-1, yy, common.get(s, s), ha="right", va="center", fontsize=5.4,
+                color=colour if s in marine_like else INK2)
+        q = by.get(s)
+        for j, c in enumerate(cols):
+            if c is None:
+                continue
+            x = j * 3.6
+            cod = q.get(c, "---") if q is not None else "   "
+            if cod == "XXX":
+                ax.add_patch(Rectangle((x - 0.45, yy - 0.42), 2.9, 0.84, fc=AL_STYLE["fs"], ec="none"))
+                ax.text(x + 1, yy, "fs", ha="center", va="center", fontsize=4.8, color="white", fontweight="bold")
+                continue
+            if cod in ("TAA", "TAG", "TGA") and c < ref.index.max():
+                ax.add_patch(Rectangle((x - 0.45, yy - 0.42), 2.9, 0.84, fc=AL_STYLE["stop"], ec="none"))
+            for k in range(3):
+                ch = cod[k] if len(cod) == 3 else " "
+                r = ref.get(c, "   ")[k]
+                ax.text(x + k, yy, "." if ch == r else ch, ha="center", va="center", fontsize=4.8,
+                        family="DejaVu Sans Mono", color="white" if cod in ("TAA", "TAG", "TGA") else (INK2 if ch == r else INK))
+    panel(ax, letter, title)
+
+
+def figure8(pon1_windows=((84, 96), (217, 229)), lgsn_windows=None):
+    from mlconv.tree import subtree
+    import alignment_detail as AD
+    import marine_detail as MD
+    tree, names, Y, trait = loss_setup()
+    common = pd.read_csv(RES / "toga" / "assemblies_paper.tsv", sep="\t").set_index("species")["Common name"].to_dict()
+    common.update(SHORT_NAMES)
+    common.update(DETAIL_NAMES)
+    marine = set(np.array(names)[trait["marine"]])
+    subt = set(np.array(names)[trait["hypoxia_subterranean"]])
+    t1, n1 = subtree(tree, names, list(marine) + MD.RELATIVES)
+    t2, n2 = subtree(tree, names, list(subt) + AD.SUBTERRANEAN_RELATIVES)
+
+    fig = plt.figure(figsize=(7.2, 11.6))
+    gs = fig.add_gridspec(4, 1, height_ratios=[3.4, 1.9, 1.5, 3.0], hspace=0.32)
+    alignment_panel(fig.add_subplot(gs[0]), "PON1", pon1_windows, n1, common, marine, C1, "a",
+                    "PON1: frameshifts shared by all cetaceans (dashed)", shared=(91, 224))
+    alignment_panel(fig.add_subplot(gs[1]), "LGSN", lgsn_windows, n2, common, subt, C3, "b",
+                    "LGSN: independent mutations in blind subterranean species")
+    vs = gs[2].subgridspec(1, 4, wspace=0.28)
+    for i, (k, lab, c) in enumerate(VOLCANO_TRAITS):
+        ax = fig.add_subplot(vs[i])
+        volcano_panel(ax, k, lab, c, Y, trait, "cdef"[i])
+        if i == 0:
+            ax.set_ylabel("−log₁₀ p (loss)", fontsize=6.5)
+    function_map(fig.add_subplot(gs[3]), tree, names, Y, trait, "g")
+    save(fig, "Figure8")
+
+
 if __name__ == "__main__":
     figure_tree()
     figure1()
@@ -947,5 +1138,6 @@ if __name__ == "__main__":
     figure4()
     figure5()
     figure7()
+    figure8()
     supp1()
     supp2()

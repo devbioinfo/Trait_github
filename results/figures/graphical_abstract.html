@@ -1,0 +1,204 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Graphical abstract</title>
+<style>
+  body { margin: 0; background: #ffffff; }
+  svg { display: block; font-family: Inter, Lato, sans-serif; }
+  .h1 { font-size: 40px; font-weight: 700; fill: #0b0b0b; letter-spacing: -0.5px; }
+  .sub { font-size: 19px; fill: #52514e; }
+  .ph { font-size: 21px; font-weight: 700; fill: #0b0b0b; }
+  .pn { font-size: 15px; font-weight: 700; fill: #ffffff; }
+  .lab { font-size: 16px; font-weight: 600; fill: #0b0b0b; }
+  .small { font-size: 13.5px; fill: #52514e; }
+  .big { font-size: 64px; font-weight: 800; }
+  .step { font-size: 15.5px; font-weight: 600; fill: #0b0b0b; }
+  .stepd { font-size: 13px; fill: #52514e; }
+</style></head>
+<body>
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- flat silhouettes, 100 x 50 box -->
+    <g id="whale"><path d="M4,28 C4,15 30,9 55,13 C70,15 80,21 87,26 L95,16 L94,28 L99,38 L87,32 C77,38 58,41 38,41 C18,41 4,38 4,28 Z"/><path d="M34,38 L27,48 L43,40 Z"/></g>
+    <g id="seal"><path d="M6,25 C6,18 13,14 20,15 C27,16 29,22 35,24 C52,28 70,29 84,33 L97,27 L94,37 L99,45 L84,42 C68,47 40,47 26,43 C16,40 10,34 6,25 Z"/><path d="M40,43 L34,49 L50,45 Z"/></g>
+    <g id="manatee"><path d="M4,30 C4,22 12,18 20,20 C38,13 62,15 76,23 C83,18 96,19 99,28 C97,37 84,39 77,34 C63,42 36,45 20,40 C11,40 4,38 4,30 Z"/><path d="M28,40 L24,48 L36,42 Z"/></g>
+    <g id="mole"><path d="M2,32 C10,28 18,24 30,22 C46,18 74,18 88,24 C96,28 98,34 94,38 C86,44 60,46 38,44 C24,43 12,38 2,32 Z"/><path d="M26,39 C17,41 14,48 21,50 L36,50 C38,46 36,41 32,39 Z"/><path d="M15,47 L10,51 L17,50 Z M19,49 L15,53 L22,51 Z"/><path d="M93,30 L100,27 L96,35 Z"/></g>
+    <g id="molerat"><path d="M6,30 C6,22 14,19 24,19 L80,20 C92,20 98,26 96,33 C94,40 84,42 74,42 L24,42 C12,42 6,38 6,30 Z"/><rect x="7" y="36" width="2.6" height="7" rx="1"/><rect x="10.5" y="36" width="2.6" height="7" rx="1"/><path d="M22,40 L20,48 L28,48 L30,41 Z M72,40 L72,48 L80,48 L79,40 Z"/><path d="M95,31 L100,34 L95,35 Z"/></g>
+    <g id="bat"><path d="M50,18 C47,18 45,22 45,25 C37,16 22,12 3,16 C10,21 12,27 10,32 C18,27 25,29 29,36 C35,30 41,32 46,39 L50,44 L54,39 C59,32 65,30 71,36 C75,29 82,27 90,32 C88,27 90,21 97,16 C78,12 63,16 55,25 C55,22 53,18 50,18 Z"/><path d="M46,19 L45,12 L49,17 Z M54,19 L55,12 L51,17 Z"/></g>
+    <g id="dolphin"><path d="M2,30 L14,27 C26,16 50,12 70,18 L74,8 L80,20 C86,23 91,26 94,30 L100,22 L99,33 L100,42 L93,35 C82,40 60,41 40,39 C26,38 14,35 2,30 Z"/><path d="M42,38 L36,47 L51,39 Z"/></g>
+    <g id="yak"><path d="M12,22 C20,14 40,16 56,16 C64,9 76,9 82,15 C86,17 88,20 90,22 C96,22 99,28 97,33 C95,36 91,37 88,35 L86,40 L82,44 L78,40 L74,44 L70,40 L66,44 L62,40 L58,44 L54,40 L50,44 L46,40 L42,44 L38,40 L34,44 L30,40 L26,44 L22,40 L18,44 L14,40 C10,34 8,28 12,22 Z"/><path d="M24,42 h5 v7 h-5 Z M36,42 h5 v7 h-5 Z M70,42 h5 v7 h-5 Z M80,42 h5 v7 h-5 Z"/><path d="M88,21 C85,12 90,7 97,9 C92,12 91,15 92,20 Z"/><path d="M12,24 L5,34 L10,34 Z"/></g>
+    <g id="pika"><path d="M10,42 C10,28 24,20 44,20 C56,20 64,22 70,24 C74,16 90,16 94,26 C98,34 94,42 86,44 C80,48 70,48 60,48 L20,48 C14,48 10,46 10,42 Z"/><circle cx="77" cy="16" r="6"/><circle cx="88" cy="17" r="6"/><circle cx="87" cy="29" r="2" fill="#ffffff"/></g>
+    <!-- broken gene -->
+    <g id="exons">
+      <line x1="0" y1="12" x2="300" y2="12" stroke="#8a8984" stroke-width="2"/>
+      <rect x="6" y="2" width="30" height="20" rx="3"/><rect x="62" y="2" width="22" height="20" rx="3"/>
+      <rect x="112" y="2" width="44" height="20" rx="3"/><rect x="184" y="2" width="30" height="20" rx="3"/>
+      <rect x="244" y="2" width="50" height="20" rx="3"/>
+    </g>
+  </defs>
+
+  <rect width="1600" height="900" fill="#ffffff"/>
+  <!-- title -->
+  <text x="60" y="78" class="h1">Convergent evolution is written in lost genes</text>
+  <text x="60" y="114" class="sub">A self-calibrating genome-wide test of convergence in 115 mammals · 15,703 genes · four traits</text>
+
+  <!-- panel frames -->
+  <g>
+    <rect x="40" y="150" width="480" height="640" rx="22" fill="#f6f5f1"/>
+    <rect x="560" y="150" width="480" height="640" rx="22" fill="#f6f5f1"/>
+    <rect x="1080" y="150" width="480" height="640" rx="22" fill="#f6f5f1"/>
+    <circle cx="80" cy="192" r="17" fill="#0b0b0b"/><text x="80" y="197.5" text-anchor="middle" class="pn">1</text>
+    <circle cx="600" cy="192" r="17" fill="#0b0b0b"/><text x="600" y="197.5" text-anchor="middle" class="pn">2</text>
+    <circle cx="1120" cy="192" r="17" fill="#0b0b0b"/><text x="1120" y="197.5" text-anchor="middle" class="pn">3</text>
+    <text x="108" y="199" class="ph">One trait, many origins</text>
+    <text x="628" y="199" class="ph">A test that checks itself</text>
+    <text x="1148" y="199" class="ph">What converged</text>
+  </g>
+
+  <!-- panel 1: traits and origins -->
+  <g transform="translate(70,240)">
+    <g>
+      <rect x="0" y="0" width="420" height="118" rx="14" fill="#ffffff"/>
+      <rect x="0" y="0" width="7" height="118" rx="3" fill="#2a78d6"/>
+      <text x="24" y="30" class="lab">Marine life</text><text x="400" y="30" text-anchor="end" class="small">3 origins</text>
+      <g fill="#2a78d6">
+        <use href="#whale" transform="translate(24,48) scale(1.05)"/>
+        <use href="#seal" transform="translate(152,48) scale(1.05)"/>
+        <use href="#manatee" transform="translate(282,48) scale(1.05)"/>
+      </g>
+    </g>
+    <g transform="translate(0,134)">
+      <rect x="0" y="0" width="420" height="118" rx="14" fill="#ffffff"/>
+      <rect x="0" y="0" width="7" height="118" rx="3" fill="#1baf7a"/>
+      <text x="24" y="30" class="lab">Life underground</text><text x="400" y="30" text-anchor="end" class="small">6 origins</text>
+      <g fill="#1baf7a">
+        <use href="#mole" transform="translate(24,48) scale(1.05)"/>
+        <use href="#molerat" transform="translate(152,48) scale(1.05)"/>
+        <use href="#molerat" transform="translate(282,52) scale(0.9)"/>
+      </g>
+    </g>
+    <g transform="translate(0,268)">
+      <rect x="0" y="0" width="420" height="118" rx="14" fill="#ffffff"/>
+      <rect x="0" y="0" width="7" height="118" rx="3" fill="#eb6834"/>
+      <text x="24" y="30" class="lab">Echolocation</text><text x="400" y="30" text-anchor="end" class="small">3 origins</text>
+      <g fill="#eb6834">
+        <use href="#bat" transform="translate(30,46) scale(1.0)"/>
+        <use href="#bat" transform="translate(160,50) scale(0.85)"/>
+        <use href="#dolphin" transform="translate(282,48) scale(1.05)"/>
+      </g>
+    </g>
+    <g transform="translate(0,402)">
+      <rect x="0" y="0" width="420" height="118" rx="14" fill="#ffffff"/>
+      <rect x="0" y="0" width="7" height="118" rx="3" fill="#eda100"/>
+      <text x="24" y="30" class="lab">High altitude</text><text x="400" y="30" text-anchor="end" class="small">4 origins</text>
+      <g fill="#eda100">
+        <use href="#yak" transform="translate(24,46) scale(1.05)"/>
+        <use href="#pika" transform="translate(166,52) scale(0.85)"/>
+        <use href="#yak" transform="translate(282,50) scale(0.95)"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- panel 2: calibrated test -->
+  <g transform="translate(590,240)">
+    <g>
+      <rect x="0" y="0" width="420" height="92" rx="14" fill="#ffffff"/>
+      <g transform="translate(42,46)">
+        <circle r="26" fill="#e8f0fb"/>
+        <g fill="#2a78d6"><rect x="-15" y="-15" width="8" height="8"/><rect x="-4" y="-15" width="8" height="8" opacity="0.5"/><rect x="7" y="-15" width="8" height="8" opacity="0.25"/>
+        <rect x="-15" y="-4" width="8" height="8" opacity="0.5"/><rect x="-4" y="-4" width="8" height="8"/><rect x="7" y="-4" width="8" height="8" opacity="0.5"/>
+        <rect x="-15" y="7" width="8" height="8" opacity="0.25"/><rect x="-4" y="7" width="8" height="8" opacity="0.5"/><rect x="7" y="7" width="8" height="8"/></g>
+      </g>
+      <text x="86" y="38" class="step">Learn the null from the genome</text>
+      <text x="86" y="62" class="stepd">rate covariance estimated from all genes</text>
+    </g>
+    <g transform="translate(0,108)">
+      <rect x="0" y="0" width="420" height="92" rx="14" fill="#ffffff"/>
+      <g transform="translate(42,46)">
+        <circle r="26" fill="#e8f0fb"/>
+        <g stroke="#2a78d6" stroke-width="3" stroke-linecap="round" fill="none">
+          <path d="M-14,12 L-14,-2 L0,-12 L14,-2 L14,12"/><path d="M0,-12 L0,12"/>
+        </g>
+        <line x1="8" y1="2" x2="20" y2="14" stroke="#eb6834" stroke-width="3.2" stroke-linecap="round"/>
+        <line x1="20" y1="2" x2="8" y2="14" stroke="#eb6834" stroke-width="3.2" stroke-linecap="round"/>
+      </g>
+      <text x="86" y="38" class="step">Survive dropping any one origin</text>
+      <text x="86" y="62" class="stepd">no single lineage can make a call</text>
+    </g>
+    <g transform="translate(0,216)">
+      <rect x="0" y="0" width="420" height="92" rx="14" fill="#ffffff"/>
+      <g transform="translate(42,46)">
+        <circle r="26" fill="#e8f0fb"/>
+        <g fill="#2a78d6"><rect x="-13" y="-13" width="26" height="26" rx="5"/></g>
+        <g fill="#ffffff"><circle cx="-6" cy="-6" r="2.6"/><circle cx="6" cy="6" r="2.6"/><circle cx="0" cy="0" r="2.6"/><circle cx="6" cy="-6" r="2.6"/><circle cx="-6" cy="6" r="2.6"/></g>
+      </g>
+      <text x="86" y="38" class="step">Simulate gene loss and annotation error</text>
+      <text x="86" y="62" class="stepd">null for losses from a fitted model</text>
+    </g>
+    <g transform="translate(0,324)">
+      <rect x="0" y="0" width="420" height="92" rx="14" fill="#ffffff"/>
+      <g transform="translate(42,46)">
+        <circle r="26" fill="#e8f0fb"/>
+        <g fill="none" stroke="#2a78d6" stroke-width="3" stroke-linecap="round"><circle cx="-4" cy="-4" r="10"/><line x1="4" y1="4" x2="14" y2="14"/></g>
+      </g>
+      <text x="86" y="38" class="step">Re-run on matched control traits</text>
+      <text x="86" y="62" class="stepd">the same test on traits with no biology</text>
+    </g>
+    <g transform="translate(0,436)">
+      <rect x="0" y="0" width="420" height="84" rx="14" fill="#0b0b0b"/>
+      <text x="24" y="36" style="font-size:16px;font-weight:700;fill:#ffffff">False calls in 2–8% of 100 control sets</text>
+      <text x="24" y="62" style="font-size:13.5px;fill:#d6d5d0">phylogeny-blind test: 55% false discoveries in simulations</text>
+    </g>
+  </g>
+
+  <!-- panel 3: results -->
+  <g transform="translate(1110,240)">
+    <g>
+      <rect x="0" y="0" width="420" height="150" rx="14" fill="#ffffff"/>
+      <text x="24" y="78" class="big" fill="#2a78d6">48</text>
+      <text x="124" y="48" class="lab">genes lost in marine mammals</text>
+      <text x="124" y="72" class="small">smell · taste · skin · muscle</text>
+      <text x="124" y="94" class="small">PON1 lost once in whales, ≥3 times in seals</text>
+      <g fill="#2a78d6" transform="translate(110,114)">
+        <use href="#exons"/>
+      </g>
+      <g stroke="#eb6834" stroke-width="3" stroke-linecap="round">
+        <line x1="190" y1="110" x2="198" y2="140"/><line x1="290" y1="110" x2="298" y2="140"/><line x1="356" y1="110" x2="364" y2="140"/>
+      </g>
+    </g>
+    <g transform="translate(0,166)">
+      <rect x="0" y="0" width="420" height="150" rx="14" fill="#ffffff"/>
+      <text x="24" y="78" class="big" fill="#1baf7a">15</text>
+      <text x="124" y="48" class="lab">genes lost in blind burrowers</text>
+      <text x="124" y="72" class="small">lens · retina</text>
+      <text x="124" y="94" class="small">the "hypoxia" signal was darkness</text>
+      <g fill="#1baf7a" transform="translate(110,114)">
+        <use href="#exons"/>
+      </g>
+      <g stroke="#eb6834" stroke-width="3" stroke-linecap="round">
+        <line x1="134" y1="110" x2="142" y2="140"/><line x1="244" y1="110" x2="252" y2="140"/><line x1="330" y1="110" x2="338" y2="140"/>
+      </g>
+    </g>
+    <g transform="translate(0,332)">
+      <rect x="0" y="0" width="202" height="188" rx="14" fill="#ffffff"/>
+      <text x="24" y="80" class="big" fill="#eb6834">0</text>
+      <text x="24" y="116" class="lab">echolocation</text>
+      <text x="24" y="140" class="small">prestin: a few sites,</text>
+      <text x="24" y="160" class="small">not whole genes</text>
+      <rect x="218" y="0" width="202" height="188" rx="14" fill="#ffffff"/>
+      <text x="242" y="80" class="big" fill="#eda100">0</text>
+      <text x="242" y="116" class="lab">high altitude</text>
+      <text x="242" y="140" class="small">EPAS1, EGLN1:</text>
+      <text x="242" y="160" class="small">not convergent</text>
+    </g>
+  </g>
+
+  <!-- arrows between panels -->
+  <g fill="#8a8984">
+    <path d="M526,470 L552,470 L552,460 L566,476 L552,492 L552,482 L526,482 Z" transform="translate(-6,0)"/>
+    <path d="M1046,470 L1072,470 L1072,460 L1086,476 L1072,492 L1072,482 L1046,482 Z" transform="translate(-6,0)"/>
+  </g>
+
+  <!-- take-home -->
+  <rect x="40" y="812" width="1520" height="60" rx="16" fill="#0b0b0b"/>
+  <text x="800" y="850" text-anchor="middle" style="font-size:20px;font-weight:600;fill:#ffffff">Regressive traits converge by losing the same genes; adaptive convergence leaves no genome-wide footprint.</text>
+</svg>
+</body></html>

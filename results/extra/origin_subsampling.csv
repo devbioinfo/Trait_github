@@ -26,3 +26,11 @@ n_origins,subset,calls,recovered,full_calls,new,genes
 3,Ctenomys;Nannospalax;Heterocephalus+Fukomys,0,0,15,0,
 3,Ctenomys;Nannospalax;Condylura+Scalopus,0,0,15,0,
 3,Ctenomys;Ellobius;Chrysochloris,0,0,15,0,
+3,Ctenomys;Ellobius;Heterocephalus+Fukomys,0,0,15,0,
+3,Ctenomys;Ellobius;Condylura+Scalopus,0,0,15,0,
+3,Ctenomys;Chrysochloris;Heterocephalus+Fukomys,0,0,15,0,
+3,Ctenomys;Chrysochloris;Condylura+Scalopus,0,0,15,0,
+3,Ctenomys;Heterocephalus+Fukomys;Condylura+Scalopus,1,1,15,0,LGSN
+3,Nannospalax;Ellobius;Chrysochloris,0,0,15,0,
+3,Nannospalax;Ellobius;Heterocephalus+Fukomys,22,4,15,18,ACRBP;ADH7;ALOX15B;ANKAR;ARPC2;CABP5;FAM71D;GOT1L1;GUCY2F;HEATR9;KLRC3;LCTL;MPP4;NXNL1;PRSS36;RIBC1;RSKR;SLC22A16;SPATA32;THSD8;TRIML1;ZYG11A
+3,Nannospalax;Ellobius;Condylura+Scalopus,0,0,15,0,
