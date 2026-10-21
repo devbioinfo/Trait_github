@@ -83,6 +83,10 @@ def main() -> None:
     ap.add_argument("--null-draws", type=int, default=100)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--seed", type=int, default=2027)
+    ap.add_argument("--discordance", type=float, default=0.0,
+                    help="mean nearest-neighbour interchanges per gene tree (0: gene trees = species tree)")
+    ap.add_argument("--tree-label", type=int, default=0, help="added to rep in the 'tree' column")
+    ap.add_argument("--effects", default="weak,moderate,strong")
     args = ap.parse_args()
 
     rng = np.random.default_rng(args.seed)
@@ -101,16 +105,17 @@ def main() -> None:
         for conf in map(float, args.confounding.split(",")):
             t0 = time.time()
             null_jobs, _, _ = make_jobs(tree, fg, args.genes, rng, frac=0.0, confounding=conf,
-                                        omega_mult=1.0, rate_mult=1.0, height=0.8)
+                                        omega_mult=1.0, rate_mult=1.0, height=0.8, discordance=args.discordance)
             nt0, aa0, cod0 = estimate(null_jobs, args.workers)
             X0 = layers_from_lengths(nt0, aa0, cod0)[:, :, keep]
             p_null, _, _ = all_methods(X0, fk, ok, lmm, nulls)
             conv_idx = rng.choice(args.genes, size=n_conv, replace=False)
             print(f"rep={rep} conf={conf} null genome: {time.time() - t0:.0f}s", flush=True)
-            for eff, (om, rm) in EFFECTS.items():
+            for eff in args.effects.split(","):
+                om, rm = EFFECTS[eff]
                 t1 = time.time()
                 cj, _, kinds_c = make_jobs(tree, fg, n_conv, rng, frac=1.0, confounding=conf,
-                                           omega_mult=om, rate_mult=rm, height=0.8)
+                                           omega_mult=om, rate_mult=rm, height=0.8, discordance=args.discordance)
                 ntc, aac, codc = estimate(cj, args.workers)
                 nt, aa, cod = nt0.copy(), aa0.copy(), cod0.copy()
                 nt[conv_idx], aa[conv_idx], cod[conv_idx] = ntc, aac, codc
@@ -132,7 +137,8 @@ def main() -> None:
 
                 for name in p_conv:
                     rej = bh(p_conv[name], 0.1)
-                    row = dict(rep=rep, confounding=conf, effect=eff, method=name,
+                    row = dict(rep=rep, tree=args.tree_label + rep, tips=args.tips, frac=args.frac,
+                               discordance=args.discordance, confounding=conf, effect=eff, method=name,
                                fpr_null=(p_null[name] < 0.05).mean(),
                                false_calls_null=int(bh(p_null[name], 0.1).sum()),
                                fdr=(rej & ~truth).sum() / max(1, rej.sum()),

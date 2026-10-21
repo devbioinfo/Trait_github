@@ -88,7 +88,29 @@ def simulate_and_estimate(job: dict) -> tuple[np.ndarray, np.ndarray]:
             np.array([bl_aa.get(k, 0.0) for k in keys]))
 
 
-def make_jobs(tree, fg, n_genes, rng, *, frac, confounding, omega_mult, rate_mult, height, kappa=2.0):
+def discordant_tree(tree, n_nni, rng):
+    """Gene tree from the species tree by n_nni nearest-neighbour interchanges on internal
+    branches, chosen with probability proportional to exp(-length / median internal length)
+    (short branches, where incomplete lineage sorting is likely). Node indices keep their
+    branch lengths and annotations; only the topology changes."""
+    parent = tree.parent.copy()
+    internal = np.arange(tree.n_tips, tree.root)
+    w = np.exp(-tree.length[internal] / np.median(tree.length[internal]))
+    for v in rng.choice(internal, size=n_nni, p=w / w.sum()):
+        p = parent[v]
+        sib = [c for c in np.nonzero(parent == p)[0] if c != v]
+        kids = np.nonzero(parent == v)[0]
+        if not sib or len(kids) < 2:
+            continue
+        s, c = rng.choice(sib), rng.choice(kids)
+        parent[s], parent[c] = v, p
+    return type(tree)(parent=parent, length=tree.length, n_tips=tree.n_tips)
+
+
+def make_jobs(tree, fg, n_genes, rng, *, frac, confounding, omega_mult, rate_mult, height, kappa=2.0,
+              discordance=0.0):
+    """discordance: mean number of nearest-neighbour interchanges per gene tree (Poisson); the
+    alignment is simulated on the gene tree and branch lengths are estimated on the species tree."""
     D = tree.tip_sets()
     internal = np.arange(tree.n_tips, tree.root)
     keys = branch_splits(tree)
@@ -107,7 +129,8 @@ def make_jobs(tree, fg, n_genes, rng, *, frac, confounding, omega_mult, rate_mul
         if kind in ("omega", "both"):
             w_fg = omega * omega_mult
             ann = {int(b): f"[&model=GY{{{w_fg:.4f},{kappa}}}]" for b in np.nonzero(fg)[0]}
-        jobs.append(dict(sim_newick=to_newick(tree, height, lengths, ann),
+        gtree = discordant_tree(tree, rng.poisson(discordance), rng) if discordance > 0 else tree
+        jobs.append(dict(sim_newick=to_newick(gtree, height, lengths, ann),
                          true_newick=to_newick(tree, height),
                          model=f"GY{{{omega:.4f},{kappa}}}",
                          codons=int(np.clip(rng.lognormal(np.log(500), 0.5), 300, 1500)),

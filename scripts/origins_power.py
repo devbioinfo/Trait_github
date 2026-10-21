@@ -67,6 +67,7 @@ def main() -> None:
     ap.add_argument("--reps", type=int, default=3)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--seed", type=int, default=11)
+    ap.add_argument("--rep-offset", type=int, default=0, help="added to rep in the output")
     args = ap.parse_args()
 
     rng = np.random.default_rng(args.seed)
@@ -109,7 +110,7 @@ def main() -> None:
             for name in p_conv:
                 rej_n = bh(p_null[name], 0.1)
                 rej = bh(p_conv[name], 0.1)
-                row = dict(rep=rep, origins=m, n_fg_branches=int(fk.sum()), method=name,
+                row = dict(rep=rep + args.rep_offset, origins=m, n_fg_branches=int(fk.sum()), method=name,
                            fpr_null=(p_null[name] < 0.05).mean(), false_calls_null=int(rej_n.sum()),
                            fdr=(rej & ~truth).sum() / max(1, rej.sum()),
                            power=(rej & truth).sum() / max(1, truth.sum()))
