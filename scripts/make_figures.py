@@ -8,6 +8,7 @@ Figure 5  genome-wide results for three traits: calls, calibration, and the conv
 Figure 6  timing of convergent losses and partitioning of correlated traits
 Figure 7  marine losses in detail: lineage funnels, PON1 mutation map, exon synteny
 Figure 8  codon alignments of two losses, genome-wide volcano plots, functional map
+Figure 9  tissue, pathway and GO enrichment of the convergent losses
 Supplementary Figure 2  loss model: data quality and goodness of fit
 Supplementary Figure 1  comparison with RERconverge
 Supplementary Figure 3  number of origins: subterranean losses recovered from subsets of origins
@@ -1170,6 +1171,48 @@ def supp3():
     save(fig, "SupplementaryFigure3")
 
 
+# ---------------------------------------------------------------------------------------
+# Figure 9: tissue, pathway and GO enrichment of the convergent losses
+# ---------------------------------------------------------------------------------------
+
+def enrichment_bars(ax, df, colour, letter, title, n=7, max_size=700):
+    d = df[df["size"] <= max_size].sort_values("size").drop_duplicates("genes")    # most specific term per gene set
+    d = d.sort_values(["q", "p"]).head(n).iloc[::-1]
+    y = np.arange(len(d))
+    sig = d.q < 0.1
+    ax.barh(y, d.called_in_term, color=[colour if v else GRID for v in sig], height=0.62)
+    ax.scatter(d.expected_matched, y, marker="|", s=90, color=INK, lw=1.4, zorder=3)
+    for yy, (_, r) in zip(y, d.iterrows()):
+        ax.text(r.called_in_term + 0.25, yy, f"q = {r.q:.1g}" if r.q < 0.1 else f"p = {r.p:.1g}",
+                va="center", fontsize=5.6, color=INK if r.q < 0.1 else INK2)
+    labels = [(n_[0].upper() + n_[1:]) if len(n_) <= 44 else (n_[0].upper() + n_[1:42] + "…") for n_ in d.name]
+    ax.set_yticks(y, labels, fontsize=6)
+    ax.set_xlim(0, d.called_in_term.max() * 1.35 + 1)
+    ax.set_xlabel("Called genes in term (tick: expected)", fontsize=6.5)
+    ax.tick_params(axis="x", labelsize=6)
+    grid(ax, "x")
+    panel(ax, letter, title)
+
+
+def figure9():
+    tis = pd.read_csv(RES / "extra" / "enrichment_tissue.csv")
+    rea = pd.read_csv(RES / "extra" / "enrichment_reactome.csv")
+    go = pd.read_csv(RES / "extra" / "enrichment_go.csv")
+    fig, axes = plt.subplots(3, 2, figsize=(7.2, 7.4), gridspec_kw=dict(wspace=1.15, hspace=0.62))
+    for j, (k, lab, c) in enumerate((("marine", "Marine", C1), ("hypoxia_subterranean", "Subterranean", C3))):
+        enrichment_bars(axes[0, j], tis[tis.trait == k], c, "ab"[j], f"{lab}: tissue (Human Protein Atlas)", n=5)
+        r = rea[rea.trait == k]
+        if len(r):
+            enrichment_bars(axes[1, j], r, c, "cd"[j], f"{lab}: Reactome pathways", n=5)
+        else:
+            axes[1, j].set_axis_off()
+            axes[1, j].text(0.5, 0.5, "No pathway with ≥2 called genes", ha="center", va="center", fontsize=7,
+                            color=INK2, transform=axes[1, j].transAxes)
+            panel(axes[1, j], "cd"[j], f"{lab}: Reactome pathways")
+        enrichment_bars(axes[2, j], go[go.trait == k], c, "ef"[j], f"{lab}: GO biological process", n=6, max_size=450)
+    save(fig, "Figure9")
+
+
 if __name__ == "__main__":
     figure_tree()
     figure1()
@@ -1179,6 +1222,7 @@ if __name__ == "__main__":
     figure5()
     figure7()
     figure8()
+    figure9()
     supp1()
     supp2()
     supp3()
