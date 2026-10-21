@@ -6,6 +6,7 @@ Figure 3  rate layers on simulated codon alignments (calibration, power, signatu
 Figure 4  gene-loss layer: simulation benchmark and calibration of loss nulls on real genomes
 Figure 5  genome-wide results for three traits: calls, calibration, and the convergent losses
 Figure 6  timing of convergent losses and partitioning of correlated traits
+Figure 7  marine losses in detail: lineage funnels, PON1 mutation map, exon synteny
 Supplementary Figure 2  loss model: data quality and goodness of fit
 Supplementary Figure 1  comparison with RERconverge
 
@@ -722,6 +723,222 @@ def supp1():
     save(fig, "SupplementaryFigure1")
 
 
+# ---------------------------------------------------------------------------------------
+# Figure 7: marine losses in detail (lineage funnels, PON1 mutation map, exon synteny)
+# ---------------------------------------------------------------------------------------
+
+MUT_STYLE = {"STOP": ("Stop codon", C2, "v"), "FS": ("Frameshift", C5, "D"),
+             "SSM": ("Splice-site mutation", C3, "s")}
+DETAIL_GENE = "PON1"
+ORIGIN_SETS = [("Cetaceans", "Cetacea", ["Hippopotamus_amphibius", "Bos_taurus", "Sus_scrofa", "Camelus_dromedarius"]),
+               ("Pinnipeds", "Pinniped", ["Pteronura_brasiliensis", "Mellivora_capensis", "Canis_lupus_familiaris", "Felis_catus"]),
+               ("Sirenians", "Sirenia", ["Loxodonta_africana", "Procavia_capensis", "Heterohyrax_brucei", "Elephantulus_edwardii"])]
+DETAIL_NAMES = {"Eubalaena_japonica": "right whale", "Balaenoptera_bonaerensis": "minke whale",
+                "Mesoplodon_bidens": "Sowerby's beaked whale", "Lipotes_vexillifer": "baiji",
+                "Tursiops_truncatus": "bottlenose dolphin", "Mirounga_angustirostris": "N. elephant seal",
+                "Trichechus_manatus": "W. Indian manatee", "Loxodonta_africana": "African elephant",
+                "Heterohyrax_brucei": "yellow-spotted hyrax", "Elephantulus_edwardii": "Cape elephant shrew",
+                "Zalophus_californianus": "California sea lion", "Neomonachus_schauinslandi": "Hawaiian monk seal"}
+SYNTENY_PAIRS = [("Bos_taurus", "Tursiops_truncatus"), ("Canis_lupus_familiaris", "Zalophus_californianus"),
+                 ("Loxodonta_africana", "Trichechus_manatus")]
+
+
+def mut_kind(t):
+    return "FS" if t.startswith("FS_") else t
+
+
+def detail_data(gene):
+    m = pd.read_csv(RES / "extra" / "marine_detail_mutations.csv")
+    e = pd.read_csv(RES / "extra" / "marine_detail_exons.csv")
+    e = e[e.gene == gene]
+    chain = e.groupby("species").chain.first().astype(str)
+    m = m[(m.gene == gene) & (m.type != "COMPENSATION")]
+    m = m[m.chain.astype(str) == m.species.map(chain)]
+    # reference exon lengths (bp): the most common projected structure among the terrestrial relatives
+    rel = e[e.group == "relative"]
+    struct = []
+    for _, g in rel.groupby("species"):
+        L = (g.end - g.start).tolist()
+        struct.append(tuple(L if g.strand.iloc[0] == "+" else L[::-1]))
+    ref = np.array(pd.Series(struct).mode()[0])
+    return m, e, ref
+
+
+def query_exons(e, m, sp, n_exons):
+    """Exon number -> (start, end) in kb from the locus start, in transcription direction."""
+    g = e[e.species == sp].sort_values("start")
+    st, en = g.start.to_numpy(), g.end.to_numpy()
+    if g.strand.iloc[0] == "-":
+        st, en = (en.max() - en)[::-1], (en.max() - st)[::-1]
+    else:
+        st, en = st - st.min(), en - st.min()
+    gone = set(m[(m.species == sp) & m.type.isin(["Deleted exon", "Missing exon"])].exon)
+    nums = [k for k in range(1, n_exons + 1) if k not in gone][: len(st)]
+    return {k: (a / 1e3, b / 1e3) for k, a, b in zip(nums, st, en)}
+
+
+def cladogram(tree):
+    """Copy of the tree with tips aligned: node depth = levels above the deepest tip."""
+    h = np.zeros(tree.n_nodes)
+    for v in range(tree.n_nodes - 1):
+        h[tree.parent[v]] = max(h[tree.parent[v]], h[v] + 1)
+    length = np.where(tree.parent >= 0, h[np.maximum(tree.parent, 0)] - h, 0.0)
+    return type(tree)(parent=tree.parent, length=length.astype(float), n_tips=tree.n_tips)
+
+
+def labelled_tree(ax, tree, names, common, marine, fs=5.6):
+    t = cladogram(tree)
+    x, y = draw_tree(ax, t, {v: C1 for v in np.nonzero(foreground_branches(
+        t, np.array([nm in marine for nm in names])))[0]}, lw=1.1)
+    for i in range(t.n_tips):
+        ax.text(x[i] + 0.25, y[i], common.get(names[i], names[i]), va="center", fontsize=fs,
+                color=INK if names[i] in marine else INK2)
+    return x, y
+
+
+def funnel_panel(axt, axf, row, letter, title, tree, names, common, marine):
+    x, _ = labelled_tree(axt, tree, names, common, marine, fs=5.3)
+    axt.set_xlim(-0.2, x.max() + 0.75 * x.max() + 6.5)
+    axt.set_ylim(tree.n_tips - 0.5, -0.5)
+    panel(axt, letter, title)
+    steps = [("genes analysed", row.genes_analysed), ("lost in ≥1 species", row.lost_any),
+             ("lost in all species", row.lost_all), ("…intact in sister", row.origin_specific)]
+    axf.set_axis_off()
+    axf.set_xlim(0, 1)
+    axf.set_ylim(5.2, -0.3)
+    for i, (lab, n) in enumerate(steps):
+        axf.add_patch(FancyBboxPatch((0.04, i + 0.08), 0.92, 0.62, boxstyle="round,pad=0,rounding_size=0.06",
+                                     fc=PALE, ec=GRID, lw=0.6, mutation_aspect=4))
+        axf.text(0.5, i + 0.3, f"{n:,}", ha="center", va="center", fontsize=6.8, color=INK, fontweight="bold")
+        axf.text(0.5, i + 0.56, lab, ha="center", va="center", fontsize=4.7, color=INK2)
+        if i:
+            axf.annotate("", (0.5, i + 0.08), (0.5, i - 0.3), arrowprops=dict(arrowstyle="-|>", color=MUTED, lw=0.6))
+    axf.add_patch(FancyBboxPatch((0.04, 4.28), 0.92, 0.82, boxstyle="round,pad=0,rounding_size=0.06",
+                                 fc=C1, ec=C1, lw=0.6, mutation_aspect=4))
+    axf.text(0.5, 4.52, f"{row.convergent_calls}", ha="center", va="center", fontsize=6.8, color="white",
+             fontweight="bold")
+    axf.text(0.5, 4.85, "convergent", ha="center", va="center", fontsize=5, color="white")
+    axf.annotate("", (0.5, 4.28), (0.5, 3.7), arrowprops=dict(arrowstyle="-|>", color=MUTED, lw=0.6, ls=":"))
+
+
+def figure7():
+    import convergence_toga as CT
+    from mlconv.tree import subtree
+    full, names_all = from_newick((RES / "toga" / "master_paper.nwk").read_text())
+    common = pd.read_csv(RES / "toga" / "assemblies_paper.tsv", sep="\t").set_index("species")["Common name"].to_dict()
+    common.update(SHORT_NAMES)
+    common.update(DETAIL_NAMES)
+    cov = pd.read_csv(RES / "toga" / "coverage_paper.tsv", sep="\t").drop_duplicates("species").set_index("species")
+    lineage = cov.lineage.reindex(names_all).fillna("")
+    marine = {s for s in names_all if CT.TRAITS["marine"][0](s, lineage[s])}
+    fun = pd.read_csv(RES / "extra" / "marine_origin_funnel.csv").set_index("origin")
+    m, e, ref = detail_data(DETAIL_GENE)
+    n_ex = len(ref)
+    bounds = np.concatenate([[0], np.cumsum(ref)]) / 3          # reference codon boundaries
+
+    fig = plt.figure(figsize=(7.2, 9.6))
+    gs = fig.add_gridspec(4, 1, height_ratios=[2.2, 4.4, 0.5, 1.9], hspace=0.2)
+    top = gs[0].subgridspec(1, 6, width_ratios=[1.5, 0.66] * 3, wspace=0.02)
+    origin_of = {}
+    for i, (label, key, rel) in enumerate(ORIGIN_SETS):
+        ms = [s for s in names_all if s in marine and (key in lineage[s] or (key == "Pinniped" and any(
+            k in lineage[s] for k in ("Otariidae", "Phocidae", "Odobenidae"))))]
+        origin_of.update({s: label for s in ms})
+        t, nm = subtree(full, names_all, ms + rel)
+        funnel_panel(fig.add_subplot(top[2 * i]), fig.add_subplot(top[2 * i + 1]), fun.loc[label], "abc"[i], label,
+                     t, nm, common, marine)
+
+    # d: mutation map on the species tree
+    mid = gs[1].subgridspec(1, 2, width_ratios=[1.35, 3], wspace=0.1)
+    keep = [s for s in names_all if s in origin_of] + [s for _, _, r in ORIGIN_SETS for s in r]
+    t, nm = subtree(full, names_all, keep)
+    at = fig.add_subplot(mid[0])
+    tx, ty = labelled_tree(at, t, nm, common, marine, fs=5.4)
+    at.set_xlim(-0.2, tx.max() + 9.5)
+    at.set_ylim(t.n_tips - 0.5, -2.2)
+    at.text(tx.max() + 9.3, -1.3, f"Human {DETAIL_GENE} (reference exons)", ha="right", va="center", fontsize=5.6, color=INK)
+    ax = fig.add_subplot(mid[1], sharey=at)
+    ax.patch.set_alpha(0)
+    row = {s: ty[i] for i, s in enumerate(nm)}
+    for k in range(n_ex):
+        ax.add_patch(Rectangle((bounds[k], -1.75), bounds[k + 1] - bounds[k], 0.9, fc=C1 if k % 2 == 0 else "#9cc3ef", ec="white", lw=0.8))
+        ax.text((bounds[k] + bounds[k + 1]) / 2, -1.3, str(k + 1), ha="center", va="center", fontsize=5.5, color="white")
+    for s, yy in row.items():
+        ax.plot([0, bounds[-1]], [yy, yy], color=GRID, lw=0.8, zorder=1)
+    ms = m[m.species.isin(row)]
+    for r in ms.itertuples():
+        yy = row[r.species]
+        if r.type in ("Deleted exon", "Missing exon"):
+            a, b = bounds[r.exon - 1], bounds[r.exon]
+            ax.add_patch(Rectangle((a, yy - 0.32), b - a, 0.64, fc=C4 if r.type == "Deleted exon" else "white",
+                                   ec=C4 if r.type == "Deleted exon" else MUTED, hatch=None if r.type == "Deleted exon" else "////",
+                                   lw=0.6, zorder=2))
+            continue
+        k = mut_kind(r.type)
+        if k not in MUT_STYLE:
+            continue
+        _, col, mk = MUT_STYLE[k]
+        xx = bounds[r.exon - 1] if r.codon == 0 else r.codon - 0.5
+        ax.scatter(xx, yy, s=16, marker=mk, color="white" if r.masked else col, edgecolor=col, lw=0.8, zorder=3)
+    # mutations shared by two or more species of one origin (same exon and type, codon within 1)
+    ms = ms.assign(origin=ms.species.map(origin_of), kind=ms.type.map(mut_kind)).dropna(subset=["origin"])
+    ms = ms[ms.kind.isin(MUT_STYLE)]
+    for (o, k, ex), g in ms.groupby(["origin", "kind", "exon"]):
+        for c in sorted(set(g.codon)):
+            h = g[(g.codon - c).abs() <= 1]
+            if h.species.nunique() >= 2 and c == h.codon.min():
+                ys_ = [row[s] for s in h.species]
+                xx = bounds[ex - 1] if c == 0 else c - 0.5
+                ax.plot([xx, xx], [min(ys_), max(ys_)], color=MUTED, lw=0.6, zorder=2.5)
+    ax.set_xlim(-2, bounds[-1] + 2)
+    ax.set_xlabel("Reference codon")
+    ax.spines[["left"]].set_visible(False)
+    ax.tick_params(left=False, labelleft=False)
+    handles = [plt.Line2D([], [], marker=mk, ls="", color=c, ms=4.5, label=lab) for lab, c, mk in MUT_STYLE.values()]
+    handles += [Rectangle((0, 0), 1, 1, fc=C4, ec=C4, label="Deleted exon"),
+                Rectangle((0, 0), 1, 1, fc="white", ec=MUTED, hatch="////", label="Missing exon (gap)"),
+                plt.Line2D([], [], marker="o", ls="", mfc="white", mec=INK2, ms=4, label="Masked by TOGA"),
+                plt.Line2D([], [], color=MUTED, lw=0.6, label="Shared within origin")]
+    ax.legend(handles=handles, ncol=4, loc="upper center", bbox_to_anchor=(0.35, -0.11), fontsize=5.8, handlelength=1.4)
+    at.set_title(f"d  Inactivating mutations in {DETAIL_GENE}", loc="left", fontsize=9, color=INK)
+
+    # e: exon synteny (Miropeats-style) between a terrestrial relative and a marine species
+    bot = gs[3].subgridspec(1, 3, wspace=0.12)
+    for i, (a_sp, b_sp) in enumerate(SYNTENY_PAIRS):
+        ax = fig.add_subplot(bot[i])
+        A, B = query_exons(e, m, a_sp, n_ex), query_exons(e, m, b_sp, n_ex)
+        span = max(max(v[1] for v in A.values()), max(v[1] for v in B.values()))
+        for yy, ex, sp in ((1, A, a_sp), (0, B, b_sp)):
+            ax.plot([0, max(v[1] for v in ex.values())], [yy, yy], color=MUTED, lw=0.8, zorder=1)
+            for k, (s0, s1) in ex.items():
+                ax.add_patch(Rectangle((s0, yy - 0.07), max(s1 - s0, span * 0.012), 0.14,
+                                       fc=C1 if sp in marine else MUTED, ec="none", zorder=2))
+            ax.text(0, yy + (0.17 if yy else -0.4), f"{common.get(sp, sp)}  ({max(v[1] for v in ex.values()):.1f} kb)",
+                    fontsize=5.8, va="center", color=INK if sp in marine else INK2)
+        for k in A:
+            if k in B:
+                (a0, a1), (b0, b1) = A[k], B[k]
+                ax.fill([a0, a1, b1, b0], [0.93, 0.93, 0.07, 0.07], color=C4, alpha=0.45, lw=0, zorder=0)
+        for r in m[m.species == b_sp].itertuples():
+            k = mut_kind(r.type)
+            if k not in MUT_STYLE or r.exon not in B:
+                continue
+            b0, b1 = B[r.exon]
+            frac = 0 if r.codon == 0 else (r.codon - bounds[r.exon - 1]) / (bounds[r.exon] - bounds[r.exon - 1])
+            _, col, mk = MUT_STYLE[k]
+            ax.scatter(b0 + np.clip(frac, 0, 1) * (b1 - b0), -0.17, s=14, marker=mk,
+                       color="white" if r.masked else col, edgecolor=col, lw=0.8, zorder=3)
+        ax.set_xlim(-span * 0.02, span * 1.02)
+        ax.set_ylim(-0.52, 1.32)
+        ax.set_yticks([])
+        ax.spines[["left"]].set_visible(False)
+        ax.set_xlabel("kb from first coding exon", fontsize=6.5)
+        ax.tick_params(labelsize=6)
+        if i == 0:
+            ax.set_title(f"e  {DETAIL_GENE} exons in terrestrial and marine genomes", loc="left", fontsize=9, color=INK)
+    save(fig, "Figure7")
+
+
 if __name__ == "__main__":
     figure_tree()
     figure1()
@@ -729,5 +946,6 @@ if __name__ == "__main__":
     figure3()
     figure4()
     figure5()
+    figure7()
     supp1()
     supp2()
