@@ -1,0 +1,235 @@
+trait,gene,origin,origin_species,observed,lost,category
+marine,CALHM1,Trichechus,1,1,0,intact
+marine,PON1,Trichechus,1,1,1,at origin
+marine,KLK8,Trichechus,1,1,1,at origin
+marine,GNAT3,Trichechus,1,1,0,intact
+marine,OR7A17,Trichechus,1,1,1,at origin
+marine,ACSM4,Trichechus,1,1,1,at origin
+marine,ANKRD23,Trichechus,1,1,1,at origin
+marine,TGM7,Trichechus,1,1,1,at origin
+marine,OR5M9,Trichechus,1,1,1,at origin
+marine,OR2T1,Trichechus,1,1,1,at origin
+marine,HTRA4,Trichechus,1,1,1,at origin
+marine,KRT10,Trichechus,1,1,1,at origin
+marine,GBA3,Trichechus,1,1,1,at origin
+marine,TAS2R1,Trichechus,1,1,1,at origin
+marine,MYBPHL,Trichechus,1,1,1,at origin
+marine,KRT79,Trichechus,1,1,1,at origin
+marine,ATP13A5,Trichechus,1,1,1,at origin
+marine,OR51G1,Trichechus,1,1,1,at origin
+marine,GSDMA,Trichechus,1,1,0,intact
+marine,PTGR1,Trichechus,1,1,0,intact
+marine,SULT6B1,Trichechus,1,1,1,at origin
+marine,CCDC170,Trichechus,1,1,0,intact
+marine,OR5H15,Trichechus,1,1,1,at origin
+marine,OR9Q2,Trichechus,1,0,0,no data
+marine,TAAR5,Trichechus,1,1,1,at origin
+marine,GLYATL3,Trichechus,1,1,1,at origin
+marine,OR5C1,Trichechus,1,1,0,intact
+marine,OR5M3,Trichechus,1,1,1,at origin
+marine,MYH6,Trichechus,1,1,1,at origin
+marine,OR6C2,Trichechus,1,1,1,at origin
+marine,OR51I1,Trichechus,1,1,0,intact
+marine,OR51D1,Trichechus,1,1,1,at origin
+marine,MYH13,Trichechus,1,1,1,at origin
+marine,MRGPRX2,Trichechus,1,1,0,intact
+marine,OR51I2,Trichechus,1,1,0,intact
+marine,MSS51,Trichechus,1,1,1,at origin
+marine,TLE7,Trichechus,1,1,1,before origin
+marine,OR5H1,Trichechus,1,1,1,before origin
+marine,ADGRF2,Trichechus,1,1,1,at origin
+marine,OR51A7,Trichechus,1,1,1,at origin
+marine,TAS1R3,Trichechus,1,1,0,intact
+marine,KRTAP24-1,Trichechus,1,1,1,at origin
+marine,SLC4A9,Trichechus,1,1,1,at origin
+marine,SERPINB12,Trichechus,1,1,1,at origin
+marine,OR2K2,Trichechus,1,1,1,at origin
+marine,KRT1,Trichechus,1,1,1,at origin
+marine,OR5H14,Trichechus,1,1,1,before origin
+marine,ANXA9,Trichechus,1,1,1,at origin
+marine,CALHM1,Eubalaena+Eschrichtius+...,12,12,7,within origin
+marine,PON1,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,KLK8,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,GNAT3,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,OR7A17,Eubalaena+Eschrichtius+...,12,11,2,within origin
+marine,ACSM4,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,ANKRD23,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,TGM7,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,OR5M9,Eubalaena+Eschrichtius+...,12,8,8,at origin
+marine,OR2T1,Eubalaena+Eschrichtius+...,12,7,6,within origin
+marine,HTRA4,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,KRT10,Eubalaena+Eschrichtius+...,12,10,10,at origin
+marine,GBA3,Eubalaena+Eschrichtius+...,12,11,11,at origin
+marine,TAS2R1,Eubalaena+Eschrichtius+...,12,10,10,at origin
+marine,MYBPHL,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,KRT79,Eubalaena+Eschrichtius+...,12,12,11,within origin
+marine,ATP13A5,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,OR51G1,Eubalaena+Eschrichtius+...,12,7,7,before origin
+marine,GSDMA,Eubalaena+Eschrichtius+...,12,12,11,within origin
+marine,PTGR1,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,SULT6B1,Eubalaena+Eschrichtius+...,12,7,7,at origin
+marine,CCDC170,Eubalaena+Eschrichtius+...,12,12,11,within origin
+marine,OR5H15,Eubalaena+Eschrichtius+...,12,12,11,within origin
+marine,OR9Q2,Eubalaena+Eschrichtius+...,12,12,11,within origin
+marine,TAAR5,Eubalaena+Eschrichtius+...,12,12,12,before origin
+marine,GLYATL3,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,OR5C1,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,OR5M3,Eubalaena+Eschrichtius+...,12,12,9,within origin
+marine,MYH6,Eubalaena+Eschrichtius+...,12,11,4,within origin
+marine,OR6C2,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,OR51I1,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,OR51D1,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,MYH13,Eubalaena+Eschrichtius+...,12,11,11,at origin
+marine,MRGPRX2,Eubalaena+Eschrichtius+...,12,7,7,before origin
+marine,OR51I2,Eubalaena+Eschrichtius+...,12,11,11,at origin
+marine,MSS51,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,TLE7,Eubalaena+Eschrichtius+...,12,12,0,intact
+marine,OR5H1,Eubalaena+Eschrichtius+...,12,12,11,within origin
+marine,ADGRF2,Eubalaena+Eschrichtius+...,12,10,10,at origin
+marine,OR51A7,Eubalaena+Eschrichtius+...,12,11,11,at origin
+marine,TAS1R3,Eubalaena+Eschrichtius+...,12,11,11,at origin
+marine,KRTAP24-1,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,SLC4A9,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,SERPINB12,Eubalaena+Eschrichtius+...,12,10,10,at origin
+marine,OR2K2,Eubalaena+Eschrichtius+...,12,10,10,at origin
+marine,KRT1,Eubalaena+Eschrichtius+...,12,11,11,at origin
+marine,OR5H14,Eubalaena+Eschrichtius+...,12,12,11,within origin
+marine,ANXA9,Eubalaena+Eschrichtius+...,12,12,12,at origin
+marine,CALHM1,Zalophus+Odobenus+...,5,5,2,within origin
+marine,PON1,Zalophus+Odobenus+...,5,5,3,within origin
+marine,KLK8,Zalophus+Odobenus+...,5,5,2,within origin
+marine,GNAT3,Zalophus+Odobenus+...,5,5,3,within origin
+marine,OR7A17,Zalophus+Odobenus+...,5,5,1,within origin
+marine,ACSM4,Zalophus+Odobenus+...,5,4,1,within origin
+marine,ANKRD23,Zalophus+Odobenus+...,5,5,5,at origin
+marine,TGM7,Zalophus+Odobenus+...,5,5,1,within origin
+marine,OR5M9,Zalophus+Odobenus+...,5,5,4,within origin
+marine,OR2T1,Zalophus+Odobenus+...,5,5,3,within origin
+marine,HTRA4,Zalophus+Odobenus+...,5,5,3,within origin
+marine,KRT10,Zalophus+Odobenus+...,5,5,0,intact
+marine,GBA3,Zalophus+Odobenus+...,5,5,5,before origin
+marine,TAS2R1,Zalophus+Odobenus+...,5,5,5,before origin
+marine,MYBPHL,Zalophus+Odobenus+...,5,5,5,at origin
+marine,KRT79,Zalophus+Odobenus+...,5,5,0,intact
+marine,ATP13A5,Zalophus+Odobenus+...,5,5,1,within origin
+marine,OR51G1,Zalophus+Odobenus+...,5,5,2,within origin
+marine,GSDMA,Zalophus+Odobenus+...,5,5,4,within origin
+marine,PTGR1,Zalophus+Odobenus+...,5,5,3,within origin
+marine,SULT6B1,Zalophus+Odobenus+...,5,5,4,within origin
+marine,CCDC170,Zalophus+Odobenus+...,5,5,2,within origin
+marine,OR5H15,Zalophus+Odobenus+...,5,5,3,within origin
+marine,OR9Q2,Zalophus+Odobenus+...,5,5,1,within origin
+marine,TAAR5,Zalophus+Odobenus+...,5,5,5,at origin
+marine,GLYATL3,Zalophus+Odobenus+...,5,5,1,within origin
+marine,OR5C1,Zalophus+Odobenus+...,5,4,4,at origin
+marine,OR5M3,Zalophus+Odobenus+...,5,5,2,within origin
+marine,MYH6,Zalophus+Odobenus+...,5,4,2,within origin
+marine,OR6C2,Zalophus+Odobenus+...,5,4,3,within origin
+marine,OR51I1,Zalophus+Odobenus+...,5,5,5,at origin
+marine,OR51D1,Zalophus+Odobenus+...,5,5,3,within origin
+marine,MYH13,Zalophus+Odobenus+...,5,5,5,at origin
+marine,MRGPRX2,Zalophus+Odobenus+...,5,5,2,within origin
+marine,OR51I2,Zalophus+Odobenus+...,5,5,3,within origin
+marine,MSS51,Zalophus+Odobenus+...,5,5,1,within origin
+marine,TLE7,Zalophus+Odobenus+...,5,5,4,within origin
+marine,OR5H1,Zalophus+Odobenus+...,5,5,4,within origin
+marine,ADGRF2,Zalophus+Odobenus+...,5,5,0,intact
+marine,OR51A7,Zalophus+Odobenus+...,5,5,4,within origin
+marine,TAS1R3,Zalophus+Odobenus+...,5,5,5,at origin
+marine,KRTAP24-1,Zalophus+Odobenus+...,5,5,0,intact
+marine,SLC4A9,Zalophus+Odobenus+...,5,5,0,intact
+marine,SERPINB12,Zalophus+Odobenus+...,5,5,0,intact
+marine,OR2K2,Zalophus+Odobenus+...,5,5,2,within origin
+marine,KRT1,Zalophus+Odobenus+...,5,5,0,intact
+marine,OR5H14,Zalophus+Odobenus+...,5,5,2,within origin
+marine,ANXA9,Zalophus+Odobenus+...,5,5,0,intact
+hypoxia_subterranean,LGSN,Ctenomys,1,1,0,intact
+hypoxia_subterranean,LCTL,Ctenomys,1,1,0,intact
+hypoxia_subterranean,MPP4,Ctenomys,1,1,0,intact
+hypoxia_subterranean,CRYGS,Ctenomys,1,1,0,intact
+hypoxia_subterranean,RSKR,Ctenomys,1,1,0,intact
+hypoxia_subterranean,ROM1,Ctenomys,1,1,0,intact
+hypoxia_subterranean,RGS11,Ctenomys,1,1,0,intact
+hypoxia_subterranean,LACTBL1,Ctenomys,1,1,0,intact
+hypoxia_subterranean,BFSP1,Ctenomys,1,1,0,intact
+hypoxia_subterranean,CABP5,Ctenomys,1,1,0,intact
+hypoxia_subterranean,B3GNT4,Ctenomys,1,1,1,before origin
+hypoxia_subterranean,OPTC,Ctenomys,1,1,1,at origin
+hypoxia_subterranean,CRYBA4,Ctenomys,1,1,0,intact
+hypoxia_subterranean,GJA8,Ctenomys,1,1,0,intact
+hypoxia_subterranean,TPD52L3,Ctenomys,1,1,1,before origin
+hypoxia_subterranean,LGSN,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,LCTL,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,MPP4,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,CRYGS,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,RSKR,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,ROM1,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,RGS11,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,LACTBL1,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,BFSP1,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,CABP5,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,B3GNT4,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,OPTC,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,CRYBA4,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,GJA8,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,TPD52L3,Nannospalax,1,1,1,at origin
+hypoxia_subterranean,LGSN,Ellobius,1,0,0,no data
+hypoxia_subterranean,LCTL,Ellobius,1,1,0,intact
+hypoxia_subterranean,MPP4,Ellobius,1,1,1,at origin
+hypoxia_subterranean,CRYGS,Ellobius,1,1,0,intact
+hypoxia_subterranean,RSKR,Ellobius,1,1,0,intact
+hypoxia_subterranean,ROM1,Ellobius,1,1,0,intact
+hypoxia_subterranean,RGS11,Ellobius,1,1,0,intact
+hypoxia_subterranean,LACTBL1,Ellobius,1,0,0,no data
+hypoxia_subterranean,BFSP1,Ellobius,1,1,0,intact
+hypoxia_subterranean,CABP5,Ellobius,1,1,0,intact
+hypoxia_subterranean,B3GNT4,Ellobius,1,0,0,no data
+hypoxia_subterranean,OPTC,Ellobius,1,1,0,intact
+hypoxia_subterranean,CRYBA4,Ellobius,1,1,0,intact
+hypoxia_subterranean,GJA8,Ellobius,1,1,0,intact
+hypoxia_subterranean,TPD52L3,Ellobius,1,1,1,at origin
+hypoxia_subterranean,LGSN,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,LCTL,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,MPP4,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,CRYGS,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,RSKR,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,ROM1,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,RGS11,Chrysochloris,1,1,1,before origin
+hypoxia_subterranean,LACTBL1,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,BFSP1,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,CABP5,Chrysochloris,1,0,0,no data
+hypoxia_subterranean,B3GNT4,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,OPTC,Chrysochloris,1,1,1,before origin
+hypoxia_subterranean,CRYBA4,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,GJA8,Chrysochloris,1,1,1,at origin
+hypoxia_subterranean,TPD52L3,Chrysochloris,1,1,1,before origin
+hypoxia_subterranean,LGSN,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,LCTL,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,MPP4,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,CRYGS,Heterocephalus+Fukomys,2,2,0,intact
+hypoxia_subterranean,RSKR,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,ROM1,Heterocephalus+Fukomys,2,2,1,within origin
+hypoxia_subterranean,RGS11,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,LACTBL1,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,BFSP1,Heterocephalus+Fukomys,2,2,0,intact
+hypoxia_subterranean,CABP5,Heterocephalus+Fukomys,2,2,1,within origin
+hypoxia_subterranean,B3GNT4,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,OPTC,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,CRYBA4,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,GJA8,Heterocephalus+Fukomys,2,2,0,intact
+hypoxia_subterranean,TPD52L3,Heterocephalus+Fukomys,2,2,2,at origin
+hypoxia_subterranean,LGSN,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,LCTL,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,MPP4,Condylura+Scalopus,2,2,1,within origin
+hypoxia_subterranean,CRYGS,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,RSKR,Condylura+Scalopus,2,2,2,before origin
+hypoxia_subterranean,ROM1,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,RGS11,Condylura+Scalopus,2,1,1,at origin
+hypoxia_subterranean,LACTBL1,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,BFSP1,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,CABP5,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,B3GNT4,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,OPTC,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,CRYBA4,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,GJA8,Condylura+Scalopus,2,2,2,at origin
+hypoxia_subterranean,TPD52L3,Condylura+Scalopus,2,2,2,at origin

@@ -1,0 +1,139 @@
+assembly	species	common_name	in_zoonomia_tree	coverage	lineage
+HLhyaHya1	Hyaena_hyaena	striped hyena	True	0.9646	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Feliformia; Hyaenidae; Hyaena
+felCat9	Felis_catus	domestic cat	True	0.9612	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Feliformia; Felidae; Felinae; Felis
+bosTau9	Bos_taurus	cattle	True	0.9593	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Bovidae; Bovinae; Bos
+HLaciJub2	Acinonyx_jubatus	cheetah	True	0.9583	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Feliformia; Felidae; Acinonychinae; Acinonyx
+HLdauMad1	Daubentonia_madagascariensis	aye-aye	True	0.9579	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Strepsirrhini; Chiromyiformes; Daubentoniidae; Daubentonia
+HLodoRos1	Odobenus_rosmarus	walrus	True	0.9579	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Odobenidae; Odobenus
+HLcapAeg1	Capra_aegagrus	wild goat	True	0.9557	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Bovidae; Caprinae; Capra
+HLammLer1	Ammotragus_lervia	aoudad	True	0.9556	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Bovidae; Caprinae; Ammotragus
+canFam5	Canis_lupus_familiaris	dog	True	0.955	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Canidae; Canis; Canis lupus
+HLbubBub2	Bubalus_bubalis	water buffalo	True	0.9549	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Bovidae; Bovinae; Bubalus
+HLtapInd1	Tapirus_indicus	Asiatic tapir	True	0.9549	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Perissodactyla; Tapiridae; Tapirus
+HLcatWag1	Catagonus_wagneri	Chacoan peccary	True	0.9537	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Suina; Tayassuidae; Catagonus
+HLpteBra2	Pteronura_brasiliensis	giant otter	True	0.9533	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Mustelidae; Lutrinae; Pteronura
+canFam4	Canis_lupus_familiaris	dog	True	0.9532	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Canidae; Canis; Canis lupus
+HLmosMos1	Moschus_moschiferus	Siberian musk deer	True	0.9529	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Moschidae; Moschus
+HLdicBic1	Diceros_bicornis	black rhinoceros	True	0.9529	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Perissodactyla; Rhinocerotidae; Diceros
+HLpanPar1	Panthera_pardus	leopard	True	0.9527	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Feliformia; Felidae; Pantherinae; Panthera
+HLcapHir2	Capra_hircus	goat	True	0.9526	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Bovidae; Caprinae; Capra
+HLzalCal1	Zalophus_californianus	California sea lion	True	0.9524	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Otariidae; Zalophus
+HLpteBra1	Pteronura_brasiliensis	giant otter	True	0.9524	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Mustelidae; Lutrinae; Pteronura
+HLcryFer2	Cryptoprocta_ferox	fossa	True	0.9521	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Feliformia; Eupleridae; Euplerinae; Cryptoprocta
+HLodoVir2	Odocoileus_virginianus	white-tailed deer	True	0.9513	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Cervidae; Odocoileinae; Odocoileus
+equCab3	Equus_caballus	horse	True	0.9511	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Perissodactyla; Equidae; Equus; Equus
+HLcamFer3	Camelus_ferus	Wild Bactrian camel	True	0.9509	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Tylopoda; Camelidae; Camelus
+susScr11	Sus_scrofa	pig	True	0.9509	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Suina; Suidae; Sus
+HLantAme1	Antilocapra_americana	pronghorn	True	0.9501	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Antilocapridae; Antilocapra
+HLpanOnc1	Panthera_onca	jaguar	True	0.9499	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Feliformia; Felidae; Pantherinae; Panthera
+HLhipAmp3	Hippopotamus_amphibius	hippopotamus	True	0.9498	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Ancodonta; Hippopotamidae; Hippopotamus
+HLrouAeg4	Rousettus_aegyptiacus	Egyptian rousette	True	0.9495	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yinpterochiroptera; Pteropodoidea; Pteropodidae; Rousettinae; Rousettus
+HLcanLupDin1	Canis_lupus_dingo	dingo	True	0.9491	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Canidae; Canis; Canis lupus
+neoSch1	Neomonachus_schauinslandi	Hawaiian monk seal	True	0.9488	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Phocidae; Neomonachus
+HLtapTer1	Tapirus_terrestris	Brazilian tapir	True	0.9463	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Perissodactyla; Tapiridae; Tapirus
+mm10	Mus_musculus	house mouse	True	0.9445	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Muridae; Murinae; Mus; Mus
+mm39	Mus_musculus	house mouse	True	0.9444	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Muridae; Murinae; Mus; Mus
+HLratNor7	Rattus_norvegicus	Norway rat	True	0.944	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Muridae; Murinae; Rattus
+HLtapInd2	Tapirus_indicus	Asiatic tapir	True	0.9439	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Perissodactyla; Tapiridae; Tapirus
+HLmyoMyo6	Myotis_myotis	greater mouse-eared bat	True	0.9438	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Vespertilionidae; Myotis
+HLcriGri3	Cricetulus_griseus	Chinese hamster	True	0.9438	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Cricetidae; Cricetinae; Cricetulus
+HLrhiSin1	Rhinolophus_sinicus	Chinese rufous horseshoe bat	True	0.9418	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yinpterochiroptera; Rhinolophoidea; Rhinolophidae; Rhinolophinae; Rhinolophus
+HLproSim1	Prolemur_simus	greater bamboo lemur	True	0.9413	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Strepsirrhini; Lemuriformes; Lemuridae; Prolemur
+HLpanOnc2	Panthera_onca	jaguar	True	0.9404	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Feliformia; Felidae; Pantherinae; Panthera
+HLmirAng2	Mirounga_angustirostris	Northern elephant seal	True	0.9401	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Phocidae; Mirounga
+HLcamDro2	Camelus_dromedarius	Arabian camel	True	0.94	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Tylopoda; Camelidae; Camelus
+HLmusPah1	Mus_pahari	shrew mouse	True	0.9395	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Muridae; Murinae; Mus; Coelomys
+HLmusCar1	Mus_caroli	Ryukyu mouse	True	0.9388	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Muridae; Murinae; Mus; Mus
+ponAbe3	Pongo_abelii	Sumatran orangutan	True	0.9381	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Haplorrhini; Simiiformes; Catarrhini; Hominoidea; Hominidae; Ponginae; Pongo
+HLlemCat1	Lemur_catta	Ring-tailed lemur	True	0.938	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Strepsirrhini; Lemuriformes; Lemuridae; Lemur
+HLmusSpr1	Mus_spretus	western wild mouse	True	0.9378	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Muridae; Murinae; Mus; Mus
+chrAsi1	Chrysochloris_asiatica	Cape golden mole	True	0.9377	Mammalia; Theria; Eutheria; Afrotheria; Chrysochloridae; Chrysochlorinae; Chrysochloris
+HLminSch1	Miniopterus_schreibersii	Schreibers long-fingered bat	True	0.9358	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Miniopteridae; Miniopterus
+HLgalVar2	Galeopterus_variegatus	Sunda flying lemur	True	0.9349	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Dermoptera; Cynocephalidae; Galeopterus
+HLescRob2	Eschrichtius_robustus	grey whale	True	0.9339	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Mysticeti; Eschrichtiidae; Eschrichtius
+panTro6	Pan_troglodytes	chimpanzee	True	0.9337	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Haplorrhini; Simiiformes; Catarrhini; Hominoidea; Hominidae; Homininae; Pan
+HLpsaObe1	Psammomys_obesus	fat sand rat	True	0.9337	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Muridae; Gerbillinae; Psammomys
+HLodoVir3	Odocoileus_virginianus	white-tailed deer	True	0.9331	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Cervidae; Odocoileinae; Odocoileus
+HLmacSob1	Macroglossus_sobrinus	Long-tongued fruit bat	True	0.9327	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yinpterochiroptera; Pteropodoidea; Pteropodidae; Macroglossinae; Macroglossus
+micOch1	Microtus_ochrogaster	prairie vole	True	0.9326	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Cricetidae; Arvicolinae; Microtus
+HLcteGun1	Ctenodactylus_gundi	northern gundi	True	0.9323	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Hystricomorpha; Ctenodactylidae; Ctenodactylus
+HLonyTor1	Onychomys_torridus	southern grasshopper mouse	True	0.9322	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Cricetidae; Neotominae; Onychomys
+HLeulFla1	Eulemur_flavifrons	Sclaters lemur	True	0.9318	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Strepsirrhini; Lemuriformes; Lemuridae; Eulemur
+HLescRob1	Eschrichtius_robustus	grey whale	True	0.9316	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Mysticeti; Eschrichtiidae; Eschrichtius
+HLxerIna1	Xerus_inauris	South African ground squirrel	True	0.9312	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Sciuromorpha; Sciuridae; Xerinae; Xerini; Xerus
+HLartJam2	Artibeus_jamaicensis	Jamaican fruit-eating bat	True	0.9312	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Phyllostomidae; Stenodermatinae; Artibeus
+HLproCap3	Procavia_capensis	Cape rock hyrax	True	0.9304	Mammalia; Theria; Eutheria; Afrotheria; Hyracoidea; Procaviidae; Procavia
+HLbosMut2	Bos_mutus	wild yak	True	0.9292	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Bovidae; Bovinae; Bos
+eulFla1	Eulemur_flavifrons	Sclaters lemur	True	0.9291	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Strepsirrhini; Lemuriformes; Lemuridae; Eulemur
+HLdinBra1	Dinomys_branickii	pacarana	True	0.9284	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Hystricomorpha; Dinomyidae; Dinomys
+HLtriManLat2	Trichechus_manatus	West Indian manatee	True	0.9276	Mammalia; Theria; Eutheria; Afrotheria; Sirenia; Trichechidae; Trichechus
+otoGar3	Otolemur_garnettii	small-eared galago	True	0.9267	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Strepsirrhini; Lorisiformes; Galagidae; Otolemur
+HLeubJap1	Eubalaena_japonica	North Pacific right whale	True	0.9261	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Mysticeti; Balaenidae; Eubalaena
+HLtapTer2	Tapirus_terrestris	Brazilian tapir	True	0.9257	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Perissodactyla; Tapiridae; Tapirus
+HLondZib1	Ondatra_zibethicus	muskrat	True	0.9255	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Cricetidae; Arvicolinae; Ondatra
+HLorcOrc2	Orcinus_orca	killer whale	True	0.9253	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Delphinidae; Orcinus
+HLturTru4	Tursiops_truncatus	common bottlenose dolphin	True	0.9248	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Delphinidae; Tursiops
+HLchoDid2	Choloepus_didactylus	southern two-toed sloth	True	0.9246	Mammalia; Theria; Eutheria; Xenarthra; Pilosa; Folivora; Megalonychidae; Choloepus
+eulMac1	Eulemur_macaco	black lemur	True	0.924	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Primates; Strepsirrhini; Lemuriformes; Lemuridae; Eulemur
+HLdelLeu2	Delphinapterus_leucas	beluga whale	True	0.9223	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Monodontidae; Delphinapterus
+HLmelCap1	Mellivora_capensis	ratel	True	0.9222	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Mustelidae; Mellivoriane; Mellivora
+nanGal1	Nannospalax_galili	Upper Galilee mountains blind mole rat	True	0.9221	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Spalacidae; Spalacinae; Nannospalax
+HLmonMon1	Monodon_monoceros	narwhal	True	0.922	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Monodontidae; Monodon
+HLanoCau1	Anoura_caudifer	tailed tailless bat	True	0.922	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Phyllostomidae; Glossophaginae; Anoura
+HLhipGal1	Hipposideros_galeritus	Cantors roundleaf bat	True	0.9216	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yinpterochiroptera; Rhinolophoidea; Hipposideridae; Hipposideros
+HLhetGla3	Heterocephalus_glaber	naked mole-rat	True	0.9214	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Hystricomorpha; Bathyergidae; Heterocephalus
+HLmanPen2	Manis_pentadactyla	Chinese pangolin	True	0.9212	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Pholidota; Manidae; Manis
+HLdelLeu3	Delphinapterus_leucas	beluga whale	True	0.9212	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Monodontidae; Delphinapterus
+hetGla2	Heterocephalus_glaber	naked mole-rat	True	0.9208	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Hystricomorpha; Bathyergidae; Heterocephalus
+HLproCap4	Procavia_capensis	Cape rock hyrax	True	0.9205	Mammalia; Theria; Eutheria; Afrotheria; Hyracoidea; Procaviidae; Procavia
+HLnocLep1	Noctilio_leporinus	greater bulldog bat	True	0.9199	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Noctilionidae; Noctilio
+HLphoPho1	Phocoena_phocoena	harbor porpoise	True	0.9191	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Phocoenidae; Phocoena
+HLloxAfr4	Loxodonta_africana	African savanna elephant	True	0.919	Mammalia; Theria; Eutheria; Afrotheria; Proboscidea; Elephantidae; Loxodonta
+HLhipArm1	Hipposideros_armiger	great roundleaf bat	True	0.9178	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yinpterochiroptera; Rhinolophoidea; Hipposideridae; Hipposideros
+HLscaAqu1	Scalopus_aquaticus	eastern mole	True	0.9174	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Eulipotyphla; Talpidae; Scalopus
+HLphoPho2	Phocoena_phocoena	harbor porpoise	True	0.9171	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Phocoenidae; Phocoena
+pteAle1	Pteropus_alecto	black flying fox	True	0.9138	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yinpterochiroptera; Pteropodoidea; Pteropodidae; Pteropodinae; Pteropus
+rn6	Rattus_norvegicus	Norway rat	True	0.9137	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Muridae; Murinae; Rattus
+eleEdw1	Elephantulus_edwardii	Cape elephant shrew	True	0.9134	Mammalia; Theria; Eutheria; Afrotheria; Macroscelidea; Macroscelididae; Elephantulus
+HLeptFus2	Eptesicus_fuscus	big brown bat	True	0.9122	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Vespertilionidae; Eptesicus
+eptFus1	Eptesicus_fuscus	big brown bat	True	0.9105	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Vespertilionidae; Eptesicus
+ochPri3	Ochotona_princeps	American pika	True	0.9104	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Lagomorpha; Ochotonidae; Ochotona
+HLcasCan3	Castor_canadensis	American beaver	True	0.9089	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Castorimorpha; Castoridae; Castor
+HLcraTho1	Craseonycteris_thonglongyai	hog-nosed bat	True	0.9087	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yinpterochiroptera; Rhinolophoidea; Craseonycteridae; Craseonycteris
+lipVex1	Lipotes_vexillifer	Yangtze River dolphin	True	0.9071	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Lipotidae; Lipotes
+HLmorBla1	Mormoops_blainvillei	Antillean ghost-faced bat	True	0.9068	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Mormoopidae; Mormoops
+HLpteVam2	Pteropus_vampyrus	large flying fox	True	0.9055	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yinpterochiroptera; Pteropodoidea; Pteropodidae; Pteropodinae; Pteropus
+HLcteSoc1	Ctenomys_sociabilis	social tuco-tuco	True	0.9055	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Hystricomorpha; Ctenomyidae; Ctenomys
+HLmanJav2	Manis_javanica	Malayan pangolin	True	0.9053	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Pholidota; Manidae; Manis
+HLchoHof3	Choloepus_hoffmanni	Hoffmanns two-fingered sloth	True	0.9053	Mammalia; Theria; Eutheria; Xenarthra; Pilosa; Folivora; Megalonychidae; Choloepus
+HLmesBid1	Mesoplodon_bidens	Sowerbys beaked whale	True	0.9046	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Ziphiidae; Mesoplodon
+HLkogBre1	Kogia_breviceps	pygmy sperm whale	True	0.9019	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Physeteridae; Kogia
+HLlniGeo1	Inia_geoffrensis	boutu	True	0.9017	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Iniidae; Inia
+HLmyrTri1	Myrmecophaga_tridactyla	giant anteater	True	0.9007	Mammalia; Theria; Eutheria; Xenarthra; Pilosa; Vermilingua; Myrmecophagidae; Myrmecophaga
+vicPac2	Vicugna_pacos	alpaca	True	0.8989	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Tylopoda; Camelidae; Vicugna
+HLvicPac4	Vicugna_pacos	alpaca	True	0.8987	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Tylopoda; Camelidae; Vicugna
+HLartJam1	Artibeus_jamaicensis	Jamaican fruit-eating bat	True	0.8974	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Phyllostomidae; Stenodermatinae; Artibeus
+HLhetBru1	Heterohyrax_brucei	yellow-spotted hyrax	True	0.8971	Mammalia; Theria; Eutheria; Afrotheria; Hyracoidea; Procaviidae; Heterohyrax
+HLminNat1	Miniopterus_natalensis	Natal long-fingered bat	True	0.8959	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Miniopteridae; Miniopterus
+HLthrSwi1	Thryonomys_swinderianus	Greater cane rat	True	0.8917	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Hystricomorpha; Thryonomyidae; Thryonomys
+HLhipAmp1	Hippopotamus_amphibius	hippopotamus	True	0.8897	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Ancodonta; Hippopotamidae; Hippopotamus
+HLmanJav1	Manis_javanica	Malayan pangolin	True	0.8896	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Pholidota; Manidae; Manis
+tupChi1	Tupaia_chinensis	Chinese tree shrew	True	0.8894	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Scandentia; Tupaiidae; Tupaia
+panHod1	Pantholops_hodgsonii	chiru	True	0.888	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Ruminantia; Pecora; Bovidae; Antilopinae; Pantholops
+lepWed1	Leptonychotes_weddellii	Weddell seal	True	0.8877	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Carnivora; Caniformia; Phocidae; Leptonychotes
+eriEur2	Erinaceus_europaeus	western European hedgehog	True	0.8798	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Eulipotyphla; Erinaceidae; Erinaceinae; Erinaceus
+HLtadBra1	Tadarida_brasiliensis	Brazilian free-tailed bat	True	0.8787	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Molossidae; Tadarida
+HLmicHir1	Micronycteris_hirsuta	hairy big-eared bat	True	0.8785	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Phyllostomidae; Phyllostominae; Micronycteris
+HLfukDam2	Fukomys_damarensis	Damara mole-rat	True	0.8745	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Hystricomorpha; Bathyergidae; Fukomys
+HLbalBon1	Balaenoptera_bonaerensis	Antarctic minke whale	True	0.8701	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Mysticeti; Balaenopteridae; Balaenoptera
+HLpipPip2	Pipistrellus_pipistrellus	common pipistrelle	True	0.8613	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Vespertilionidae; Pipistrellus
+oryCun2	Oryctolagus_cuniculus	rabbit	True	0.8595	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Lagomorpha; Leporidae; Oryctolagus
+conCri1	Condylura_cristata	star-nosed mole	True	0.8575	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Eulipotyphla; Talpidae; Condylura
+myoBra1	Myotis_brandtii	Brandts myotis bat	True	0.8537	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Vespertilionidae; Myotis
+HLlepAme1	Lepus_americanus	snowshoe hare	True	0.8521	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Lagomorpha; Leporidae; Lepus
+HLpipPip1	Pipistrellus_pipistrellus	common pipistrelle	True	0.8368	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Chiroptera; Yangochiroptera; Vespertilionidae; Pipistrellus
+HLoryCun3	Oryctolagus_cuniculus	rabbit	True	0.8348	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Lagomorpha; Leporidae; Oryctolagus
+HLellTal1	Ellobius_talpinus	Northern mole vole	True	0.8347	Mammalia; Theria; Eutheria; Boreoeutheria; Euarchontoglires; Glires; Rodentia; Myomorpha; Muroidea; Cricetidae; Arvicolinae; Ellobius
+manPen1	Manis_pentadactyla	Chinese pangolin	True	0.8018	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Pholidota; Manidae; Manis
+HLturTru3	Tursiops_truncatus	common bottlenose dolphin	True	0.7855	Mammalia; Theria; Eutheria; Boreoeutheria; Laurasiatheria; Artiodactyla; Whippomorpha; Cetacea; Odontoceti; Delphinidae; Tursiops
+HLchoDid1	Choloepus_didactylus	southern two-toed sloth	True	0.7843	Mammalia; Theria; Eutheria; Xenarthra; Pilosa; Folivora; Megalonychidae; Choloepus

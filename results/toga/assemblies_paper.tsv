@@ -1,0 +1,115 @@
+species	assembly	Common name	contig N50 (bp)	scaffold N50 (bp)
+Rousettus_aegyptiacus	HLrouAeg4	Egyptian rousette	21756723	113811795
+Myotis_myotis	HLmyoMyo6	greater mouse-eared bat	11795106	94448911
+Rhinolophus_sinicus	HLrhiSin1	Chinese rufous horseshoe bat	37803	3754400
+Miniopterus_schreibersii	HLminSch1	Schreibers long-fingered bat	82539	108707
+Macroglossus_sobrinus	HLmacSob1	Long-tongued fruit bat	338389	453401
+Artibeus_jamaicensis	HLartJam2	Jamaican fruit-eating bat	374929	2589479
+Anoura_caudifer	HLanoCau1	tailed tailless bat	143417	185021
+Hipposideros_galeritus	HLhipGal1	Cantors roundleaf bat	33704	37985
+Noctilio_leporinus	HLnocLep1	greater bulldog bat	135651	191494
+Hipposideros_armiger	HLhipArm1	great roundleaf bat	39863	2328177
+Pteropus_alecto	pteAle1	black flying fox	31841	15954802
+Eptesicus_fuscus	HLeptFus2	big brown bat	18728	102216854
+Craseonycteris_thonglongyai	HLcraTho1	hog-nosed bat	23218	25762
+Mormoops_blainvillei	HLmorBla1	Antillean ghost-faced bat	142682	156292
+Pteropus_vampyrus	HLpteVam2	large flying fox	21866	5954017
+Miniopterus_natalensis	HLminNat1	Natal long-fingered bat	29777	4315193
+Tadarida_brasiliensis	HLtadBra1	Brazilian free-tailed bat	22617	24311
+Micronycteris_hirsuta	HLmicHir1	hairy big-eared bat	62961	68868
+Pipistrellus_pipistrellus	HLpipPip2	common pipistrelle	4446752	94929986
+Myotis_brandtii	myoBra1	Brandts myotis bat	23289	3225832
+Eschrichtius_robustus	HLescRob2	grey whale	66695	103007579
+Eubalaena_japonica	HLeubJap1	North Pacific right whale	34866	39813
+Orcinus_orca	HLorcOrc2	killer whale	66136	110405485
+Tursiops_truncatus	HLturTru4	common bottlenose dolphin	9729386	108430135
+Delphinapterus_leucas	HLdelLeu2	beluga whale	196689	31183418
+Monodon_monoceros	HLmonMon1	narwhal	255327	107566389
+Phocoena_phocoena	HLphoPho1	harbor porpoise	89111	115969
+Lipotes_vexillifer	lipVex1	Yangtze River dolphin	31902	2419148
+Mesoplodon_bidens	HLmesBid1	Sowerbys beaked whale	28959	33532
+Kogia_breviceps	HLkogBre1	pygmy sperm whale	26201	28812
+Inia_geoffrensis	HLlniGeo1	boutu	24570	26707
+Balaenoptera_bonaerensis	HLbalBon1	Antarctic minke whale	8410	20082
+Hippopotamus_amphibius	HLhipAmp3	hippopotamus	76609	4444377
+Bos_taurus	bosTau9	cattle	25896116	103308737
+Capra_aegagrus	HLcapAeg1	wild goat	51868	1750063
+Ammotragus_lervia	HLammLer1	aoudad	52017	1301762
+Bubalus_bubalis	HLbubBub2	water buffalo	22441509	117219835
+Moschus_moschiferus	HLmosMos1	Siberian musk deer	34785	11728851
+Capra_hircus	HLcapHir2	goat	26244591	87277232
+Odocoileus_virginianus	HLodoVir2	white-tailed deer	114510	69881861
+Antilocapra_americana	HLantAme1	pronghorn	220431	18739554
+Catagonus_wagneri	HLcatWag1	Chacoan peccary	65965	19204659
+Sus_scrofa	susScr11	pig	48231277	88231837
+Camelus_ferus	HLcamFer3	Wild Bactrian camel	5365398	76025729
+Camelus_dromedarius	HLcamDro2	Arabian camel	236391	70369702
+Hyaena_hyaena	HLhyaHya1	striped hyena	311202	2001327
+Felis_catus	felCat9	domestic cat	41915695	83967707
+Acinonyx_jubatus	HLaciJub2	cheetah	179924	48500042
+Odobenus_rosmarus	HLodoRos1	walrus	85053	154349455
+Canis_lupus_familiaris	canFam5	dog	4722218	64204256
+Pteronura_brasiliensis	HLpteBra2	giant otter	97105	133376390
+Panthera_pardus	HLpanPar1	leopard	20993	21701857
+Zalophus_californianus	HLzalCal1	California sea lion	60554208	146931682
+Cryptoprocta_ferox	HLcryFer2	fossa	123817	107277967
+Panthera_onca	HLpanOnc1	jaguar	62836	116574
+Canis_lupus_dingo	HLcanLupDin1	dingo	5390770	34446301
+Neomonachus_schauinslandi	neoSch1	Hawaiian monk seal	112698	29518589
+Tapirus_indicus	HLtapInd1	Asiatic tapir	225792	308930
+Diceros_bicornis	HLdicBic1	black rhinoceros	91002	14664201
+Equus_caballus	equCab3	horse	1502753	87230776
+Tapirus_terrestris	HLtapTer1	Brazilian tapir	164193	186384
+Manis_pentadactyla	HLmanPen2	Chinese pangolin	151937	7836868
+Manis_javanica	HLmanJav2	Malayan pangolin	83964	13854118
+Scalopus_aquaticus	HLscaAqu1	eastern mole	72421	94879
+Erinaceus_europaeus	eriEur2	western European hedgehog	21359	3264618
+Condylura_cristata	conCri1	star-nosed mole	46163	55520359
+Daubentonia_madagascariensis	HLdauMad1	aye-aye	298834	379919
+Prolemur_simus	HLproSim1	greater bamboo lemur	47757	2710671
+Pongo_abelii	ponAbe3	Sumatran orangutan	11074009	98475126
+Lemur_catta	HLlemCat1	Ring-tailed lemur	158439	215715
+Pan_troglodytes	panTro6	chimpanzee	12268567	53103722
+Eulemur_flavifrons	HLeulFla1	Sclaters lemur	26840	156661540
+Otolemur_garnettii	otoGar3	small-eared galago	27100	13852661
+Eulemur_macaco	eulMac1	black lemur	20038	405987
+Mus_musculus	mm10	house mouse	32273079	52589046
+Rattus_norvegicus	HLratNor7	Norway rat	29198295	135012528
+Cricetulus_griseus	HLcriGri3	Chinese hamster	2098530	19581774
+Mus_pahari	HLmusPah1	shrew mouse	29465	111406228
+Mus_caroli	HLmusCar1	Ryukyu mouse	30916	122627250
+Mus_spretus	HLmusSpr1	western wild mouse	17887	131945496
+Psammomys_obesus	HLpsaObe1	fat sand rat	76389	10472398
+Microtus_ochrogaster	micOch1	prairie vole	21250	17270019
+Ctenodactylus_gundi	HLcteGun1	northern gundi	218543	354548
+Onychomys_torridus	HLonyTor1	southern grasshopper mouse	2276141	112723509
+Xerus_inauris	HLxerIna1	South African ground squirrel	64054	83865
+Dinomys_branickii	HLdinBra1	pacarana	64805	77918
+Ochotona_princeps	ochPri3	American pika	42347	26863993
+Oryctolagus_cuniculus	oryCun2	rabbit	64648	35972871
+Lepus_americanus	HLlepAme1	snowshoe hare	15057	16725
+Tupaia_chinensis	tupChi1	Chinese tree shrew	25938	3670124
+Galeopterus_variegatus	HLgalVar2	Sunda flying lemur	34666	7885395
+Chrysochloris_asiatica	chrAsi1	Cape golden mole	19631	13470186
+Procavia_capensis	HLproCap3	Cape rock hyrax	38095	9071062
+Trichechus_manatus	HLtriManLat2	West Indian manatee	33836	143724118
+Loxodonta_africana	HLloxAfr4	African savanna elephant	65481	94531929
+Elephantulus_edwardii	eleEdw1	Cape elephant shrew	24219	15011382
+Heterohyrax_brucei	HLhetBru1	yellow-spotted hyrax	62841	67904
+Choloepus_didactylus	HLchoDid2	southern two-toed sloth	20994632	146178362
+Choloepus_hoffmanni	HLchoHof3	Hoffmanns two-fingered sloth	62424	140950122
+Myrmecophaga_tridactyla	HLmyrTri1	giant anteater	36434	41255
+Mirounga_angustirostris	HLmirAng2	Northern elephant seal	75715	139676048
+Leptonychotes_weddellii	lepWed1	Weddell seal	23664	904031
+Castor_canadensis	HLcasCan3	American beaver	266367	136673807
+Ondatra_zibethicus	HLondZib1	muskrat	73746	89093
+Heterocephalus_glaber	HLhetGla3	naked mole-rat	40135	100148522
+Fukomys_damarensis	HLfukDam2	Damara mole-rat	44756	62586000
+Ctenomys_sociabilis	HLcteSoc1	social tuco-tuco	37562	49073
+Nannospalax_galili	nanGal1	Upper Galilee mountains blind mole rat	30353	3618479
+Ellobius_talpinus	HLellTal1	Northern mole vole	8259	15246
+Bos_mutus	HLbosMut2	wild yak	90625	16589160
+Pantholops_hodgsonii	panHod1	chiru	18674	2772860
+Vicugna_pacos	vicPac2	alpaca	24617	7263804
+Thryonomys_swinderianus	HLthrSwi1	Greater cane rat	18955	21523
+Mellivora_capensis	HLmelCap1	ratel	50213	59143

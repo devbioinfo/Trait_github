@@ -435,6 +435,159 @@ def figure4():
 
 
 # ---------------------------------------------------------------------------------------
+# Figure 5: timing of convergent losses and partitioning of correlated traits
+# ---------------------------------------------------------------------------------------
+
+ORIGIN_NAMES = {"Eubalaena": "Cetaceans", "Zalophus": "Pinnipeds", "Trichechus": "Manatee*",
+                "Heterocephalus": "African mole-rats", "Ctenomys": "Tuco-tuco*", "Nannospalax": "Blind mole-rat*",
+                "Ellobius": "Mole vole*", "Condylura": "Moles", "Chrysochloris": "Golden mole*"}
+TIMING = [("before origin", "Before origin (shared with sister)", "#6250d6"),
+          ("at origin", "On the origin's stem branch", C1), ("within origin", "Later, within the origin", C2),
+          ("intact", "Intact", "#e8e7e3"), ("no data", "No data", "#ffffff")]
+
+
+def timing_panel(ax, t, trait, genes, letter, title):
+    d = t[t.trait == trait]
+    origins = list(dict.fromkeys(d.origin))
+    code = {c: i for i, (c, _, _) in enumerate(TIMING)}
+    M = np.array([[code[d[(d.gene == g) & (d.origin == o)].category.iloc[0]] for o in origins] for g in genes])
+    ax.imshow(M, aspect="auto", cmap=ListedColormap([c for _, _, c in TIMING]), vmin=0, vmax=len(TIMING) - 1,
+              interpolation="nearest")
+    ax.set_yticks(range(len(genes)), genes, fontsize=5.4)
+    ax.set_xticks(range(len(origins)), [ORIGIN_NAMES[o.split("+")[0]] for o in origins], rotation=40, ha="right",
+                  fontsize=6.5)
+    ax.set_xticks(np.arange(len(origins) + 1) - 0.5, minor=True)
+    ax.set_yticks(np.arange(len(genes) + 1) - 0.5, minor=True)
+    ax.grid(which="minor", color="white", lw=0.6)
+    ax.tick_params(which="both", length=0)
+    for s_ in ax.spines.values():
+        s_.set_visible(False)
+    panel(ax, letter, title)
+
+
+def joint_panel(ax, df, xa, xb, called, controls, letter, title, xlabel, ylabel):
+    ax.scatter(df[xa], df[xb], s=3, color="#c9c8c3", lw=0, rasterized=True, label="all genes")
+    c = df[df.gene.isin(called)]
+    ax.scatter(c[xa], c[xb], s=14, color=C1, edgecolor="white", lw=0.5, zorder=3, label="convergent losses")
+    k = df[df.gene.isin(controls)]
+    ax.scatter(k[xa], k[xb], s=16, color=C2, marker="D", edgecolor="white", lw=0.5, zorder=4, label="genes of interest")
+    for i, (_, r) in enumerate(k.sort_values(xa).iterrows()):
+        dx, ha = ((-4, "right") if i % 2 == 0 else (4, "left"))
+        ax.annotate(r.gene, (r[xa], r[xb]), fontsize=5.5, color=INK2, xytext=(dx, 3), textcoords="offset points",
+                    ha=ha)
+    ax.axhline(0, color=INK2, lw=0.6)
+    ax.axvline(0, color=INK2, lw=0.6)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_xlim(-0.35, 1.1)
+    ax.set_ylim(-0.35, 1.1)
+    ax.set_aspect("equal")
+    grid(ax, "both")
+    panel(ax, letter, title)
+
+
+def figure5():
+    t = pd.read_csv(RES / "extra" / "loss_timing.csv")
+    hyp = pd.read_csv(RES / "extra" / "joint_subterranean_altitude.csv")
+    mar = pd.read_csv(RES / "extra" / "joint_marine_semiaquatic.csv")
+    mg = list(dict.fromkeys(t[t.trait == "marine"].gene))
+    sg = list(dict.fromkeys(t[t.trait == "hypoxia_subterranean"].gene))
+    fig = plt.figure(figsize=(7.2, 9.6))
+    gs = fig.add_gridspec(3, 3, height_ratios=[2.2, 0.32, 1.35], width_ratios=[1, 1.25, 0.9], hspace=0.3,
+                          wspace=0.75)
+    timing_panel(fig.add_subplot(gs[0, 0]), t, "marine", mg, "a", "Marine losses")
+    ax = fig.add_subplot(gs[0, 1])
+    timing_panel(ax, t, "hypoxia_subterranean", sg, "b", "Subterranean losses")
+    ax.set_anchor("N")
+    ax = fig.add_subplot(gs[0, 2])
+    tot = t[t.category != "no data"].groupby(["trait", "category"]).size().unstack(fill_value=0)
+    tot = tot.div(tot.sum(1), axis=0)
+    bottom = np.zeros(len(tot))
+    for cat, lab, col in TIMING[:4]:
+        v = tot.get(cat, pd.Series(0, index=tot.index)).to_numpy()
+        ax.bar(range(len(tot)), v, bottom=bottom, color=col, width=0.7, edgecolor="white", lw=1, label=lab)
+        bottom += v
+    ax.set_xticks(range(len(tot)), ["Marine" if i == "marine" else "Subter-\nranean" for i in tot.index], fontsize=7)
+    ax.set_ylabel("Share of gene \u00d7 origin pairs")
+    ax.set_ylim(0, 1)
+    ax.set_anchor("N")
+    panel(ax, "c", "Timing")
+    lg = fig.add_subplot(gs[1, :])
+    lg.set_axis_off()
+    lg.legend(handles=[Rectangle((0, 0), 1, 1, fc=c, ec=MUTED if c == "#ffffff" else c, lw=0.5, label=l)
+                       for _, l, c in TIMING], loc="lower center", ncol=3)
+    bottom_row = gs[2, :].subgridspec(1, 2, wspace=0.35)
+    joint_panel(fig.add_subplot(bottom_row[0, 0]), hyp, "beta_subterranean", "beta_altitude", sg,
+                ["EPAS1", "EGLN1", "HIF1A", "HBB", "NGB", "CYGB"], "d", "Subterranean vs high altitude",
+                "Partial effect: subterranean", "Partial effect: high altitude")
+    ax = fig.add_subplot(bottom_row[0, 1])
+    joint_panel(ax, mar, "beta_marine", "beta_semiaquatic", mg, ["PON1", "MMP12"], "e",
+                "Marine vs semi-aquatic", "Partial effect: marine", "Partial effect: semi-aquatic")
+    ax.legend(loc="upper right", fontsize=6, markerscale=1.2)
+    save(fig, "Figure5")
+
+
+# ---------------------------------------------------------------------------------------
+# Supplementary Figure 2: loss model and data quality
+# ---------------------------------------------------------------------------------------
+
+def supp2():
+    q = pd.read_csv(RES / "extra" / "species_quality.csv").dropna(subset=["contig_n50"])
+    ag = pd.read_csv(RES / "extra" / "adequacy_losses_per_gene.csv")
+    asp = pd.read_csv(RES / "extra" / "adequacy_losses_per_species.csv")
+    mp = pd.read_csv(RES / "extra" / "loss_model_parameters.csv")
+    fig, axes = plt.subplots(2, 2, figsize=(7.2, 6.0), gridspec_kw=dict(hspace=0.55, wspace=0.4))
+    ax = axes[0, 0]
+    ax.scatter(q.contig_n50, 100 * q.false_loss_rate, s=12, color=C1, edgecolor="white", lw=0.5)
+    ax.set_xscale("log")
+    from scipy import stats as st_
+    r = st_.spearmanr(np.log10(q.contig_n50), q.false_loss_rate)
+    ax.text(0.97, 0.95, f"Spearman \u03c1 = {r.statistic:.2f}, p = {r.pvalue:.2f}", transform=ax.transAxes,
+            ha="right", va="top", fontsize=6.5, color=INK2)
+    ax.set_xlabel("Contig N50 (bp)")
+    ax.set_ylabel("Species false-loss rate (%)")
+    grid(ax, "both")
+    panel(ax, "a", "Error rate vs assembly contiguity")
+
+    ax = axes[0, 1]
+    vals, counts = np.unique(mp.fragility, return_counts=True)
+    ax.bar(range(len(vals)), counts / counts.sum(), color=C1, width=0.7)
+    ax.set_xticks(range(len(vals)), [f"{v:g}" for v in vals])
+    ax.set_xlabel("Gene fragility \u03ba (multiplier of species error rate)")
+    ax.set_ylabel("Share of genes")
+    grid(ax)
+    panel(ax, "b", "Fitted gene fragility")
+
+    ax = axes[1, 0]
+    x = np.arange(len(ag))
+    labels = [f"{a}" if a == b else f"{a}\u2013{b}" for a, b in zip(ag.bin_low, ag.bin_high)]
+    ax.bar(x - 0.2, ag.observed, width=0.4, color=INK2, label="observed")
+    ax.bar(x + 0.2, ag.sim_mean, width=0.4, color=C1, label="simulated (20 genomes)")
+    ax.vlines(x + 0.2, ag.sim_low, ag.sim_high, color=INK, lw=0.8)
+    ax.set_xticks(x, labels, rotation=45, ha="right", fontsize=6.5)
+    ax.set_xlabel("Species with the gene lost")
+    ax.set_ylabel("Share of testable genes")
+    ax.legend(loc="upper right")
+    grid(ax)
+    panel(ax, "c", "Losses per gene")
+
+    ax = axes[1, 1]
+    ax.errorbar(100 * asp.observed, 100 * asp.sim_mean,
+                yerr=[100 * (asp.sim_mean - asp.sim_low), 100 * (asp.sim_high - asp.sim_mean)],
+                fmt="o", ms=3, color=C1, ecolor=GRID, elinewidth=0.8)
+    lim = 100 * max(asp.observed.max(), asp.sim_high.max()) * 1.05
+    ax.plot([0, lim], [0, lim], color=INK2, lw=0.8, ls="--")
+    ax.set_xlim(0, lim)
+    ax.set_ylim(0, lim)
+    ax.set_aspect("equal")
+    ax.set_xlabel("Observed share of genes lost (%)")
+    ax.set_ylabel("Simulated share (%)")
+    grid(ax, "both")
+    panel(ax, "d", "Losses per species")
+    save(fig, "SupplementaryFigure2")
+
+
+# ---------------------------------------------------------------------------------------
 # Supplementary Figure 1: RERconverge
 # ---------------------------------------------------------------------------------------
 
@@ -475,4 +628,6 @@ if __name__ == "__main__":
     figure2()
     figure3()
     figure4()
+    figure5()
     supp1()
+    supp2()
