@@ -590,7 +590,7 @@ def figure3():
     fig = plt.figure(figsize=(7.2, 6.2))
     gs = fig.add_gridspec(3, 3, height_ratios=[1, 1, 0.9], hspace=0.65, wspace=0.18)
     letters = iter("abcdef")
-    for row, (col, ylab, ylim) in enumerate((("power", "Power", (0, 1)), ("fdp", "False discovery proportion", (0, 0.6)))):
+    for row, (col, ylab, ylim) in enumerate((("power", "Power", (0, 1)), ("fdp", "False discovery proportion", (0, 0.75)))):
         for j, k in enumerate(origins):
             ax = fig.add_subplot(gs[row, j])
             for m, lab, c in LOSS_METHODS:
