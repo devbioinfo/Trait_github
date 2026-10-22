@@ -41,7 +41,7 @@ from mlconv.tree import (branch_splits, clade_permute, foreground_branches,  # n
                          to_newick, yule_tree)
 
 LAYERS = ("rate_nucleotide", "rate_protein", "selection_proxy")
-IQTREE = shutil.which("iqtree2") or "iqtree2"
+IQTREE = shutil.which("iqtree2") or shutil.which("iqtree3") or "iqtree2"
 CODON_TABLE = {
     a + b + c: aa for (a, b, c), aa in zip(
         ((x, y, z) for x in "TCAG" for y in "TCAG" for z in "TCAG"),

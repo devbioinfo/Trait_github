@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 R=results/robustness; F=results/robustness/flags; mkdir -p $R $F logs
 [ -d data/bl_paper ] || tar xzf data/bl_paper.tar.gz -C data
-W=${WORKERS:-$(nproc)}
+W=${WORKERS:-$(getconf _NPROCESSORS_ONLN)}
 echo "Using $W cores. Progress is written to logs/progress.txt"
 FB="python3 scripts/final_benchmark.py --reps 1 --workers $W"
 L=$(mktemp)

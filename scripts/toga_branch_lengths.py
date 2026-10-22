@@ -31,7 +31,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from mlconv.tree import from_newick, prune_newick  # noqa: E402
 
-IQTREE = shutil.which("iqtree2") or "iqtree2"
+IQTREE = shutil.which("iqtree2") or shutil.which("iqtree3") or "iqtree2"
 CODON = {a + b + c: aa for (a, b, c), aa in zip(
     ((x, y, z) for x in "TCAG" for y in "TCAG" for z in "TCAG"),
     "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG")}
