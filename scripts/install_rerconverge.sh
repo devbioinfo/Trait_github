@@ -21,6 +21,8 @@ git clone -q https://github.com/nclark-lab/RERconverge.git "$TMP/RERconverge"
 cd "$TMP/RERconverge"
 git checkout -q 682ac34
 git apply "$REPO/scripts/rerconverge_no_ggtree.patch"
+# RcppArmadillo >= 14.4 needs C++14 or later; the package still asks for C++11
+sed -i.bak 's/^CXX_STD = CXX11/CXX_STD = CXX17/' src/Makevars src/Makevars.win
 echo "== 3/3 build and install"
 R CMD INSTALL --no-test-load . > "$REPO/logs/install_rerconverge.txt" 2>&1 || { tail -30 "$REPO/logs/install_rerconverge.txt"; exit 1; }
 cd "$REPO"
