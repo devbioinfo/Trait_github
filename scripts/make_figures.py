@@ -1633,6 +1633,150 @@ def ed_taste_map():
     save(fig, "ExtendedDataFigure7")
 
 
+# ---------------------------------------------------------------------------------------
+# Study summary: species tree with the convergent losses, workflow and main results
+# ---------------------------------------------------------------------------------------
+
+def summary_box(ax, x, y, w, h, text, col, fs=6):
+    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0,rounding_size=0.015", fc=PALE, ec=col, lw=0.9))
+    ax.text(x + 0.03, y + h / 2, text, fontsize=fs, color=INK, va="center", ha="left", linespacing=1.25)
+
+
+def study_summary():
+    import convergence_toga as CT
+    from mlconv.tree import origin_nodes as onodes
+    tree, names = from_newick((RES / "toga" / "master_paper.nwk").read_text())
+    cov = pd.read_csv(RES / "toga" / "coverage_paper.tsv", sep="\t").drop_duplicates("species").set_index("species")
+    lineage = cov.lineage.reindex(names).fillna("")
+    lineage[names.index("Homo_sapiens")] = "Eutheria; Euarchontoglires; Primates; Haplorrhini"
+    _, _, Y, _ = loss_setup()
+    calls = pd.read_csv(RES / "extra" / "supplementary_table1_convergent_losses.csv")
+    lost = {t: Y.reindex(calls[calls.trait == t].gene).reindex(columns=names).eq(1).sum().to_numpy()
+            for t in ("Marine", "Subterranean")}
+    n = tree.n_tips
+    _, y = tree_xy(tree)
+    height = np.zeros(tree.n_nodes)
+    for v in range(tree.n_nodes - 1):
+        height[tree.parent[v]] = max(height[tree.parent[v]], height[v] + 1)
+    x = 1 - height / height.max()
+    span = 2 * np.pi * 0.965
+    theta = lambda v: np.pi / 2 - y[v] / (n - 1) * span          # noqa: E731
+    width = span / (n - 1)
+
+    fig = plt.figure(figsize=(183 * MM, 150 * MM))
+    ax = fig.add_axes([0.0, 0.1, 0.57, 0.84], projection="polar")
+    ax.set_axis_off()
+    for v in range(tree.n_nodes - 1):
+        ax.plot([theta(v), theta(v)], [x[tree.parent[v]], x[v]], color=MUTED, lw=0.6, solid_capstyle="butt")
+    for v in range(n, tree.n_nodes):
+        ch = np.nonzero(tree.parent == v)[0]
+        a = np.linspace(min(theta(c) for c in ch), max(theta(c) for c in ch), 30)
+        ax.plot(a, np.full_like(a, x[v]), color=MUTED, lw=0.6)
+    th = np.array([theta(t) for t in range(n)])
+    ring0, ring_w = 1.03, 0.045
+    for k, (key, label, col) in enumerate(TREE_TRAITS):
+        tr = np.array([CT.TRAITS[key][0](s_, l) for s_, l in zip(names, lineage)])
+        ax.bar(th, ring_w, width=width * 0.98, bottom=ring0 + k * (ring_w + 0.006), color=np.where(tr, col, PALE), lw=0)
+        for o in onodes(tree, tr):
+            ax.scatter([theta(o)], [(x[tree.parent[o]] + x[o]) / 2], s=16, color=col, edgecolor="white", lw=0.6,
+                       zorder=5)
+    # outer ring: how many of the convergent losses each species carries
+    base = ring0 + 4 * (ring_w + 0.006) + 0.03
+    scale = 0.42 / 48
+    ax.bar(th, lost["Marine"] * scale, width=width * 0.9, bottom=base, color=C1, lw=0)
+    ax.bar(th, lost["Subterranean"] * scale, width=width * 0.9, bottom=base + lost["Marine"] * scale, color=C3, lw=0)
+    ref = np.linspace(th.min() - width / 2, th.max() + width / 2, 200)
+    for k in (10, 20, 30, 40):
+        ax.plot(ref, np.full_like(ref, base + k * scale), color=GRID, lw=0.4, zorder=0)
+    ang0 = np.pi / 2 + 0.035 * np.pi
+    for k in (0, 20, 40):
+        ax.text(ang0, base + k * scale, str(k), fontsize=5, color=INK2, ha="center", va="center")
+    # order arcs
+    group = [next((lab for key, lab in ORDERS if key in l), "") for l in lineage]
+    ro = base + 0.5
+    start = 0
+    for t in range(1, n + 1):
+        if t == n or group[t] != group[start]:
+            if group[start]:
+                a = np.linspace(theta(start) + width * 0.4, theta(t - 1) - width * 0.4, 40)
+                ax.plot(a, np.full_like(a, ro), color=INK, lw=1.0)
+                if t - start >= 4:
+                    mid = (theta(start) + theta(t - 1)) / 2
+                    deg = np.degrees(mid) % 360
+                    flip = 180 < deg < 360
+                    lab = group[start]
+                    ax.text(mid, ro + 0.04, lab, fontsize=5.5, color=INK, ha="center", va="top" if flip else "bottom",
+                            rotation=deg - 90 + (180 if flip else 0), rotation_mode="anchor", linespacing=1.0)
+            start = t
+    ax.set_ylim(0, ro + 0.2)
+    fig.text(0.015, 0.975, "a", fontsize=8, fontweight="bold", va="top")
+    fig.text(0.04, 0.975, "115 mammals, 15,703 genes, four traits", fontsize=7, va="top")
+    handles = [Rectangle((0, 0), 1, 1, color=c, label=f"{lab} ({len(onodes(tree, np.array([CT.TRAITS[k][0](s_, l) for s_, l in zip(names, lineage)])))} origins)")
+               for k, lab, c in TREE_TRAITS]
+    fig.legend(handles=handles, loc="lower left", ncol=2, bbox_to_anchor=(0.02, 0.0), fontsize=6, handlelength=1.2,
+               title="Inner rings: trait species; dots: independent origins", title_fontsize=6)
+    fig.legend(handles=[Rectangle((0, 0), 1, 1, color=C1, label="of the 48 marine losses"),
+                        Rectangle((0, 0), 1, 1, color=C3, label="of the 15 subterranean losses")],
+               loc="lower left", bbox_to_anchor=(0.365, 0.0), fontsize=6, handlelength=1.2,
+               title="Outer bars: genes lost per species", title_fontsize=6)
+
+    # b: workflow
+    axb = fig.add_axes([0.6, 0.6, 0.39, 0.37])
+    axb.set_axis_off()
+    axb.set_xlim(0, 1)
+    axb.set_ylim(0, 1)
+    steps = [("Zoonomia alignment, TOGA orthology: 115 species", INK2),
+             ("Four layers per gene: nucleotide rate, protein rate,\nselection proxy, gene loss", C1),
+             ("Null learned from all genes (GLS); gene-loss null\nsimulated with species × gene annotation error", C1),
+             ("Signal must survive removal of each origin", C1),
+             ("Repeated on 20 matched control traits", C6)]
+    hgt, gap = 0.135, 0.045
+    for i, (txt, col) in enumerate(steps):
+        y0 = 0.86 - i * (hgt + gap) - hgt
+        summary_box(axb, 0.0, y0, 1.0, hgt, txt, col)
+        if i:
+            axb.annotate("", (0.5, y0 + hgt), (0.5, y0 + hgt + gap), arrowprops=dict(arrowstyle="-|>", color=INK2, lw=0.6,
+                                                                                     shrinkA=0, shrinkB=0))
+    axb.text(0.0, 0.98, "b", fontsize=8, fontweight="bold", va="top")
+    axb.text(0.07, 0.98, "Calibrated convergence test", fontsize=7, va="top")
+
+    # c: results per trait
+    axc = fig.add_axes([0.71, 0.35, 0.16, 0.16])
+    rows = [("Marine", 48, C1, "smell, taste, skin"), ("Underground", 15, C3, "lens, retina"),
+            ("High altitude", 1, C4, "likely error"), ("Echolocation", 0, C2, "")]
+    yy = np.arange(len(rows))[::-1]
+    axc.barh(yy, [r[1] for r in rows], color=[r[2] for r in rows], height=0.62)
+    for yv, (lab, v, c, note_) in zip(yy, rows):
+        axc.text(v + 1.5, yv, f"{v}  {note_}" if v else "0", fontsize=5.5, color=INK2, va="center")
+    axc.set_yticks(yy, [r[0] for r in rows])
+    axc.set_xlim(0, 50)
+    axc.set_xlabel("Convergent gene losses (q < 0.1)")
+    axc.spines["left"].set_visible(False)
+    axc.tick_params(axis="y", length=0)
+    axc.text(-0.68, 1.16, "c", transform=axc.transAxes, fontsize=8, fontweight="bold", va="bottom")
+    axc.text(-0.56, 1.16, "Convergence is written in gene loss", transform=axc.transAxes, fontsize=7, va="bottom")
+    axc.text(5, yy[-1], "no convergent rate shift in any trait", fontsize=5.5, color=INK2, va="center")
+
+    # d: calibration
+    axd = fig.add_axes([0.71, 0.1, 0.27, 0.14])
+    cal = [("Rate test, ours", 0.000, 0.007, C6), ("Rate tests, others", 0.19, 0.91, MUTED),
+           ("Loss test, ours", 0.0, 0.067, C6), ("Loss, no phylogeny", 0.0, 0.69, MUTED)]
+    yy = np.arange(len(cal))[::-1]
+    for yv, (lab, lo, hi, c) in zip(yy, cal):
+        axd.plot([lo, hi], [yv, yv], color=c, lw=3, solid_capstyle="round")
+    axd.axvline(0.1, color=INK2, lw=0.7, ls="--")
+    axd.set_yticks(yy, [c[0] for c in cal])
+    axd.set_xlim(-0.02, 1)
+    axd.set_xlabel("False discovery rate, simulations")
+    axd.spines["left"].set_visible(False)
+    axd.tick_params(axis="y", length=0)
+    axd.text(-0.55, 1.16, "d", transform=axd.transAxes, fontsize=8, fontweight="bold", va="bottom")
+    axd.text(-0.45, 1.16, "False calls are controlled", transform=axd.transAxes, fontsize=7, va="bottom")
+    axd.text(0, -0.48, "Real genomes: 2–8% of 100 control traits had any call", transform=axd.transAxes,
+             fontsize=5.5, color=INK2, va="top")
+    save(fig, "StudySummary")
+
+
 if __name__ == "__main__":
     figure_tree()          # Fig. 1
     figure1()              # Fig. 2
@@ -1650,3 +1794,4 @@ if __name__ == "__main__":
     figure9()              # Extended Data Fig. 8
     supp2()                # Extended Data Fig. 9
     supp3()                # Extended Data Fig. 10
+    study_summary()        # one-page overview (talks, cover letter, preprint)
