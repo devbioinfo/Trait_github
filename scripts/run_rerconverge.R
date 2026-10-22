@@ -27,7 +27,7 @@ if (n_perms > 0) {
     cors_p <- cors[cand, ]
   }
   # permulations in parallel chunks (fork), then merged
-  n_cores <- max(1, min(parallel::detectCores(), 4))
+  n_cores <- as.integer(Sys.getenv("RER_CORES", max(1, min(parallel::detectCores(), 4))))
   chunk <- ceiling(n_perms / n_cores)
   parts <- parallel::mclapply(seq_len(n_cores), function(i) {
     set.seed(1000 + i)
