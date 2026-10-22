@@ -406,18 +406,38 @@ KINDS = (("power_both", "Selection + rate", C6, "-", "o"), ("power_omega", "Sele
          ("power_rate", "Rate only", C6, ":", "^"))
 
 
-def figure2():
+def main_benchmark():
+    """Main rate benchmark: trees 0-2 (results/final_benchmark.csv) plus trees 3-9 (results/robustness)."""
     df = pd.read_csv(RES / "final_benchmark.csv")
-    og = pd.read_csv(RES / "origins_power.csv")
+    extra = [pd.read_csv(RES / "robustness" / f"main_tree{i}.csv") for i in range(3, 10)]
+    return pd.concat([df] + [e[df.columns] for e in extra], ignore_index=True)
+
+
+def origins_benchmark():
+    return pd.concat([pd.read_csv(RES / "origins_power.csv"),
+                      pd.read_csv(RES / "robustness" / "origins_power_extra.csv")], ignore_index=True)
+
+
+def tree_spread(df, keys, col):
+    """Mean over trees of the per-tree mean, with the range across trees."""
+    per = df.groupby(keys + ["tree"])[col].mean()
+    g = per.groupby(level=list(range(len(keys))))
+    return g.mean(), g.min(), g.max()
+
+
+def figure2():
+    df = main_benchmark()
+    og = origins_benchmark()
     fig, axes = plt.subplots(2, 3, figsize=(7.2, 4.9), gridspec_kw=dict(hspace=0.6, wspace=0.42))
     conf = sorted(df.confounding.unique())
     x = np.arange(len(conf))
     w = 0.13
 
     ax = axes[0, 0]
-    null = df[df.effect == "weak"].groupby(["confounding", "method"]).false_calls_null.mean()
+    null, lo, hi = tree_spread(df[df.effect == "weak"], ["confounding", "method"], "false_calls_null")
     for i, (m, lab, c) in enumerate(METHODS_RATE):
-        v = np.array([null.get((cf, m), np.nan) for cf in conf])
+        v, a, b = (np.array([s.get((cf, m), np.nan) for cf in conf]) for s in (null, lo, hi))
+        ax.vlines(x + (i - 2.5) * w, a + 1, b + 1, color=c, lw=0.7, zorder=2)
         ax.scatter(x + (i - 2.5) * w, v + 1, color=c, s=14, zorder=3, label=lab, edgecolor="white", lw=0.5)
     ax.set_yscale("log")
     ax.set_xticks(x, [f"{c:g}" for c in conf])
@@ -427,9 +447,10 @@ def figure2():
     panel(ax, "a", "No convergence")
 
     ax = axes[0, 1]
-    fdr = df.groupby(["confounding", "method"]).fdr.mean()
+    fdr, lo, hi = tree_spread(df, ["confounding", "method"], "fdr")
     for i, (m, lab, c) in enumerate(METHODS_RATE):
-        v = np.array([fdr.get((cf, m), np.nan) for cf in conf])
+        v, a, b = (np.array([s.get((cf, m), np.nan) for cf in conf]) for s in (fdr, lo, hi))
+        ax.vlines(x + (i - 2.5) * w, a, b, color=c, lw=0.7, zorder=2)
         ax.scatter(x + (i - 2.5) * w, v, color=c, s=14, zorder=3, edgecolor="white", lw=0.5)
     ax.axhline(0.1, color=INK2, lw=0.8, ls="--")
     ax.set_xticks(x, [f"{c:g}" for c in conf])
@@ -454,8 +475,7 @@ def figure2():
     panel(ax, "c", "Power by kind of change")
 
     ax = axes[1, 0]
-    g = fin.groupby("effect").signature_accuracy
-    m, lo, hi = (g.mean().reindex(eff), g.min().reindex(eff), g.max().reindex(eff))
+    m, lo, hi = (v.reindex(eff) for v in tree_spread(fin, ["effect"], "signature_accuracy"))
     ax.errorbar(range(3), m, yerr=[m - lo, hi - m], color=C6, lw=1.1, marker="o", ms=3, capsize=3)
     ax.set_xticks(range(3), eff)
     ax.set_ylim(0, 1.02)
@@ -489,6 +509,65 @@ def figure2():
     handles = [plt.Line2D([], [], marker="o", ls="", color=c, ms=5, label=lab) for _, lab, c in METHODS_RATE]
     fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.06))
     save(fig, "ExtendedDataFigure1")
+
+
+SENS = [("Baseline", dict(tips=200, frac=0.02, discordance=0.0)),
+        ("100 species", dict(tips=100)), ("400 species", dict(tips=400)),
+        ("0.5% convergent", dict(frac=0.005)), ("5% convergent", dict(frac=0.05)),
+        ("10% convergent", dict(frac=0.10)),
+        ("Discordance 10", dict(discordance=10.0)), ("Discordance 40", dict(discordance=40.0))]
+SENS_FILES = {"100 species": "tips100", "400 species": "tips400", "0.5% convergent": "frac0.005",
+              "5% convergent": "frac0.05", "10% convergent": "frac0.10",
+              "Discordance 10": "disc10", "Discordance 40": "disc40"}
+SENS_METHODS = [("naive", "Naive", C1), ("gls", "Learned-covariance GLS", C5),
+                ("final", "GLS + leave-one-origin-out", C6)]
+
+
+def sensitivity_data():
+    """Confounding 1: baseline from the 10 main trees, every other setting from 3 trees."""
+    base = main_benchmark()
+    out = [base[base.confounding == 1].assign(setting="Baseline")]
+    for lab, key in SENS_FILES.items():
+        d = pd.concat([pd.read_csv(RES / "robustness" / f"sens_{key}_{i}.csv") for i in range(3)])
+        out.append(d.assign(setting=lab))
+    return pd.concat(out, ignore_index=True)
+
+
+def ed_sensitivity():
+    d = sensitivity_data()
+    labels = [lab for lab, _ in SENS]
+    y = np.arange(len(labels))[::-1]
+    fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.9), sharey=True, gridspec_kw=dict(wspace=0.12))
+    specs = [("false_calls_null", "False calls, no convergence", "a", "Null genomes", True),
+             ("fdr", "Realised FDR (q = 0.1)", "b", "False discoveries", False),
+             ("power", "Power (all effects)", "c", "Power", False)]
+    for ax, (col, xl, letter, title, logx) in zip(axes, specs):
+        sub = d if col != "false_calls_null" else d[d.effect == "weak"]
+        mean, lo, hi = tree_spread(sub, ["setting", "method"], col)
+        for i, (m, lab, c) in enumerate(SENS_METHODS):
+            off = (1 - i) * 0.22
+            v, a, b = (np.array([s.get((L, m), np.nan) for L in labels]) for s in (mean, lo, hi))
+            sh = 1 if logx else 0
+            ax.hlines(y + off, a + sh, b + sh, color=c, lw=0.7, zorder=2)
+            ax.scatter(v + sh, y + off, color=c, s=12, zorder=3, edgecolor="white", lw=0.5, label=lab)
+        if logx:
+            ax.set_xscale("log")
+            xl = "False calls + 1"
+        elif col == "fdr":
+            ax.axvline(0.1, color=INK2, lw=0.8, ls="--")
+            ax.set_xlim(-0.03, 1)
+        else:
+            ax.set_xlim(0, 1.02)
+        ax.set_xlabel(xl)
+        for k in range(1, len(labels)):
+            ax.axhline(k - 0.5, color=GRID, lw=0.5, zorder=0)
+        grid(ax, axis="x")
+        panel(ax, letter, title)
+    axes[0].set_yticks(y, labels)
+    axes[0].set_ylim(-0.6, len(labels) - 0.4)
+    handles = [plt.Line2D([], [], marker="o", ls="", color=c, ms=5, label=lab) for _, lab, c in SENS_METHODS]
+    fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.55, -0.1))
+    save(fig, "ExtendedDataFigure3")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1558,6 +1637,7 @@ if __name__ == "__main__":
     nee_fig6()
     figure2()              # Extended Data Fig. 1
     supp1()                # Extended Data Fig. 2
+    ed_sensitivity()       # Extended Data Fig. 3
     ed_heatmaps()          # Extended Data Fig. 4
     figure5()              # Extended Data Fig. 5
     ed_marine_lineages()   # Extended Data Fig. 6
