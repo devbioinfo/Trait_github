@@ -29,7 +29,8 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 from matplotlib.colors import ListedColormap  # noqa: E402
-from matplotlib.patches import FancyBboxPatch, Rectangle  # noqa: E402
+from matplotlib.patches import FancyBboxPatch, PathPatch, Rectangle  # noqa: E402
+from matplotlib.path import Path as MPath  # noqa: E402
 from matplotlib.transforms import blended_transform_factory  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1648,7 +1649,7 @@ def study_summary():
     tree, names = from_newick((RES / "toga" / "master_paper.nwk").read_text())
     cov = pd.read_csv(RES / "toga" / "coverage_paper.tsv", sep="\t").drop_duplicates("species").set_index("species")
     lineage = cov.lineage.reindex(names).fillna("")
-    lineage[names.index("Homo_sapiens")] = "Eutheria; Euarchontoglires; Primates; Haplorrhini"
+    lineage.iloc[names.index("Homo_sapiens")] = "Eutheria; Euarchontoglires; Primates; Haplorrhini"
     _, _, Y, _ = loss_setup()
     calls = pd.read_csv(RES / "extra" / "supplementary_table1_convergent_losses.csv")
     lost = {t: Y.reindex(calls[calls.trait == t].gene).reindex(columns=names).eq(1).sum().to_numpy()
@@ -1664,7 +1665,7 @@ def study_summary():
     width = span / (n - 1)
 
     fig = plt.figure(figsize=(183 * MM, 150 * MM))
-    ax = fig.add_axes([0.0, 0.1, 0.57, 0.84], projection="polar")
+    ax = fig.add_axes([0.005, 0.085, 0.575, 0.87], projection="polar")
     ax.set_axis_off()
     for v in range(tree.n_nodes - 1):
         ax.plot([theta(v), theta(v)], [x[tree.parent[v]], x[v]], color=MUTED, lw=0.6, solid_capstyle="butt")
@@ -1708,7 +1709,33 @@ def study_summary():
                     ax.text(mid, ro + 0.04, lab, fontsize=5.5, color=INK, ha="center", va="top" if flip else "bottom",
                             rotation=deg - 90 + (180 if flip else 0), rotation_mode="anchor", linespacing=1.0)
             start = t
-    ax.set_ylim(0, ro + 0.2)
+    ax.set_ylim(0, ro + 0.55)
+    # silhouettes outside the order arcs (game-icons.net, CC BY 3.0; scripts/silhouettes.json)
+    icons = json.loads((ROOT / "scripts" / "silhouettes.json").read_text())["icons"]
+    pinn = np.array([any(k in l for k in ("Pinnipedia", "Otariidae", "Phocidae", "Odobenidae")) for l in lineage])
+    grp = np.array(group)
+    place = [("Bats", "bat", C2, None), ("Whales and dolphins", "dolphin", C1, None), ("Camelids", "camel", C4, None),
+             ("Ruminants, pigs", "bison", C4, None), ("Carnivores", "dog", INK2, ~pinn), ("Carnivores", "sealion", C1, pinn),
+             ("Xenarthrans", "anteater", INK2, None), ("Moles, hedgehog", "mole", C3, None), ("Primates", "gorilla", INK2, None),
+             ("Rodents", "mouse", INK2, None), ("Rabbits, pika", "rabbit", C4, None), ("Afrotherians", "elephant", INK2, None)]
+    fig.canvas.draw()
+    size = 0.046                                   # icon box, fraction of figure width
+    fw, fh = fig.get_size_inches()
+    for g, key, col, mask in place:
+        sel = grp == g if mask is None else (grp == g) & mask
+        if not sel.any():
+            continue
+        ang = th[sel].mean()
+        px, py = fig.transFigure.inverted().transform(ax.transData.transform((ang, ro + 0.4)))
+        w = size
+        h = size * fw / fh
+        iax = fig.add_axes([px - w / 2, py - h / 2, w, h])
+        ic = icons[key]
+        iax.add_patch(PathPatch(MPath(np.array(ic["vertices"]), np.array(ic["codes"], dtype=np.uint8)), fc=col, lw=0))
+        iax.set_xlim(0, ic["w"])
+        iax.set_ylim(ic["h"], 0)
+        iax.set_aspect("equal")
+        iax.set_axis_off()
     fig.text(0.015, 0.975, "a", fontsize=8, fontweight="bold", va="top")
     fig.text(0.04, 0.975, "115 mammals, 15,703 genes, four traits", fontsize=7, va="top")
     handles = [Rectangle((0, 0), 1, 1, color=c, label=f"{lab} ({len(onodes(tree, np.array([CT.TRAITS[k][0](s_, l) for s_, l in zip(names, lineage)])))} origins)")
@@ -1774,6 +1801,7 @@ def study_summary():
     axd.text(-0.45, 1.16, "False calls are controlled", transform=axd.transAxes, fontsize=7, va="bottom")
     axd.text(0, -0.48, "Real genomes: 2–8% of 100 control traits had any call", transform=axd.transAxes,
              fontsize=5.5, color=INK2, va="top")
+    fig.text(0.985, 0.004, "Silhouettes: game-icons.net (CC BY 3.0)", fontsize=5, color=MUTED, va="bottom", ha="right")
     save(fig, "StudySummary")
 
 
