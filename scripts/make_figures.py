@@ -1510,6 +1510,83 @@ def nee_fig6():
     save(fig, "Figure6")
 
 
+# sensitivity runs of the main benchmark at confounding 1 (scripts/run_robustness.sh), each varying one
+# setting; the baseline level (200 species, 2% convergent, no discordance) is the main benchmark itself
+SENS = [("tips", "Tree size", "Species", [(100, "sens_tips100"), (200, None), (400, "sens_tips400")], "{:g}"),
+        ("frac", "Share of convergent genes", "Convergent genes (%)",
+         [(0.005, "sens_frac0.005"), (0.02, None), (0.05, "sens_frac0.05"), (0.10, "sens_frac0.10")], "{:.3g}"),
+        ("discordance", "Gene-tree discordance", "NNIs per gene tree (mean)",
+         [(0, None), (10, "sens_disc10"), (40, "sens_disc40")], "{:g}")]
+
+
+def sensitivity_rows(rob):
+    """Rows of the main benchmark at confounding 1 plus every finished sensitivity run, one setting per row."""
+    base = [pd.read_csv(RES / "final_benchmark.csv")] + [pd.read_csv(f) for f in sorted(rob.glob("main_tree*.csv"))]
+    base = pd.concat(base, ignore_index=True)
+    base = base[base.confounding == 1]
+    out = []
+    for key, _, _, levels, _ in SENS:
+        for level, stem in levels:
+            files = [base] if stem is None else [pd.read_csv(f) for f in sorted(rob.glob(f"{stem}_*.csv"))]
+            for f in files:
+                out.append(f.assign(setting=key, level=level))
+    return pd.concat(out, ignore_index=True) if out else pd.DataFrame()
+
+
+def ed_sensitivity(rob=RES / "robustness"):
+    d = sensitivity_rows(rob)
+    fig, axes = plt.subplots(3, 3, figsize=(183 * MM, 150 * MM), gridspec_kw=dict(hspace=0.55, wspace=0.18))
+    w = 0.13
+    rows = (("false_calls_null", None, "False calls + 1, no convergence", True),
+            ("fdr", "moderate", "Realised FDR (q = 0.1)", False),
+            ("power", "moderate", "Power", False))
+    letters = iter("abcdefghi")
+    for r, (col, eff, ylab, log) in enumerate(rows):
+        for c, (key, title, xlab, levels, fmt) in enumerate(SENS):
+            ax = axes[r, c]
+            s = d[d.setting == key] if len(d) else d
+            if eff is not None and len(s):
+                s = s[s.effect == eff]
+            x = np.arange(len(levels))
+            for i, (m, lab, colour) in enumerate(METHODS_RATE):
+                g = s[s.method == m].groupby(["level", "tree"])[col].mean().groupby("level") if len(s) else None
+                for xx, (level, _) in zip(x + (i - 2.5) * w, levels):
+                    if g is None or level not in g.groups:
+                        continue
+                    v = g.get_group(level).to_numpy() + (1 if log else 0)
+                    ax.vlines(xx, v.min(), v.max(), color=colour, lw=0.8, zorder=2)
+                    ax.scatter([xx], [v.mean()], color=colour, s=14, zorder=3, edgecolor="white", lw=0.5)
+            for xx, (level, stem) in zip(x, levels):
+                done = len(s) and level in set(s.level)
+                if not done:
+                    ax.text(xx, 0.5, "not yet run", transform=blended_transform_factory(ax.transData, ax.transAxes),
+                            ha="center", va="center", rotation=90, fontsize=5.5, color=MUTED)
+            if log:
+                ax.set_yscale("log")
+                ax.set_ylim(0.7, 1500)
+                ax.yaxis.set_minor_locator(plt.NullLocator())
+            else:
+                ax.set_ylim(-0.03, 1.02)
+            if col == "fdr":
+                ax.axhline(0.1, color=INK2, lw=0.8, ls="--")
+            ax.set_xticks(x, [fmt.format(100 * lv if key == "frac" else lv) for lv, _ in levels])
+            ax.set_xlim(-0.6, len(levels) - 0.4)
+            for xx, (_, stem) in zip(x, levels):
+                if stem is None:                      # the main benchmark's setting
+                    ax.axvspan(xx - 0.48, xx + 0.48, color=PALE, lw=0, zorder=0)
+            ax.set_xlabel(xlab)
+            if c == 0:
+                ax.set_ylabel(ylab)
+            else:
+                ax.tick_params(axis="y", labelleft=False)
+            grid(ax)
+            panel(ax, next(letters), title if r == 0 else "")
+    handles = [plt.Line2D([], [], marker="o", ls="", color=c, ms=5, label=lab) for _, lab, c in METHODS_RATE]
+    handles.append(Rectangle((0, 0), 1, 1, color=PALE, label="setting of the main benchmark"))
+    fig.legend(handles=handles, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.04))
+    save(fig, "ExtendedDataFigure3")
+
+
 def ed_heatmaps():
     tree, names = from_newick((RES / "toga" / "master_paper.nwk").read_text())
     status = pd.read_csv(RES / "toga" / "loss_status_paper.tsv.gz", sep="\t", index_col=0)
@@ -1558,6 +1635,7 @@ if __name__ == "__main__":
     nee_fig6()
     figure2()              # Extended Data Fig. 1
     supp1()                # Extended Data Fig. 2
+    ed_sensitivity()       # Extended Data Fig. 3
     ed_heatmaps()          # Extended Data Fig. 4
     figure5()              # Extended Data Fig. 5
     ed_marine_lineages()   # Extended Data Fig. 6
