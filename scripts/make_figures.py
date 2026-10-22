@@ -814,13 +814,18 @@ def supp2():
 
 def supp1():
     r = pd.read_csv(RES / "rerconverge_compare.csv")
+    # 10,000 permulations on all genes, rate-jump intensity 1 only (results/robustness)
+    allp = pd.read_csv(RES / "robustness" / "rerconverge_allperm10k.csv")
+    allp = allp[allp.method == "RERconverge_protein_permulation"].assign(method="RERconverge_allperm")
+    r = pd.concat([r, allp], ignore_index=True)
     meth = [("final", "This method (final)", C6), ("RERconverge_protein", "RERconverge, protein", C1),
             ("RERconverge_nucleotide", "RERconverge, nucleotide", C2),
-            ("RERconverge_protein_permulation", "RERconverge + permulations", "#6250d6")]   # violet, slot 7
+            ("RERconverge_protein_permulation", "+ permulations, 150 candidates", "#6250d6"),   # violet, slot 7
+            ("RERconverge_allperm", "+ permulations, all genes (intensity 1)", "#b3a8ef")]
     conf = sorted(r.confounding.unique())
     fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.5), gridspec_kw=dict(wspace=0.45))
     x = np.arange(len(conf))
-    w = 0.18
+    w = 0.16
     for ax, (eff, col, ylab, letter, title) in zip(axes, (
             ("none", "false_calls", "False calls", "a", "No convergence"),
             ("moderate", "fdr", "Realised FDR (q = 0.1)", "b", "2% of genes convergent"),
@@ -828,8 +833,8 @@ def supp1():
         s = r[r.effect == eff].groupby(["confounding", "method"])[col].mean()
         for i, (m, lab, c) in enumerate(meth):
             v = [s.get((cf, m), np.nan) for cf in conf]
-            ax.bar(x + (i - 1.5) * w, v, width=w - 0.02, color=c, label=lab)
-            for xx, vv in zip(x + (i - 1.5) * w, v):
+            ax.bar(x + (i - 2) * w, v, width=w - 0.02, color=c, label=lab)
+            for xx, vv in zip(x + (i - 2) * w, v):
                 if vv == 0:
                     ax.text(xx, 0, "0", ha="center", va="bottom", fontsize=5.5, color=INK2)
         if col == "fdr":
@@ -840,7 +845,7 @@ def supp1():
         grid(ax)
         panel(ax, letter, title)
     fig.legend(handles=[Rectangle((0, 0), 1, 1, color=c, label=lab) for _, lab, c in meth],
-               loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.2))
+               loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.3))
     save(fig, "ExtendedDataFigure2")
 
 
