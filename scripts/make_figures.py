@@ -228,7 +228,7 @@ def figure_tree():
     tree, names = from_newick((RES / "toga" / "master_paper.nwk").read_text())
     cov = pd.read_csv(RES / "toga" / "coverage_paper.tsv", sep="\t").drop_duplicates("species").set_index("species")
     lineage = cov.lineage.reindex(names).fillna("")
-    lineage[names.index("Homo_sapiens")] = "Eutheria; Euarchontoglires; Primates; Haplorrhini"
+    lineage.iloc[names.index("Homo_sapiens")] = "Eutheria; Euarchontoglires; Primates; Haplorrhini"
     common = pd.read_csv(RES / "toga" / "assemblies_paper.tsv", sep="\t").set_index("species")["Common name"]
     n = tree.n_tips
     _, y = tree_xy(tree)
@@ -240,8 +240,8 @@ def figure_tree():
     R = 1.0
     span = 2 * np.pi * 0.965
     theta = lambda v: np.pi / 2 - y[v] / (n - 1) * span          # noqa: E731  clockwise from the top
-    fig = plt.figure(figsize=(183 * MM, 166 * MM))
-    ax = fig.add_axes([0.1, 0.075, 0.8, 0.9], projection="polar")
+    fig = plt.figure(figsize=(183 * MM, 170 * MM))
+    ax = fig.add_axes([0.06, 0.06, 0.88, 0.93], projection="polar")
     ax.set_axis_off()
     for v in range(tree.n_nodes - 1):
         p = tree.parent[v]
@@ -290,13 +290,16 @@ def figure_tree():
                         va="top" if flip else "bottom", rotation=deg - 90 + (180 if flip else 0),
                         rotation_mode="anchor")
             start = t
-    ax.set_ylim(0, ro + 0.12)
+    ax.set_ylim(0, ro + 0.24)
+    th = np.array([theta(t) for t in range(n)])
+    place_silhouettes(fig, ax, lineage, group, th, ro + 0.155, 0.03)
     handles = [plt.Line2D([], [], marker="s", ls="", color=c, ms=7, label=f"{lab} ({len(onodes(tree, np.array([CT.TRAITS[k][0](s_, l) for s_, l in zip(names, lineage)])))} origins)")
                for k, lab, c in TREE_TRAITS]
     handles.append(plt.Line2D([], [], marker="o", ls="", color=INK2, ms=5, markeredgecolor="white",
                               label="independent origin (stem branch)"))
     fig.legend(handles=handles, loc="lower center", ncol=5, bbox_to_anchor=(0.5, 0.0), fontsize=6,
                handletextpad=0.3, columnspacing=1.2)
+    fig.text(0.99, 0.995, "Silhouettes: game-icons.net (CC BY 3.0)", fontsize=5, color=MUTED, ha="right", va="top")
     save(fig, "Figure1")
 
 
@@ -1638,6 +1641,36 @@ def ed_taste_map():
 # Study summary: species tree with the convergent losses, workflow and main results
 # ---------------------------------------------------------------------------------------
 
+SILHOUETTES = [("Bats", "bat", C2, None), ("Whales and dolphins", "dolphin", C1, None), ("Camelids", "camel", C4, None),
+               ("Ruminants, pigs", "bison", C4, None), ("Carnivores", "dog", INK2, False),
+               ("Carnivores", "sealion", C1, True), ("Xenarthrans", "anteater", INK2, None),
+               ("Moles, hedgehog", "mole", C3, None), ("Primates", "gorilla", INK2, None), ("Rodents", "mouse", INK2, None),
+               ("Rabbits, pika", "rabbit", C4, None), ("Afrotherians", "elephant", INK2, None)]
+
+
+def place_silhouettes(fig, ax, lineage, group, th, r, size):
+    """Silhouettes (game-icons.net, CC BY 3.0; scripts/silhouettes.json) at radius r of a polar tree axis, one per
+    order group at the mean angle of its species; the carnivore entries split pinnipeds from the rest."""
+    icons = json.loads((ROOT / "scripts" / "silhouettes.json").read_text())["icons"]
+    pinn = np.array([any(k in l for k in ("Pinnipedia", "Otariidae", "Phocidae", "Odobenidae")) for l in lineage])
+    grp = np.array(group[: len(th)])
+    fig.canvas.draw()
+    fw, fh = fig.get_size_inches()
+    for g, key, col, is_pinn in SILHOUETTES:
+        sel = grp == g if is_pinn is None else (grp == g) & (pinn[: len(th)] == is_pinn)
+        if not sel.any():
+            continue
+        px, py = fig.transFigure.inverted().transform(ax.transData.transform((th[sel].mean(), r)))
+        w, h = size, size * fw / fh
+        iax = fig.add_axes([px - w / 2, py - h / 2, w, h])
+        ic = icons[key]
+        iax.add_patch(PathPatch(MPath(np.array(ic["vertices"]), np.array(ic["codes"], dtype=np.uint8)), fc=col, lw=0))
+        iax.set_xlim(0, ic["w"])
+        iax.set_ylim(ic["h"], 0)
+        iax.set_aspect("equal")
+        iax.set_axis_off()
+
+
 def summary_box(ax, x, y, w, h, text, col, fs=6):
     ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0,rounding_size=0.015", fc=PALE, ec=col, lw=0.9))
     ax.text(x + 0.03, y + h / 2, text, fontsize=fs, color=INK, va="center", ha="left", linespacing=1.25)
@@ -1710,32 +1743,7 @@ def study_summary():
                             rotation=deg - 90 + (180 if flip else 0), rotation_mode="anchor", linespacing=1.0)
             start = t
     ax.set_ylim(0, ro + 0.55)
-    # silhouettes outside the order arcs (game-icons.net, CC BY 3.0; scripts/silhouettes.json)
-    icons = json.loads((ROOT / "scripts" / "silhouettes.json").read_text())["icons"]
-    pinn = np.array([any(k in l for k in ("Pinnipedia", "Otariidae", "Phocidae", "Odobenidae")) for l in lineage])
-    grp = np.array(group)
-    place = [("Bats", "bat", C2, None), ("Whales and dolphins", "dolphin", C1, None), ("Camelids", "camel", C4, None),
-             ("Ruminants, pigs", "bison", C4, None), ("Carnivores", "dog", INK2, ~pinn), ("Carnivores", "sealion", C1, pinn),
-             ("Xenarthrans", "anteater", INK2, None), ("Moles, hedgehog", "mole", C3, None), ("Primates", "gorilla", INK2, None),
-             ("Rodents", "mouse", INK2, None), ("Rabbits, pika", "rabbit", C4, None), ("Afrotherians", "elephant", INK2, None)]
-    fig.canvas.draw()
-    size = 0.046                                   # icon box, fraction of figure width
-    fw, fh = fig.get_size_inches()
-    for g, key, col, mask in place:
-        sel = grp == g if mask is None else (grp == g) & mask
-        if not sel.any():
-            continue
-        ang = th[sel].mean()
-        px, py = fig.transFigure.inverted().transform(ax.transData.transform((ang, ro + 0.4)))
-        w = size
-        h = size * fw / fh
-        iax = fig.add_axes([px - w / 2, py - h / 2, w, h])
-        ic = icons[key]
-        iax.add_patch(PathPatch(MPath(np.array(ic["vertices"]), np.array(ic["codes"], dtype=np.uint8)), fc=col, lw=0))
-        iax.set_xlim(0, ic["w"])
-        iax.set_ylim(ic["h"], 0)
-        iax.set_aspect("equal")
-        iax.set_axis_off()
+    place_silhouettes(fig, ax, lineage, group, th, ro + 0.4, 0.046)
     fig.text(0.015, 0.975, "a", fontsize=8, fontweight="bold", va="top")
     fig.text(0.04, 0.975, "115 mammals, 15,703 genes, four traits", fontsize=7, va="top")
     handles = [Rectangle((0, 0), 1, 1, color=c, label=f"{lab} ({len(onodes(tree, np.array([CT.TRAITS[k][0](s_, l) for s_, l in zip(names, lineage)])))} origins)")
