@@ -11,16 +11,17 @@ CT="python3 scripts/convergence_toga.py --bl data/bl_paper --species results/tog
 FB="python3 scripts/final_benchmark.py --reps 1 --workers $W"
 L=$(mktemp)
 TRAITS="marine hypoxia_subterranean hypoxia_altitude hypoxia echolocation"
+# 3. loss-null resolution: 500 or 1,000 simulated genomes, and the tail fit on 100 or 500 null values
+for t in marine hypoxia_subterranean; do
+  echo "sims500_$t|$CT --trait $t --loss-sims 500 --controls 0 --out $A/sims500_$t"
+  echo "sims1000_$t|$CT --trait $t --loss-sims 1000 --controls 0 --out $A/sims1000_$t"
+  echo "tail100_$t|$CT --trait $t --tail-n 100 --controls 0 --out $A/tail100_$t"
+  echo "tail500_$t|$CT --trait $t --tail-n 500 --controls 0 --out $A/tail500_$t"
+done >> $L
 # 1. 100 matched control traits per analysis (calibration with binomial intervals, null P-value plots)
 for t in $TRAITS; do echo "ctrl100_$t|$CT --trait $t --controls 100 --out $A/ctrl100_$t"; done >> $L
 # 2. gene loss counted as TOGA 'lost' only (uncertain losses treated as intact)
 for t in $TRAITS; do echo "Lonly_$t|$CT --trait $t --loss-states L --controls 20 --out $A/Lonly_$t"; done >> $L
-# 3. loss-null resolution: 500 simulated genomes, and the tail fit on 100 or 500 null values
-for t in marine hypoxia_subterranean; do
-  echo "sims500_$t|$CT --trait $t --loss-sims 500 --controls 0 --out $A/sims500_$t"
-  echo "tail100_$t|$CT --trait $t --tail-n 100 --controls 0 --out $A/tail100_$t"
-  echo "tail500_$t|$CT --trait $t --tail-n 500 --controls 0 --out $A/tail500_$t"
-done >> $L
 # 4. two more trees for every sensitivity setting (5 per setting)
 R=results/robustness
 for i in 3 4; do

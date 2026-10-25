@@ -330,7 +330,7 @@ def figure1():           # saved as Figure2 (method overview)
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
     ax.set_axis_off()
-    labels = ["Nucleotide rate", "Protein rate", "Selection (protein − nucleotide)", "Gene loss (TOGA)"]
+    labels = ["Nucleotide rate", "Protein rate", "Protein − nucleotide rate", "Gene loss (TOGA)"]
     for i, lab in enumerate(labels):
         y0 = 8.4 - i * 2.4
         vals = rng.normal(size=12) if i < 3 else (rng.random(12) < 0.25).astype(float)
@@ -1772,7 +1772,7 @@ def study_summary():
     axb.set_xlim(0, 1)
     axb.set_ylim(0, 1)
     steps = [("Zoonomia alignment, TOGA orthology: 115 species", INK2),
-             ("Four layers per gene: nucleotide rate, protein rate,\nselection proxy, gene loss", C1),
+             ("Four layers per gene: nucleotide rate, protein rate,\ntheir contrast, gene loss", C1),
              ("Null learned from all genes (GLS); gene-loss null\nsimulated with species × gene annotation error", C1),
              ("Signal must survive removal of each origin", C1),
              ("Repeated on 20 matched control traits", C6)]
