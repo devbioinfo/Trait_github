@@ -292,7 +292,7 @@ def figure_tree():
             start = t
     ax.set_ylim(0, ro + 0.24)
     th = np.array([theta(t) for t in range(n)])
-    place_silhouettes(fig, ax, lineage, group, th, ro + 0.155, 0.03)
+    place_silhouettes(fig, ax, lineage, group, th, ro + 0.155, 0.03, names)
     handles = [plt.Line2D([], [], marker="s", ls="", color=c, ms=7, label=f"{lab} ({len(onodes(tree, np.array([CT.TRAITS[k][0](s_, l) for s_, l in zip(names, lineage)])))} origins)")
                for k, lab, c in TREE_TRAITS]
     handles.append(plt.Line2D([], [], marker="o", ls="", color=INK2, ms=5, markeredgecolor="white",
@@ -1641,23 +1641,27 @@ def ed_taste_map():
 # Study summary: species tree with the convergent losses, workflow and main results
 # ---------------------------------------------------------------------------------------
 
-SILHOUETTES = [("Bats", "bat", C2, None), ("Whales and dolphins", "dolphin", C1, None), ("Camelids", "camel", C4, None),
-               ("Ruminants, pigs", "bison", C4, None), ("Carnivores", "dog", INK2, False),
+SILHOUETTES = [("Bats", "bat", C2, None), ("Whales and dolphins", "dolphin", C1, None), ("Camelids", "camel", C4, ("Vicugna_",)),
+               ("Ruminants, pigs", "bison", C4, ("Bos_mutus", "Pantholops_")), ("Carnivores", "dog", INK2, False),
                ("Carnivores", "sealion", C1, True), ("Xenarthrans", "anteater", INK2, None),
                ("Moles, hedgehog", "mole", C3, None), ("Primates", "gorilla", INK2, None), ("Rodents", "mouse", INK2, None),
-               ("Rabbits, pika", "rabbit", C4, None), ("Afrotherians", "elephant", INK2, None)]
+               ("Rabbits, pika", "rabbit", C4, ("Ochotona_",)), ("Afrotherians", "elephant", INK2, None)]
 
 
-def place_silhouettes(fig, ax, lineage, group, th, r, size):
+def place_silhouettes(fig, ax, lineage, group, th, r, size, names):
     """Silhouettes (game-icons.net, CC BY 3.0; scripts/silhouettes.json) at radius r of a polar tree axis, one per
-    order group at the mean angle of its species; the carnivore entries split pinnipeds from the rest."""
+    order group at the mean angle of its species; the carnivore entries split pinnipeds from the rest, and a tuple of
+    name prefixes places the silhouette at those species only (the high-altitude species of a group)."""
     icons = json.loads((ROOT / "scripts" / "silhouettes.json").read_text())["icons"]
     pinn = np.array([any(k in l for k in ("Pinnipedia", "Otariidae", "Phocidae", "Odobenidae")) for l in lineage])
     grp = np.array(group[: len(th)])
     fig.canvas.draw()
     fw, fh = fig.get_size_inches()
     for g, key, col, is_pinn in SILHOUETTES:
-        sel = grp == g if is_pinn is None else (grp == g) & (pinn[: len(th)] == is_pinn)
+        if isinstance(is_pinn, tuple):
+            sel = np.array([any(nm.startswith(k) for k in is_pinn) for nm in names[: len(th)]])
+        else:
+            sel = grp == g if is_pinn is None else (grp == g) & (pinn[: len(th)] == is_pinn)
         if not sel.any():
             continue
         px, py = fig.transFigure.inverted().transform(ax.transData.transform((th[sel].mean(), r)))
@@ -1743,7 +1747,7 @@ def study_summary():
                             rotation=deg - 90 + (180 if flip else 0), rotation_mode="anchor", linespacing=1.0)
             start = t
     ax.set_ylim(0, ro + 0.55)
-    place_silhouettes(fig, ax, lineage, group, th, ro + 0.4, 0.046)
+    place_silhouettes(fig, ax, lineage, group, th, ro + 0.4, 0.046, names)
     fig.text(0.015, 0.975, "a", fontsize=8, fontweight="bold", va="top")
     fig.text(0.04, 0.975, "115 mammals, 15,703 genes, four traits", fontsize=7, va="top")
     handles = [Rectangle((0, 0), 1, 1, color=c, label=f"{lab} ({len(onodes(tree, np.array([CT.TRAITS[k][0](s_, l) for s_, l in zip(names, lineage)])))} origins)")
