@@ -35,11 +35,11 @@ for i in 3 4; do
 done >> $L
 # 5. RERconverge with 10,000 permulations on all genes at rate-jump intensity 0 and 2
 echo "rer10k_conf02|env RER_CORES=$(( W > 4 ? W - 4 : 1 )) python3 scripts/rerconverge_compare.py --confounding 0,2 --effects moderate --perms 10000 --candidates 0 --seed 5032 --workers $W --out $R/rerconverge_allperm10k_conf02.csv" >> $L
-run() { name=${1%%|*}; cmd=${1#*|}; [ -f $F/$name.done ] && exit 0
+run() { name=${1%%|*}; cmd=${1#*|}; [ -f $F/$name.done ] && return 0
   echo "$(date '+%d %b %H:%M')  started  $name" >> logs/audit_progress.txt
-  if $cmd > logs/audit_$name.txt 2>&1; then touch $F/$name.done; echo "$(date '+%d %b %H:%M')  finished $name" >> logs/audit_progress.txt
+  if $cmd < /dev/null > logs/audit_$name.txt 2>&1; then touch $F/$name.done; echo "$(date '+%d %b %H:%M')  finished $name" >> logs/audit_progress.txt
   else echo "$(date '+%d %b %H:%M')  FAILED   $name (see logs/audit_$name.txt)" >> logs/audit_progress.txt; fi; }
-export -f run; export F
-tr '\n' '\0' < $L | xargs -0 -P 1 -I{} bash -c 'run "$@"' _ {}
+# a plain loop: macOS xargs -I rejects command lines longer than 255 characters
+while IFS= read -r line; do [ -n "$line" ] && run "$line"; done < $L
 n=$(wc -l < $L); d=$(ls $F | wc -l)
 echo "All done: $d of $n steps finished." | tee -a logs/audit_progress.txt

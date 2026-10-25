@@ -23,10 +23,10 @@ done >> $L
 echo "rer_allperm|python3 scripts/rerconverge_compare.py --confounding 1 --effects moderate --perms 100 --candidates 0 --seed 5031 --out $R/rerconverge_allperm.csv" >> $L
 echo "origins|python3 scripts/origins_power.py --workers $W --reps 7 --seed 5011 --rep-offset 3 --out $R/origins_power_extra.csv" >> $L
 echo "loss|python3 scripts/loss_benchmark.py --workers $W --bl data/bl_paper --loss results/toga/loss_status_paper.tsv.gz --out $R/loss_benchmark_5reps.csv --reps 5" >> $L
-run() { name=${1%%|*}; cmd=${1#*|}; [ -f $F/$name.done ] && exit 0
+run() { name=${1%%|*}; cmd=${1#*|}; [ -f $F/$name.done ] && return 0
   echo "$(date '+%d %b %H:%M')  started  $name" >> logs/progress.txt
-  if $cmd > logs/$name.txt 2>&1; then touch $F/$name.done; echo "$(date '+%d %b %H:%M')  finished $name" >> logs/progress.txt
+  if $cmd < /dev/null > logs/$name.txt 2>&1; then touch $F/$name.done; echo "$(date '+%d %b %H:%M')  finished $name" >> logs/progress.txt
   else echo "$(date '+%d %b %H:%M')  FAILED   $name (see logs/$name.txt)" >> logs/progress.txt; fi; }
-export -f run; export F
-tr '\n' '\0' < $L | xargs -0 -P 1 -I{} bash -c 'run "$@"' _ {}
+# a plain loop: macOS xargs -I rejects command lines longer than 255 characters
+while IFS= read -r line; do [ -n "$line" ] && run "$line"; done < $L
 echo "All done: $(ls $F | wc -l) of 26 steps finished." | tee -a logs/progress.txt
