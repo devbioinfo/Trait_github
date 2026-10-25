@@ -1,0 +1,16 @@
+{
+  "title": "mlconv: calibrated detection of convergent gene loss and rate shifts (code for \"Convergent evolution in mammals is written in gene loss\")",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "description": "<p>Code for the article <em>Convergent evolution in mammals is written in gene loss</em>. A convergence test that learns its null covariance from all genes (GLS), requires every signal to survive the removal of each independent origin, tests gene loss against a simulated irreversible-loss null with species and gene annotation error, and is repeated on matched control traits. Includes the analyses of 115 mammals (Zoonomia/TOGA), the AliSim benchmarks, the RERconverge comparison, and the code that draws every figure. Derived data are deposited separately (see related identifiers).</p>",
+  "creators": [
+    {"name": "[Family name], [Given names]", "affiliation": "[Affiliation]", "orcid": "[0000-0000-0000-0000]"}
+  ],
+  "license": "MIT",
+  "keywords": ["convergent evolution", "gene loss", "comparative genomics", "mammals", "phylogenetic comparative methods", "false discovery rate", "TOGA", "Zoonomia"],
+  "related_identifiers": [
+    {"relation": "isSupplementTo", "identifier": "[DOI of the article or bioRxiv preprint]", "resource_type": "publication-article"},
+    {"relation": "isSupplementedBy", "identifier": "[DOI of the data deposit]", "resource_type": "dataset"}
+  ],
+  "notes": "Silhouettes in scripts/silhouettes.json: game-icons.net, CC BY 3.0. RERconverge (GPL-3.0) is not included; scripts/rerconverge_no_ggtree.patch is applied to commit 682ac34 by scripts/install_rerconverge.sh."
+}
