@@ -1641,27 +1641,34 @@ def ed_taste_map():
 # Study summary: species tree with the convergent losses, workflow and main results
 # ---------------------------------------------------------------------------------------
 
-SILHOUETTES = [("Bats", "bat", C2, None), ("Whales and dolphins", "dolphin", C1, None), ("Camelids", "camel", C4, ("Vicugna_",)),
-               ("Ruminants, pigs", "bison", C4, ("Bos_mutus", "Pantholops_")), ("Carnivores", "dog", INK2, False),
-               ("Carnivores", "sealion", C1, True), ("Xenarthrans", "anteater", INK2, None),
-               ("Moles, hedgehog", "mole", C3, None), ("Primates", "gorilla", INK2, None), ("Rodents", "mouse", INK2, None),
-               ("Rabbits, pika", "rabbit", C4, ("Ochotona_",)), ("Afrotherians", "elephant", INK2, None)]
+SILHOUETTES = [  # (group, icon, colour, where): None = group centre; a trait key = that group's trait species;
+    # "not:<trait>" = the group's other species; a tuple of name prefixes = those species
+    ("Bats", "bat", C2, "echolocation"), ("Whales and dolphins", "dolphin", C1, "marine"),
+    ("Camelids", "camel", C4, "hypoxia_altitude"), ("Ruminants, pigs", "bison", C4, "hypoxia_altitude"),
+    ("Carnivores", "dog", INK2, "not:marine"), ("Carnivores", "sealion", C1, "marine"),
+    ("Xenarthrans", "anteater", INK2, None), ("Moles, hedgehog", "mole", C3, "hypoxia_subterranean"),
+    ("Primates", "gorilla", INK2, None), ("Rodents", "mouse", INK2, "not:hypoxia_subterranean"),
+    ("Rodents", "mouse", C3, ("Heterocephalus_", "Fukomys_")), ("Rabbits, pika", "rabbit", C4, "hypoxia_altitude"),
+    ("Afrotherians", "elephant", INK2, None)]
 
 
 def place_silhouettes(fig, ax, lineage, group, th, r, size, names):
-    """Silhouettes (game-icons.net, CC BY 3.0; scripts/silhouettes.json) at radius r of a polar tree axis, one per
-    order group at the mean angle of its species; the carnivore entries split pinnipeds from the rest, and a tuple of
-    name prefixes places the silhouette at those species only (the high-altitude species of a group)."""
+    """Silhouettes (game-icons.net, CC BY 3.0; scripts/silhouettes.json) at radius r of a polar tree axis. Grey ones
+    sit at the centre of their group; coloured ones at the mean angle of the group's species with that trait."""
+    import convergence_toga as CT
     icons = json.loads((ROOT / "scripts" / "silhouettes.json").read_text())["icons"]
-    pinn = np.array([any(k in l for k in ("Pinnipedia", "Otariidae", "Phocidae", "Odobenidae")) for l in lineage])
-    grp = np.array(group[: len(th)])
+    n = len(th)
+    grp = np.array(group[:n])
+    has = {k: np.array([CT.TRAITS[k][0](names[i], lineage.iloc[i]) for i in range(n)])
+           for k in ("echolocation", "marine", "hypoxia_subterranean", "hypoxia_altitude")}
     fig.canvas.draw()
     fw, fh = fig.get_size_inches()
-    for g, key, col, is_pinn in SILHOUETTES:
-        if isinstance(is_pinn, tuple):
-            sel = np.array([any(nm.startswith(k) for k in is_pinn) for nm in names[: len(th)]])
-        else:
-            sel = grp == g if is_pinn is None else (grp == g) & (pinn[: len(th)] == is_pinn)
+    for g, key, col, where in SILHOUETTES:
+        sel = grp == g
+        if isinstance(where, tuple):
+            sel = np.array([any(nm.startswith(k) for k in where) for nm in names[:n]])
+        elif isinstance(where, str):
+            sel = sel & (~has[where[4:]] if where.startswith("not:") else has[where])
         if not sel.any():
             continue
         px, py = fig.transFigure.inverted().transform(ax.transData.transform((th[sel].mean(), r)))
