@@ -187,12 +187,12 @@ def sim_null(pool, tip_origin, n_sims, seed=0):
     return np.array(pool.map(_sim_stat, [(seed + k, tip_origin) for k in range(n_sims)]))
 
 
-def sim_p(stat, null, strata):
+def sim_p(stat, null, strata, n_tail=250):
     """Tail p-value within each stratum of genes (pooling genes and replicates)."""
     p = np.ones(len(stat))
     for k in np.unique(strata):
         g = strata == k
-        p[g] = tail_p(stat[g], null[:, g].ravel())
+        p[g] = tail_p(stat[g], null[:, g].ravel(), n_tail=n_tail)
     return p
 
 
@@ -264,6 +264,8 @@ def main() -> None:
                     help="controls mode: control trait sets used to calibrate the loss layer "
                          "(disjoint from --controls)")
     ap.add_argument("--loss-sims", type=int, default=100, help="sim mode: simulated replicates")
+    ap.add_argument("--tail-n", type=int, default=250,
+                    help="sim mode: null values used for the generalized Pareto tail fit")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--resume", action="store_true",
                     help="keep control sets already in <out>/control_calls.csv (same seed) and run the rest")
@@ -330,7 +332,8 @@ def main() -> None:
                                           missing=np.isnan(Yl)),))
 
             def loss_p(tip_orig):
-                return sim_p(loss_stat(Yl, Sig_l, tip_orig), sim_null(sim_pool, tip_orig, args.loss_sims), strata)
+                return sim_p(loss_stat(Yl, Sig_l, tip_orig), sim_null(sim_pool, tip_orig, args.loss_sims), strata,
+                             args.tail_n)
         else:
             strata = loss_strata(Yl)
             null = np.array([loss_stat(Yl, Sig_l, origin_index(tree, tips)[: tree.n_tips]) for tips in null_tips])
@@ -380,13 +383,16 @@ def main() -> None:
     if args.resume and (out / "control_calls.csv").exists():
         rows = pd.read_csv(out / "control_calls.csv").to_dict("records")
         print(f"resuming after {len(rows)} control sets", flush=True)
+    ctrl_p = {"rate": [], "loss": []}       # every control set's p-values, for null diagnostics
     for tips in eval_tips[len(rows):]:
         oc = origin_index(tree, tips)
         pr = pd.Series(final_test(X, Sig, oc[keep]), index=symbols)
         pr = pr[~pr.index.duplicated()]
+        ctrl_p["rate"].append(pr.to_numpy(np.float32))
         row = dict(control=len(rows), calls_rate=int(bh(pr.to_numpy(), args.q).sum()), min_p_rate=float(pr.min()))
         if args.loss:
             pl = pd.Series(loss_p(oc[: tree.n_tips]), index=loss_sym)
+            ctrl_p["loss"].append(pl.to_numpy(np.float32))
             u = pr.index.union(pl.index)
             pf = combine(pr.reindex(u).to_numpy(), pl.reindex(u).to_numpy())
             row.update(calls_loss=int(bh(pl.to_numpy(), args.q).sum()), min_p_loss=float(pl.min()),
@@ -398,11 +404,12 @@ def main() -> None:
         print(f"control {len(rows)}: " + ", ".join(f"{k} {v}" for k, v in row.items() if k.startswith("calls")),
               flush=True)
         pd.DataFrame(rows).to_csv(out / "control_calls.csv", index=False)
+        np.savez_compressed(out / "control_pvalues.npz", **{k: np.array(v) for k, v in ctrl_p.items() if v})
     cc = pd.DataFrame(rows)
     summary = dict(trait=args.trait, genes=len(genes), species=tree.n_tips, trait_species=int(trait.sum()),
                    origins=len(origins), loss_states=args.loss_states if args.loss else None,
                    loss_null=(args.loss_null_mode if args.loss else None),
-                   control_sets=len(cc))
+                   control_sets=len(cc), loss_sims=args.loss_sims, tail_n=args.tail_n)
     for k in ("rate", "loss", "final"):
         if f"call_{k}" in res and (k != "loss" or args.loss):
             summary[f"calls_{k}"] = int(res[f"call_{k}"].sum())
