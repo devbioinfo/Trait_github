@@ -3,6 +3,73 @@
 Working name. Prototype for Manuscript 1 of the PhD project *A multi-omics study of
 convergent evolution in selected zoological traits: an in silico approach*.
 
+## Final results (as in the manuscript)
+
+Manuscript: *Convergent evolution in mammals is written in gene loss* (in preparation for
+*Nature Ecology & Evolution*). Every number below is produced by the scripts in this
+repository; sections further down are the development log that led here and are kept as a
+record (numbers there may be superseded by this section).
+
+**Data.** 115 mammals (Zoonomia 447-way tree, TOGA orthology against human hg38);
+15,703 genes tested for rate shifts, 12,851 for gene loss. Traits fixed before testing:
+marine (fully aquatic lineages of marine origin: cetaceans including two river dolphins,
+pinnipeds, manatee; 3 origins), subterranean (6), high altitude (4), echolocation (3).
+
+**Test.** Four layers per gene (nucleotide rate, protein rate, selection proxy, gene loss);
+null covariance learned from all genes (GLS); every call must survive leave-one-origin-out;
+gene-loss P values from a simulated irreversible-loss null with species x gene annotation
+error; 20 matched control traits per analysis.
+
+### Real data
+
+| Trait | Origins | Rate calls | Loss calls |
+|---|---|---|---|
+| Marine | 3 | 0 | 48 (smell, taste, skin, detoxification; PON1) |
+| Subterranean | 6 | 0 | 15 (lens and retina; LGSN strongest, P = 5 x 10^-9) |
+| High altitude | 4 | 0 | 1 (DEAF1, lost in two species; probable annotation error) |
+| Echolocation | 3 | 0 | 0 |
+
+* Calibration on real genomes: of 100 matched control traits, 2% had any rate call, 8% any
+  loss call, 4% any combined call.
+* Enrichment against a loss-frequency-matched null: olfactory signalling 4.1x (q = 0.0002),
+  sweet/bitter/umami taste 19x (q = 0.02) for marine losses; retina-elevated genes 8.8x
+  (q = 0.008), lens development 92x (q = 0.0005) for subterranean losses.
+* PON1: lost once in the cetacean ancestor (shared frameshifts and splice-site mutation),
+  at least three times within pinnipeds, separately in the manatee. LGSN: independent
+  frameshifts in golden mole, Damara mole-rat and blind mole-rat; the two moles share one.
+* Underground, lens and image-processing genes were lost while the phototransduction core
+  (RHO, GNAT1, PDE6A, CNGA1, PRPH2) stayed intact in all eight subterranean species.
+* The combined hypoxia trait's 11 losses (nine eye genes) are explained by life
+  underground (partial effect +0.62), not high altitude (-0.04).
+
+### Simulations
+
+| Benchmark | Result (final test) | Comparison |
+|---|---|---|
+| Rate layers, 10 AliSim trees of 200 species, 3,000 genes (Extended Data Fig. 1) | FDR 0.000 / 0.003 / 0.007 at rate-jump intensity 0 / 1 / 2; false calls in 2 of 30 null genomes (at most 2) | other methods 0.19-0.91 once rate jumps are present |
+| Sensitivity: 100 or 400 species, 0.5-10% convergent, gene-tree discordance (Extended Data Fig. 3) | FDR <= 0.01, at most 1 false call per null genome; power 0.56-0.71, except 0.36 with 10% convergent genes | learned-covariance GLS alone 0.03-0.55 |
+| Number of origins, 10 replicates (Extended Data Fig. 1e,f) | FDR <= 0.01 at 2-6 origins; selection shifts found at 0.72 (2 origins) to 0.99 (6) | rate-only shifts need >= 4 origins for power > 0.6 |
+| Gene-loss layer, 5 replicate genomes per setting on the real tree (Fig. 3) | false discovery proportion 0.019 on average (max 0.067); power 0.29-0.89; 1 false call in 15 null genomes | Fisher test without phylogeny: up to 0.69 |
+| RERconverge 0.3.0 (Extended Data Fig. 2) | final test: no false calls in any genome | parametric RERconverge FDR 0.43-0.75 with rate jumps; with 10,000 permulations on all genes FDR 0.04 and power 0.83, equal to the final test, at about 11 CPU-hours per genome |
+
+Reproducibility: tree 3 of the main benchmark was run on two machines (Linux x86 and
+macOS ARM); the final test gave identical false-call counts and FDR, and power within 0.05.
+
+### Figures and how to rebuild them
+
+`python3 -I scripts/make_figures.py` writes every figure to `results/figures/` and checks
+it against the Nature Portfolio rules (at most 183 x 170 mm, text 5-7 pt, no overlapping
+text). Main figures: 1, species tree and trait origins; 2, method; 3, gene-loss benchmark;
+4, results per trait; 5, PON1; 6, eye genes. Extended Data Figs. 1-10;
+`StudySummary` is a one-page overview. Silhouettes: game-icons.net (CC BY 3.0),
+`scripts/silhouettes.json`.
+
+The robustness runs (`results/robustness/`) are rerun with
+`bash scripts/run_on_workstation.sh` (resumable; `bash scripts/check_workstation.sh` checks
+the requirements, `bash scripts/install_rerconverge.sh` installs RERconverge 0.3.0 with
+our patch). RERconverge with all-gene permulations:
+`RER_CORES=20 python3 scripts/rerconverge_compare.py --confounding 1 --effects moderate --perms 10000 --candidates 0 --seed 5031 --out results/robustness/rerconverge_allperm10k.csv`.
+
 ## The problem it solves
 
 Convergence scans test whether a gene behaves differently on the branches of
@@ -88,7 +155,7 @@ genome-wide median is subtracted), as relative evolutionary rates do in RERconve
 
 Run: `python3 -I scripts/benchmark_v2.py --out results/benchmark_v2.csv`
 
-## Development log (what the simulations showed so far)
+## Development log (early simulations; superseded by "Final results" above)
 
 1. Naive per-branch tests: 13-17% false positives under confounding; naive Fisher: 25-34%.
 2. Permulations alone (BM or clade-matched): calibrated only on large trees. On a
@@ -122,7 +189,7 @@ Figure: `results/fig_benchmark.png`; raw rows: `results/benchmark_v2.csv`.
   replicates and larger trees to judge.
 * Layer attribution of detected genes: AUC 0.79-0.98.
 
-## Sequence-level validation with IQ-TREE AliSim (in progress)
+## Sequence-level validation with IQ-TREE AliSim
 
 `scripts/alisim_validation.py` simulates codon alignments (GY model) with AliSim on
 Yule trees. Convergent genes get, on foreground branches only, a higher ω
@@ -236,38 +303,46 @@ Without being told the simulation, both trees learn the same three directions
 shift ≈ (0.1, 0.55, 0.82), both ≈ (0.5, 0.65, 0.6). EBCM is unstable across trees and
 is no longer the default signature method.
 
-## Manuscript benchmark (Figure 2)
+## Manuscript benchmark (Extended Data Fig. 1)
 
-`scripts/final_benchmark.py`; figure `results/fig_final_benchmark.png`; rows
-`results/final_benchmark.csv`. AliSim codon data, 3 Yule trees of 200 species, 5 origins
-(4-12 species each), 3,000 genes, 2% convergent; confounding 0/1/2; effect sizes weak
-(ω x1.5, rate x1.2), moderate (x2, x1.35), strong (x3, x1.5). Paired design: per tree and
-confounding level one null genome, convergent genes swapped in per effect size.
+`scripts/final_benchmark.py`; rows `results/final_benchmark.csv` (trees 0-2) and
+`results/robustness/main_tree3.csv` ... `main_tree9.csv` (trees 3-9;
+`main_tree3_mac.csv` is the same tree rerun on macOS). AliSim codon data, 10 Yule trees of
+200 species, 5 origins (4-12 species each), 3,000 genes, 2% convergent; confounding 0/1/2;
+effect sizes weak (ω x1.5, rate x1.2), moderate (x2, x1.35), strong (x3, x1.5). Paired
+design: per tree and confounding level one null genome, convergent genes swapped in per
+effect size.
 
 False calls on a genome with no convergence (BH q = 0.10, mean per genome) and realised
-FDR with 2% convergent genes:
+FDR with 2% convergent genes, mean over 10 trees:
 
 | Method | False calls, conf 0 / 1 / 2 | FDR, conf 0 / 1 / 2 | Power, weak / moderate / strong |
 |---|---|---|---|
-| Naive (RERconverge-style) | 0.3 / 216 / 401 | 0.08 / 0.83 / 0.90 | 0.44 / 0.63 / 0.66 |
-| Control-lineage permutation | 182 / 228 / 239 | 0.77 / 0.84 / 0.88 | 0.44 / 0.57 / 0.64 |
-| Naive, Fisher over layers | 13 / 311 / 497 | 0.25 / 0.82 / 0.88 | 0.88 / 0.97 / 0.99 |
-| Brownian phylo-LMM | 0 / 10 / 25 | 0.04 / 0.31 / 0.40 | 0.76 / 0.93 / 0.98 |
-| Learned-covariance GLS | 0 / 17 / 13 | 0.00 / 0.19 / 0.19 | 0.75 / 0.91 / 0.95 |
-| **GLS + leave-one-origin-out (final)** | **0 / 0 / 0.7** | **0.00 / 0.00 / 0.01** | **0.56 / 0.84 / 0.90** |
+| Naive (RERconverge-style) | 0.9 / 210 / 395 | 0.15 / 0.84 / 0.91 | 0.43 / 0.60 / 0.64 |
+| Control-lineage permutation | 124 / 189 / 199 | 0.73 / 0.84 / 0.86 | 0.42 / 0.54 / 0.60 |
+| Naive, Fisher over layers | 63 / 327 / 504 | 0.42 / 0.83 / 0.89 | 0.86 / 0.98 / 0.99 |
+| Brownian phylo-LMM | 6.2 / 20 / 39 | 0.08 / 0.36 / 0.45 | 0.67 / 0.93 / 0.98 |
+| Learned-covariance GLS | 0 / 16 / 16 | 0.00 / 0.19 / 0.24 | 0.70 / 0.91 / 0.96 |
+| **GLS + leave-one-origin-out (final)** | **0 / 0.1 / 0.2** | **0.000 / 0.003 / 0.007** | **0.49 / 0.81 / 0.91** |
 
 * Only the final test keeps false discoveries below target at every confounding level;
-  it made at most 2 false calls in any of the 9 null genomes (most had none).
-* Power of the final test falls with confounding (0.89 / 0.74 / 0.67 at conf 0 / 1 / 2);
+  it made false calls in 2 of the 30 null genomes (at most 2 calls), and its FDR in any
+  single genome was at most 0.06.
+* Power of the final test falls with confounding (0.88 / 0.70 / 0.63 at conf 0 / 1 / 2);
   that is the price of rejecting single-lineage rate jumps.
-* By kind (final test, weak / moderate / strong): selection shift 0.56 / 0.95 / 1.00;
-  selection + rate 0.80 / 0.97 / 1.00; rate shift only 0.24 / 0.57 / 0.62.
-* Signature accuracy (exact pattern of active layers, detected genes): 0.76 / 0.87 / 0.94
-  (range over the 9 settings 0.47-0.90 / 0.53-0.98 / 0.88-0.98).
+* By kind (final test, weak / moderate / strong): selection shift 0.51 / 0.89 / 0.98;
+  selection + rate 0.71 / 0.95 / 1.00; rate shift only 0.23 / 0.55 / 0.71.
+* Signature accuracy (exact pattern of active layers, detected genes): 0.74 / 0.88 / 0.95.
 * "Control-lineage permutation" is our implementation (Welch t standardised by 100
   age-matched control foregrounds), not the RERconverge package; it is inflated even
   without confounding because per-gene null moments come from a limited pool of clades.
-  The manuscript should also compare against RERconverge itself.
+
+Sensitivity runs (confounding 1, three trees each; `results/robustness/sens_*.csv`,
+Extended Data Fig. 3): final-test FDR at most 0.01 and at most one false call per null
+genome with 100 or 400 species, 0.5%, 5% or 10% convergent genes, and gene-tree
+discordance (Poisson mean 10 or 40 NNIs per gene). Power: baseline 0.71; 100 species 0.67;
+400 species 0.67; 0.5% convergent 0.67; 5% 0.56; 10% 0.36 (a large convergent signal
+enters the covariance learned from all genes); discordance 10 or 40, 0.62.
 
 ## Head-to-head comparison with RERconverge
 
@@ -292,14 +367,18 @@ a null genome and a genome with 2% convergent genes (moderate effect).
 * Without lineage-specific rate jumps (confounding 0), RERconverge on protein trees is
   calibrated and slightly more powerful than the final pipeline (0.93 vs 0.87).
 * With rate jumps, parametric RERconverge loses FDR control (0.43-0.61).
-* Permulations removed all false calls on the null genomes, but on the convergent genomes
-  18-35 null genes were called (FDR 0.33-0.39). This needs checking before it is
-  reported (see caveats): it may reflect the candidate-only permulation design rather
-  than permulations themselves.
+* Permulations on the 150 candidate genes removed all false calls on the null genomes,
+  but on the convergent genomes 18-35 null genes were called (FDR 0.33-0.39).
+* **Permulations on all genes** (`results/robustness/rerconverge_allperm10k.csv`;
+  10,000 permulations, confounding 1, a second genome of the same design): no false calls
+  on the null genome, FDR 0.04 and power 0.83 with 2% convergent genes, the same power as
+  the final pipeline on that genome (0.83, no false calls). The excess above therefore came
+  from the candidate-only design. With 100 permulations
+  (`rerconverge_allperm.csv`) no gene can be called: the smallest attainable P (about
+  0.02) is above the BH threshold for 3,000 genes.
+* Cost: about 11 CPU-hours per genome for all-gene permulations, against seconds for the
+  final pipeline.
 * The final pipeline made no false calls in any of the six genomes.
-
-Caveats: one tree only; permulations restricted to 150 candidates for run time
-(about 1 s per permulation at 200 species on 4 cores).
 
 ## Real-data pilot: echolocation on RERconverge's mammal gene trees
 
@@ -469,25 +548,15 @@ MSS51), PON1, KLK8, SLC4A9 and others. Subterranean losses: lens and retina gene
 LCTL, CRYGS, CRYBA4, BFSP1, GJA8, ROM1, MPP4, RGS11, CABP5, OPTC). No hypoxia or hearing
 positive control was called. Earlier sections above document how each step was reached.
 
-## Roadmap to the manuscript
+## Status and future work
 
-1. **Benchmark** (in progress): calibration and power across confounding,
-   heavy tails, lineage shifts, tree error, sparse/dense signal.
-2. **Sequence-level validation:** simulate codon alignments with IQ-TREE AliSim (rate
-   shifts on foreground branches), compute real layer statistics, and confirm the
-   results hold beyond the Gaussian branch-level simulator.
-3. **Real layer extraction from Zoonomia / TOGA alignments:**
-   relative rates (RERconverge residuals), convergent substitutions (CSUBST),
-   branch-level selection (aBSREL), non-coding acceleration (PhyloAcc), and an
-   **AI layer**: ancestral reconstruction plus ESM-2 protein language model scores of
-   each branch's substitutions (predicted functional effect).
-4. **Head-to-head comparison** with RERconverge, CSUBST, PCOC and a Marcovitz-style
-   enrichment test.
-5. **Application:** echolocation (bats and toothed whales vs pteropodids and baleen
-   whales). Positive control: Prestin/SLC26A5. Negative control for *adaptive*
-   convergence: eye-gene decay in subterranean mammals, which should appear as rate
-   shifts without functional-effect convergence.
-6. **Package:** pip-installable, documented, with Zenodo DOI.
+Done for the manuscript: benchmark (Extended Data Figs. 1-3), sequence-level validation
+with AliSim, real layers from Zoonomia/TOGA (relative rates, selection proxy, gene loss),
+head-to-head comparison with RERconverge, application to four traits.
+
+Not part of this manuscript (possible extensions): site-level convergent substitutions
+(CSUBST, PCOC), non-coding acceleration (PhyloAcc), functional-effect scores from protein
+language models, and a pip-installable package with a Zenodo DOI.
 
 ## AI-use disclosure
 
