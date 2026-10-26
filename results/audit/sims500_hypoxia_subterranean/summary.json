@@ -1,0 +1,15 @@
+{
+  "trait": "hypoxia_subterranean",
+  "genes": 15703,
+  "species": 115,
+  "trait_species": 8,
+  "origins": 6,
+  "loss_states": "L,UL",
+  "loss_null": "sim",
+  "control_sets": 0,
+  "loss_sims": 500,
+  "tail_n": 250,
+  "calls_rate": 0,
+  "calls_loss": 15,
+  "calls_final": 6
+}

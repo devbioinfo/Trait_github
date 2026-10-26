@@ -22,6 +22,8 @@ done >> $L
 for t in $TRAITS; do echo "ctrl100_$t|$CT --trait $t --controls 100 --out $A/ctrl100_$t"; done >> $L
 # 2. gene loss counted as TOGA 'lost' only (uncertain losses treated as intact)
 for t in $TRAITS; do echo "Lonly_$t|$CT --trait $t --loss-states L --controls 20 --out $A/Lonly_$t"; done >> $L
+# 2b. marine control traits matched also on the number of annotated losses per species
+echo "ctrl100lm_marine|$CT --trait marine --controls 100 --match-losses --out $A/ctrl100lm_marine" >> $L
 # 4. two more trees for every sensitivity setting (5 per setting)
 R=results/robustness
 for i in 3 4; do

@@ -1,0 +1,21 @@
+{
+  "trait": "hypoxia_subterranean",
+  "genes": 15703,
+  "species": 115,
+  "trait_species": 8,
+  "origins": 6,
+  "loss_states": "L,UL",
+  "loss_null": "sim",
+  "control_sets": 100,
+  "loss_sims": 100,
+  "tail_n": 250,
+  "calls_rate": 0,
+  "control_mean_calls_rate": 0.1,
+  "control_sets_with_any_call_rate": 0.08,
+  "calls_loss": 15,
+  "control_mean_calls_loss": 0.08,
+  "control_sets_with_any_call_loss": 0.07,
+  "calls_final": 10,
+  "control_mean_calls_final": 0.13,
+  "control_sets_with_any_call_final": 0.11
+}

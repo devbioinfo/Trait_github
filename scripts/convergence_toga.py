@@ -264,6 +264,8 @@ def main() -> None:
                     help="controls mode: control trait sets used to calibrate the loss layer "
                          "(disjoint from --controls)")
     ap.add_argument("--loss-sims", type=int, default=100, help="sim mode: simulated replicates")
+    ap.add_argument("--match-losses", action="store_true",
+                    help="draw control sets whose species carry as many annotated losses as the trait species")
     ap.add_argument("--tail-n", type=int, default=250,
                     help="sim mode: null values used for the generalized Pareto tail fit")
     ap.add_argument("--workers", type=int, default=4)
@@ -304,6 +306,18 @@ def main() -> None:
         tips = np.array([D[np.nonzero(c)[0], t].any() for t in range(tree.n_tips)])
         if len(origin_nodes(tree, tips)) == len(origins):
             ctrl_tips.append(tips)
+    if args.match_losses and args.loss:
+        # keep control sets whose species carry as many annotated losses as the trait species
+        st = pd.read_csv(args.loss, sep="\t", index_col=0).reindex(columns=names)
+        per_sp = st.isin(args.loss_states.split(",")).sum().to_numpy(float)
+        target = per_sp[trait].mean()
+        for tol in (0.1, 0.2, 0.3):
+            ok = [c for c in ctrl_tips if abs(per_sp[c].mean() / target - 1) <= tol]
+            if len(ok) >= args.controls:
+                break
+        print(f"loss-matched controls: trait species carry {target:.0f} losses on average; "
+              f"{len(ok)} control sets within {tol:.0%}", flush=True)
+        ctrl_tips = ok
     eval_tips, null_tips = ctrl_tips[: args.controls], ctrl_tips[args.controls: args.controls + args.loss_null]
     print(f"control trait sets: {len(eval_tips)} for checking"
           + (f", {len(null_tips)} for loss calibration" if args.loss_null_mode == "controls" else ""),
@@ -409,7 +423,8 @@ def main() -> None:
     summary = dict(trait=args.trait, genes=len(genes), species=tree.n_tips, trait_species=int(trait.sum()),
                    origins=len(origins), loss_states=args.loss_states if args.loss else None,
                    loss_null=(args.loss_null_mode if args.loss else None),
-                   control_sets=len(cc), loss_sims=args.loss_sims, tail_n=args.tail_n)
+                   control_sets=len(cc), loss_sims=args.loss_sims, tail_n=args.tail_n,
+                   match_losses=bool(args.match_losses))
     for k in ("rate", "loss", "final"):
         if f"call_{k}" in res and (k != "loss" or args.loss):
             summary[f"calls_{k}"] = int(res[f"call_{k}"].sum())
