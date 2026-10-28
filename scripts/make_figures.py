@@ -749,7 +749,7 @@ def figure5():
     joint_panel(ax, mar, "beta_marine", "beta_semiaquatic", mg, ["PON1", "MMP12"], "d",
                 "Marine vs semi-aquatic", "Partial effect: marine", "Partial effect: semi-aquatic")
     ax.legend(loc="center left", bbox_to_anchor=(1.15, 0.5), fontsize=6, markerscale=1.2)
-    save(fig, "ExtendedDataFigure5")
+    save(fig, "ExtendedDataFigure8")
 
 
 # ---------------------------------------------------------------------------------------
@@ -809,7 +809,7 @@ def supp2():
     ax.set_ylabel("Simulated share (%)")
     grid(ax, "both")
     panel(ax, "d", "Losses per species")
-    save(fig, "ExtendedDataFigure9")
+    save(fig, "ExtendedDataFigure10")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1274,7 +1274,7 @@ def supp3():
         panel(ax, letter, title)
     axes[0].axhline(15, color=INK2, lw=0.6, ls="--")
     axes[0].legend(loc="center left", bbox_to_anchor=(0.0, 0.62), fontsize=6)
-    save(fig, "ExtendedDataFigure10")
+    save(fig, "ExtendedDataFigure9")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1317,7 +1317,7 @@ def figure9():
                             color=INK2, transform=axes[1, j].transAxes)
             panel(axes[1, j], "cd"[j], f"{lab}: Reactome pathways")
         enrichment_bars(axes[2, j], go[go.trait == k], c, "ef"[j], f"{lab}: GO biological process", n=6, max_size=450)
-    save(fig, "ExtendedDataFigure8")
+    save(fig, "ExtendedDataFigure5")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1634,14 +1634,14 @@ def ed_marine_lineages():
     gs = fig.add_gridspec(2, 1, height_ratios=[1.6, 1], hspace=0.45)
     funnels_into(fig, gs[0], ctx)
     synteny_into(fig, gs[1], ctx, "d")
-    save(fig, "ExtendedDataFigure6")
+    save(fig, "ExtendedDataFigure7")
 
 
 def ed_taste_map():
     sm, _ = map_status()
     fig = plt.figure(figsize=(183 * MM, 118 * MM))
     taste_map(fig.add_subplot(111), sm, "a")
-    save(fig, "ExtendedDataFigure7")
+    save(fig, "ExtendedDataFigure6")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1842,10 +1842,10 @@ if __name__ == "__main__":
     supp1()                # Extended Data Fig. 2
     ed_sensitivity()       # Extended Data Fig. 3
     ed_heatmaps()          # Extended Data Fig. 4
-    figure5()              # Extended Data Fig. 5
-    ed_marine_lineages()   # Extended Data Fig. 6
-    ed_taste_map()         # Extended Data Fig. 7
-    figure9()              # Extended Data Fig. 8
-    supp2()                # Extended Data Fig. 9
-    supp3()                # Extended Data Fig. 10
+    figure5()              # Extended Data Fig. 8
+    ed_marine_lineages()   # Extended Data Fig. 7
+    ed_taste_map()         # Extended Data Fig. 6
+    figure9()              # Extended Data Fig. 5
+    supp2()                # Extended Data Fig. 10
+    supp3()                # Extended Data Fig. 9
     study_summary()        # one-page overview (talks, cover letter, preprint)
