@@ -15,10 +15,10 @@ record (numbers there may be superseded by this section).
 marine (fully aquatic lineages of marine origin: cetaceans including two river dolphins,
 pinnipeds, manatee; 3 origins), subterranean (6), high altitude (4), echolocation (3).
 
-**Test.** Four layers per gene (nucleotide rate, protein rate, selection proxy, gene loss);
+**Test.** Four layers per gene (nucleotide rate, protein rate, protein − nucleotide rate contrast, gene loss);
 null covariance learned from all genes (GLS); every call must survive leave-one-origin-out;
 gene-loss P values from a simulated irreversible-loss null with species x gene annotation
-error; 20 matched control traits per analysis.
+error; 100 matched control traits per analysis.
 
 ### Real data
 
@@ -540,7 +540,7 @@ control-set null, which was limited by the number of distinct control sets.
 Species set `results/toga/species_paper.tsv` (adds mole-rats, tuco-tuco, blind mole-rat,
 mole vole, wild yak, Tibetan antelope, alpaca, cane rat, honey badger); loss matrix
 `results/toga/loss_status_paper.tsv.gz`; loss null = simulation with species false-loss
-rate x gene fragility (`mlconv/loss.py`); 20 matched control trait sets per analysis.
+rate x gene fragility (`mlconv/loss.py`); 100 matched control trait sets per analysis.
 
 | Trait | Origins | Rate calls | Loss calls | Combined calls | Results |
 |---|---|---|---|---|---|
@@ -559,7 +559,7 @@ positive control was called. Earlier sections above document how each step was r
 ## Status and future work
 
 Done for the manuscript: benchmark (Extended Data Figs. 1-3), sequence-level validation
-with AliSim, real layers from Zoonomia/TOGA (relative rates, selection proxy, gene loss),
+with AliSim, real layers from Zoonomia/TOGA (relative rates, rate contrast, gene loss),
 head-to-head comparison with RERconverge, application to four traits.
 
 Not part of this manuscript (possible extensions): site-level convergent substitutions
