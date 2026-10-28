@@ -74,7 +74,7 @@ from scipy import stats as st
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from mlconv.loss import false_loss_rates, fit_loss_rates, gene_false_loss, simulate_losses, tail_p  # noqa: E402
-from mlconv.gls import gls_z_missing, learn_covariance_missing, leave_one_origin_out_p_missing  # noqa: E402
+from mlconv.gls import (gls_z_missing, learn_covariance_missing, leave_one_origin_out_p_missing)  # noqa: E402
 from mlconv.signatures import fit_signatures, pattern_active  # noqa: E402
 from mlconv.stats import acat, bh  # noqa: E402
 from mlconv.tree import (foreground_branches, from_newick, matched_clade_permute, origin_index,  # noqa: E402
@@ -173,12 +173,27 @@ def _sim_init(ctx):
 
 
 def _sim_stat(task):
-    """Statistic on one simulated replicate for one trait configuration (NaN = not testable)."""
+    """Statistic on one simulated replicate for one trait configuration (NaN = not testable).
+
+    With the intersection-union null (SIM["iut"]) the statistic is computed m times, each time with the
+    observed states of one origin kept and the rest simulated: one real loss in a single origin is
+    then part of the null. Returns (genes,) or (genes, m)."""
     seed, tip_origin = task
     Ys = simulate_losses(SIM["tree"], SIM["lam"], SIM["e"], SIM["missing"], np.random.default_rng(seed))
     ok = testable(Ys)
-    out = np.full(len(Ys), np.nan)
-    out[ok] = loss_stat(Ys[ok], learn_covariance_missing(Ys[ok]), tip_origin)
+    Sig = learn_covariance_missing(Ys[ok])
+    if not SIM.get("iut"):
+        out = np.full(len(Ys), np.nan)
+        out[ok] = loss_stat(Ys[ok], Sig, tip_origin)
+        return out
+    m = int(tip_origin.max()) + 1
+    out = np.full((len(Ys), m), np.nan)
+    for j in range(m):
+        Yc = Ys.copy()
+        cols = tip_origin == j
+        Yc[:, cols] = SIM["Y"][:, cols]
+        okc = testable(Yc)
+        out[okc, j] = loss_stat(Yc[okc], Sig, tip_origin)
     return out
 
 
@@ -188,12 +203,30 @@ def sim_null(pool, tip_origin, n_sims, seed=0):
 
 
 def sim_p(stat, null, strata, n_tail=250):
-    """Tail p-value within each stratum of genes (pooling genes and replicates)."""
+    """Tail p-value within each stratum of genes (pooling genes and replicates).
+
+    Intersection-union null (null (sims, genes, m), strata (genes, m)): column j holds the statistic
+    with origin j's observed states kept, pooled within strata that also match origin j's observed
+    loss status; the gene's p-value is the largest of the m p-values."""
+    if null.ndim == 3:
+        return np.column_stack([sim_p(stat, null[:, :, j], strata[:, j], n_tail)
+                                for j in range(null.shape[2])]).max(1)
     p = np.ones(len(stat))
     for k in np.unique(strata):
         g = strata == k
         p[g] = tail_p(stat[g], null[:, g].ravel(), n_tail=n_tail)
     return p
+
+
+def origin_status(Y, tip_origin):
+    """(genes, m): 0 no species of origin j lost (or no data), 1 some, 2 all with data."""
+    m = int(tip_origin.max()) + 1
+    out = np.zeros((len(Y), m), int)
+    for j in range(m):
+        y = Y[:, tip_origin == j]
+        lost, seen = (y == 1).sum(1), (~np.isnan(y)).sum(1)
+        out[:, j] = np.where(lost == 0, 0, np.where(lost < seen, 1, 2))
+    return out
 
 
 LOSS_BINS = np.array([2, 3, 4, 5, 7, 10, 15, 25, 40, 60])
@@ -264,6 +297,10 @@ def main() -> None:
                     help="controls mode: control trait sets used to calibrate the loss layer "
                          "(disjoint from --controls)")
     ap.add_argument("--loss-sims", type=int, default=100, help="sim mode: simulated replicates")
+    ap.add_argument("--loss-test", choices=("iut", "global"), default="iut",
+                    help="iut: null in which one origin keeps its observed states and the rest are simulated, "
+                         "repeated for each origin; the largest p-value is used (intersection-union test). "
+                         "global: null with no association in any origin (earlier runs)")
     ap.add_argument("--match-losses", action="store_true",
                     help="draw control sets whose species carry as many annotated losses as the trait species")
     ap.add_argument("--tail-n", type=int, default=250,
@@ -343,10 +380,13 @@ def main() -> None:
             from multiprocessing import Pool
             sim_pool = Pool(args.workers, initializer=_sim_init,
                             initargs=(dict(tree=tree, lam=lam, e=gene_false_loss(e_false, kappa),
-                                          missing=np.isnan(Yl)),))
+                                          missing=np.isnan(Yl), Y=Yl, iut=args.loss_test == "iut"),))
 
             def loss_p(tip_orig):
-                return sim_p(loss_stat(Yl, Sig_l, tip_orig), sim_null(sim_pool, tip_orig, args.loss_sims), strata,
+                st = strata
+                if args.loss_test == "iut":
+                    st = strata[:, None] * 3 + origin_status(Yl, tip_orig)
+                return sim_p(loss_stat(Yl, Sig_l, tip_orig), sim_null(sim_pool, tip_orig, args.loss_sims), st,
                              args.tail_n)
         else:
             strata = loss_strata(Yl)
@@ -423,7 +463,7 @@ def main() -> None:
     summary = dict(trait=args.trait, genes=len(genes), species=tree.n_tips, trait_species=int(trait.sum()),
                    origins=len(origins), loss_states=args.loss_states if args.loss else None,
                    loss_null=(args.loss_null_mode if args.loss else None),
-                   control_sets=len(cc), loss_sims=args.loss_sims, tail_n=args.tail_n,
+                   control_sets=len(cc), loss_sims=args.loss_sims, tail_n=args.tail_n, loss_test=args.loss_test,
                    match_losses=bool(args.match_losses))
     for k in ("rate", "loss", "final"):
         if f"call_{k}" in res and (k != "loss" or args.loss):
