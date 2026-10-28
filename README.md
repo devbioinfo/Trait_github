@@ -55,7 +55,7 @@ error; 100 matched control traits per analysis.
 | Benchmark | Result (final test) | Comparison |
 |---|---|---|
 | Rate layers, 10 AliSim trees of 200 species, 3,000 genes (Extended Data Fig. 1) | FDR 0.000 / 0.003 / 0.007 at rate-jump intensity 0 / 1 / 2; false calls in 2 of 30 null genomes (at most 2) | other methods 0.19-0.91 once rate jumps are present |
-| Sensitivity: 100 or 400 species, 0.5-10% convergent, gene-tree discordance; 5 trees each (Extended Data Fig. 3) | mean FDR <= 0.005 (max 0.05), at most 1 false call per null genome; power 0.59-0.72, except 0.36 with 10% convergent genes | learned-covariance GLS alone 0.03-0.56 |
+| Sensitivity: 100 or 400 species, 0.5-10% convergent, gene-tree discordance; 5 trees each (Extended Data Fig. 3) | mean FDR <= 0.010 (max 0.05), at most 1 false call per null genome; power 0.59-0.72, except 0.36 with 10% convergent genes | learned-covariance GLS alone 0.03-0.56 |
 | Number of origins, 10 replicates (Extended Data Fig. 1e,f) | FDR <= 0.01 at 2-6 origins; selection shifts found at 0.72 (2 origins) to 0.99 (6) | rate-only shifts need >= 4 origins for power > 0.6 |
 | Gene-loss layer, 5 replicate genomes per setting on the real tree (Fig. 3) | false discovery proportion 0.019 on average (max 0.067); power 0.29-0.89; 1 false call in 15 null genomes | Fisher test without phylogeny: up to 0.69 |
 | RERconverge 0.3.0 (Extended Data Fig. 2) | final test: no false calls in any genome | parametric RERconverge FDR 0.43-0.75 with rate jumps; with 10,000 permulations on all genes FDR 0.24 / 0.04 / 0.15 at intensity 0 / 1 / 2 (one genome each; final test 0 false calls, power 0.97 / 0.83 / 0.72), at about 11 CPU-hours per genome |
