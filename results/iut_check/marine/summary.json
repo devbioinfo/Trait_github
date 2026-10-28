@@ -1,0 +1,19 @@
+{
+  "trait": "marine",
+  "genes": 15703,
+  "species": 115,
+  "trait_species": 18,
+  "origins": 3,
+  "loss_states": "L,UL",
+  "loss_null": "sim",
+  "control_sets": 0,
+  "loss_sims": 100,
+  "tail_n": 250,
+  "loss_test": "iut",
+  "match_losses": false,
+  "calls_rate": 0,
+  "calls_loss": 48,
+  "calls_final": 0,
+  "calls_loss_iut_p_below_0.01": 36,
+  "calls_loss_iut_p_below_0.001": 3
+}
