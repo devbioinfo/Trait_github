@@ -173,28 +173,46 @@ def _sim_init(ctx):
 
 
 def _sim_stat(task):
-    """Statistic on one simulated replicate for one trait configuration (NaN = not testable).
-
-    With the intersection-union null (SIM["iut"]) the statistic is computed m times, each time with the
-    observed states of one origin kept and the rest simulated: one real loss in a single origin is
-    then part of the null. Returns (genes,) or (genes, m)."""
+    """Statistic on one simulated replicate for one trait configuration (NaN = not testable)."""
     seed, tip_origin = task
     Ys = simulate_losses(SIM["tree"], SIM["lam"], SIM["e"], SIM["missing"], np.random.default_rng(seed))
     ok = testable(Ys)
-    Sig = learn_covariance_missing(Ys[ok])
-    if not SIM.get("iut"):
-        out = np.full(len(Ys), np.nan)
-        out[ok] = loss_stat(Ys[ok], Sig, tip_origin)
-        return out
-    m = int(tip_origin.max()) + 1
-    out = np.full((len(Ys), m), np.nan)
-    for j in range(m):
-        Yc = Ys.copy()
-        cols = tip_origin == j
-        Yc[:, cols] = SIM["Y"][:, cols]
-        okc = testable(Yc)
-        out[okc, j] = loss_stat(Yc[okc], Sig, tip_origin)
+    out = np.full(len(Ys), np.nan)
+    out[ok] = loss_stat(Ys[ok], learn_covariance_missing(Ys[ok]), tip_origin)
     return out
+
+
+def _cond_stat(task):
+    """(n, genes, m) statistics for genes idx simulated with origin j's observed states kept."""
+    seed, idx, tip_origin, n = task
+    rng = np.random.default_rng(seed)
+    m = int(tip_origin.max()) + 1
+    e = SIM["e"][idx] if np.ndim(SIM["e"]) == 2 else SIM["e"]
+    out = np.full((n, len(idx), m), np.nan)
+    for r in range(n):
+        Ys = simulate_losses(SIM["tree"], SIM["lam"][idx], e, SIM["missing"][idx], rng)
+        for j in range(m):
+            cols = tip_origin == j
+            Ys_j = Ys.copy()
+            Ys_j[:, cols] = SIM["Y"][idx][:, cols]
+            ok = testable(Ys_j)
+            out[r, ok, j] = loss_stat(Ys_j[ok], SIM["Sig"], tip_origin)
+    return out
+
+
+def iut_p(pool, stat, p_global, idx, tip_origin, n_sims, n_tail=250, chunk=100, seed=10**6):
+    """Intersection-union p-values for genes idx: the largest of the global p-value and, for each
+    origin j, the p-value under a null in which origin j keeps its observed states (a real loss in
+    that origin alone) and the other origins are simulated; computed gene by gene."""
+    p = p_global.copy()
+    if len(idx) == 0:
+        return p
+    tasks = [(seed + k, idx, tip_origin, min(chunk, n_sims - k * chunk)) for k in range(-(-n_sims // chunk))]
+    null = np.concatenate(pool.map(_cond_stat, tasks))
+    for g, i in enumerate(idx):
+        pj = [tail_p(stat[i:i + 1], null[:, g, j], n_tail=n_tail)[0] for j in range(null.shape[2])]
+        p[i] = max([p[i]] + pj)
+    return p
 
 
 def sim_null(pool, tip_origin, n_sims, seed=0):
@@ -203,30 +221,12 @@ def sim_null(pool, tip_origin, n_sims, seed=0):
 
 
 def sim_p(stat, null, strata, n_tail=250):
-    """Tail p-value within each stratum of genes (pooling genes and replicates).
-
-    Intersection-union null (null (sims, genes, m), strata (genes, m)): column j holds the statistic
-    with origin j's observed states kept, pooled within strata that also match origin j's observed
-    loss status; the gene's p-value is the largest of the m p-values."""
-    if null.ndim == 3:
-        return np.column_stack([sim_p(stat, null[:, :, j], strata[:, j], n_tail)
-                                for j in range(null.shape[2])]).max(1)
+    """Tail p-value within each stratum of genes (pooling genes and replicates)."""
     p = np.ones(len(stat))
     for k in np.unique(strata):
         g = strata == k
         p[g] = tail_p(stat[g], null[:, g].ravel(), n_tail=n_tail)
     return p
-
-
-def origin_status(Y, tip_origin):
-    """(genes, m): 0 no species of origin j lost (or no data), 1 some, 2 all with data."""
-    m = int(tip_origin.max()) + 1
-    out = np.zeros((len(Y), m), int)
-    for j in range(m):
-        y = Y[:, tip_origin == j]
-        lost, seen = (y == 1).sum(1), (~np.isnan(y)).sum(1)
-        out[:, j] = np.where(lost == 0, 0, np.where(lost < seen, 1, 2))
-    return out
 
 
 LOSS_BINS = np.array([2, 3, 4, 5, 7, 10, 15, 25, 40, 60])
@@ -298,9 +298,10 @@ def main() -> None:
                          "(disjoint from --controls)")
     ap.add_argument("--loss-sims", type=int, default=100, help="sim mode: simulated replicates")
     ap.add_argument("--loss-test", choices=("iut", "global"), default="iut",
-                    help="iut: null in which one origin keeps its observed states and the rest are simulated, "
-                         "repeated for each origin; the largest p-value is used (intersection-union test). "
-                         "global: null with no association in any origin (earlier runs)")
+                    help="iut: genes called under the global null are retested gene by gene under nulls in which "
+                         "one origin keeps its observed states; the largest p-value is used (intersection-union "
+                         "test). global: null with no association in any origin only (earlier runs)")
+    ap.add_argument("--iut-sims", type=int, default=2000, help="per-gene replicates for the iut check")
     ap.add_argument("--match-losses", action="store_true",
                     help="draw control sets whose species carry as many annotated losses as the trait species")
     ap.add_argument("--tail-n", type=int, default=250,
@@ -380,14 +381,14 @@ def main() -> None:
             from multiprocessing import Pool
             sim_pool = Pool(args.workers, initializer=_sim_init,
                             initargs=(dict(tree=tree, lam=lam, e=gene_false_loss(e_false, kappa),
-                                          missing=np.isnan(Yl), Y=Yl, iut=args.loss_test == "iut"),))
+                                          missing=np.isnan(Yl), Y=Yl, Sig=Sig_l),))
 
             def loss_p(tip_orig):
-                st = strata
+                obs = loss_stat(Yl, Sig_l, tip_orig)
+                p = sim_p(obs, sim_null(sim_pool, tip_orig, args.loss_sims), strata, args.tail_n)
                 if args.loss_test == "iut":
-                    st = strata[:, None] * 3 + origin_status(Yl, tip_orig)
-                return sim_p(loss_stat(Yl, Sig_l, tip_orig), sim_null(sim_pool, tip_orig, args.loss_sims), st,
-                             args.tail_n)
+                    p = iut_p(sim_pool, obs, p, np.where(bh(p, args.q))[0], tip_orig, args.iut_sims, args.tail_n)
+                return p
         else:
             strata = loss_strata(Yl)
             null = np.array([loss_stat(Yl, Sig_l, origin_index(tree, tips)[: tree.n_tips]) for tips in null_tips])
