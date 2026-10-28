@@ -184,13 +184,12 @@ def _sim_stat(task):
 
 def _cond_stat(task):
     """(n, genes, m) statistics for genes idx simulated with origin j's observed states kept."""
-    seed, idx, tip_origin, n = task
+    seed, idx, lam, e, tip_origin, n = task
     rng = np.random.default_rng(seed)
     m = int(tip_origin.max()) + 1
-    e = SIM["e"][idx] if np.ndim(SIM["e"]) == 2 else SIM["e"]
     out = np.full((n, len(idx), m), np.nan)
     for r in range(n):
-        Ys = simulate_losses(SIM["tree"], SIM["lam"][idx], e, SIM["missing"][idx], rng)
+        Ys = simulate_losses(SIM["tree"], lam, e, SIM["missing"][idx], rng)
         for j in range(m):
             cols = tip_origin == j
             Ys_j = Ys.copy()
@@ -200,19 +199,16 @@ def _cond_stat(task):
     return out
 
 
-def iut_p(pool, stat, p_global, idx, tip_origin, n_sims, n_tail=250, chunk=100, seed=10**6):
-    """Intersection-union p-values for genes idx: the largest of the global p-value and, for each
-    origin j, the p-value under a null in which origin j keeps its observed states (a real loss in
-    that origin alone) and the other origins are simulated; computed gene by gene."""
-    p = p_global.copy()
-    if len(idx) == 0:
-        return p
-    tasks = [(seed + k, idx, tip_origin, min(chunk, n_sims - k * chunk)) for k in range(-(-n_sims // chunk))]
+def iut_p(pool, stat, idx, lam, e, tip_origin, n_sims, n_tail=250, chunk=100, seed=10**6):
+    """(len(idx), m) p-values, gene by gene: for each origin j, P(statistic >= observed) under a null
+    in which origin j keeps its observed states (a real loss in that origin alone) and the rest are
+    simulated with background loss rates. The largest over j is an intersection-union p-value."""
+    e = e[idx] if np.ndim(e) == 2 else e
+    tasks = [(seed + k, idx, lam[idx], e, tip_origin, min(chunk, n_sims - k * chunk))
+             for k in range(-(-n_sims // chunk))]
     null = np.concatenate(pool.map(_cond_stat, tasks))
-    for g, i in enumerate(idx):
-        pj = [tail_p(stat[i:i + 1], null[:, g, j], n_tail=n_tail)[0] for j in range(null.shape[2])]
-        p[i] = max([p[i]] + pj)
-    return p
+    return np.array([[tail_p(stat[i:i + 1], null[:, g, j], n_tail=n_tail)[0] for j in range(null.shape[2])]
+                     for g, i in enumerate(idx)]).reshape(len(idx), null.shape[2])
 
 
 def sim_null(pool, tip_origin, n_sims, seed=0):
@@ -384,11 +380,8 @@ def main() -> None:
                                           missing=np.isnan(Yl), Y=Yl, Sig=Sig_l),))
 
             def loss_p(tip_orig):
-                obs = loss_stat(Yl, Sig_l, tip_orig)
-                p = sim_p(obs, sim_null(sim_pool, tip_orig, args.loss_sims), strata, args.tail_n)
-                if args.loss_test == "iut":
-                    p = iut_p(sim_pool, obs, p, np.where(bh(p, args.q))[0], tip_orig, args.iut_sims, args.tail_n)
-                return p
+                return sim_p(loss_stat(Yl, Sig_l, tip_orig), sim_null(sim_pool, tip_orig, args.loss_sims), strata,
+                             args.tail_n)
         else:
             strata = loss_strata(Yl)
             null = np.array([loss_stat(Yl, Sig_l, origin_index(tree, tips)[: tree.n_tips]) for tips in null_tips])
@@ -401,6 +394,21 @@ def main() -> None:
         loss = pd.DataFrame({"symbol": loss_sym, "p_loss": p_loss, "p_loss_gls": p_loss_gls, "z_loss": z_loss,
                              "trait_species_lost": lost_in,
                              "n_lost_trait": ((Yl == 1) & trait).sum(1), "n_lost_other": ((Yl == 1) & ~trait).sum(1)})
+        if args.loss_test == "iut" and args.loss_null_mode == "sim":
+            # gene-by-gene intersection-union check of the calls, with background (non-trait) loss rates
+            idx = np.where(bh(p_loss, args.q))[0]
+            Yb = Yl.copy()
+            Yb[:, trait] = np.nan
+            lam_bg, kappa_bg = fit_loss_rates(tree, Yb, e_false)
+            pij = iut_p(sim_pool, loss_stat(Yl, Sig_l, tip_origin), idx, lam_bg, gene_false_loss(e_false, kappa_bg),
+                        tip_origin, args.iut_sims, args.tail_n)
+            loss["p_loss_iut"] = np.nan
+            loss.loc[loss.index[idx], "p_loss_iut"] = pij.max(1) if len(idx) else []
+            for j in range(pij.shape[1]):
+                loss[f"p_loss_iut_origin{j}"] = np.nan
+                loss.loc[loss.index[idx], f"p_loss_iut_origin{j}"] = pij[:, j]
+            print(f"intersection-union check: {len(idx)} calls, {(pij.max(1) < 0.01).sum() if len(idx) else 0} "
+                  f"with p < 0.01 whichever single origin is held at its observed states", flush=True)
         res = res.merge(loss, on="symbol", how="outer")
         print(f"loss layer: {len(loss_sym)} testable genes (lost = {'+'.join(lost_states)})", flush=True)
     else:
@@ -472,6 +480,9 @@ def main() -> None:
         if f"calls_{k}" in cc:
             summary[f"control_mean_calls_{k}"] = float(cc[f"calls_{k}"].mean())
             summary[f"control_sets_with_any_call_{k}"] = float((cc[f"calls_{k}"] > 0).mean())
+    if "p_loss_iut" in res:
+        summary["calls_loss_iut_p_below_0.01"] = int((res.p_loss_iut < 0.01).sum())
+        summary["calls_loss_iut_p_below_0.001"] = int((res.p_loss_iut < 0.001).sum())
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary, indent=2))
 
