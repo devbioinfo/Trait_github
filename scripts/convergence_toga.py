@@ -207,7 +207,12 @@ def iut_p(pool, stat, idx, lam, e, tip_origin, n_sims, n_tail=250, chunk=100, se
     tasks = [(seed + k, idx, lam[idx], e, tip_origin, min(chunk, n_sims - k * chunk))
              for k in range(-(-n_sims // chunk))]
     null = np.concatenate(pool.map(_cond_stat, tasks))
-    return np.array([[tail_p(stat[i:i + 1], null[:, g, j], n_tail=n_tail)[0] for j in range(null.shape[2])]
+    def p1(x, v):
+        # the tail fit may not exceed the empirical estimate: most null values are 0 (no losses outside the
+        # kept origin), which makes a fitted tail far too heavy
+        emp = (np.sum(v >= x) + 1) / (len(v) + 1)
+        return min(tail_p(np.array([x]), v, n_tail=n_tail)[0], emp)
+    return np.array([[p1(stat[i], null[:, g, j]) for j in range(null.shape[2])]
                      for g, i in enumerate(idx)]).reshape(len(idx), null.shape[2])
 
 
@@ -297,7 +302,7 @@ def main() -> None:
                     help="iut: genes called under the global null are retested gene by gene under nulls in which "
                          "one origin keeps its observed states; the largest p-value is used (intersection-union "
                          "test). global: null with no association in any origin only (earlier runs)")
-    ap.add_argument("--iut-sims", type=int, default=2000, help="per-gene replicates for the iut check")
+    ap.add_argument("--iut-sims", type=int, default=10000, help="per-gene replicates for the iut check")
     ap.add_argument("--match-losses", action="store_true",
                     help="draw control sets whose species carry as many annotated losses as the trait species")
     ap.add_argument("--tail-n", type=int, default=250,
