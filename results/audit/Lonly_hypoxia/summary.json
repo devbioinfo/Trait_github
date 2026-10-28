@@ -1,0 +1,21 @@
+{
+  "trait": "hypoxia",
+  "genes": 15703,
+  "species": 115,
+  "trait_species": 12,
+  "origins": 10,
+  "loss_states": "L",
+  "loss_null": "sim",
+  "control_sets": 20,
+  "loss_sims": 100,
+  "tail_n": 250,
+  "calls_rate": 0,
+  "control_mean_calls_rate": 0.0,
+  "control_sets_with_any_call_rate": 0.0,
+  "calls_loss": 6,
+  "control_mean_calls_loss": 0.6,
+  "control_sets_with_any_call_loss": 0.15,
+  "calls_final": 0,
+  "control_mean_calls_final": 0.0,
+  "control_sets_with_any_call_final": 0.0
+}

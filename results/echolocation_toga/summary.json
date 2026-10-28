@@ -6,14 +6,16 @@
   "origins": 3,
   "loss_states": "L,UL",
   "loss_null": "sim",
-  "control_sets": 20,
+  "control_sets": 100,
+  "loss_sims": 100,
+  "tail_n": 250,
   "calls_rate": 0,
-  "control_mean_calls_rate": 0.0,
-  "control_sets_with_any_call_rate": 0.0,
+  "control_mean_calls_rate": 0.02,
+  "control_sets_with_any_call_rate": 0.02,
   "calls_loss": 0,
-  "control_mean_calls_loss": 0.0,
-  "control_sets_with_any_call_loss": 0.0,
+  "control_mean_calls_loss": 0.22,
+  "control_sets_with_any_call_loss": 0.12,
   "calls_final": 0,
-  "control_mean_calls_final": 0.0,
-  "control_sets_with_any_call_final": 0.0
+  "control_mean_calls_final": 0.12,
+  "control_sets_with_any_call_final": 0.09
 }

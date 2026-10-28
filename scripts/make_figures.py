@@ -528,11 +528,11 @@ SENS_METHODS = [("naive", "Naive", C1), ("gls", "Learned-covariance GLS", C5),
 
 
 def sensitivity_data():
-    """Confounding 1: baseline from the 10 main trees, every other setting from 3 trees."""
+    """Confounding 1: baseline from the 10 main trees, every other setting from 5 trees."""
     base = main_benchmark()
     out = [base[base.confounding == 1].assign(setting="Baseline")]
     for lab, key in SENS_FILES.items():
-        d = pd.concat([pd.read_csv(RES / "robustness" / f"sens_{key}_{i}.csv") for i in range(3)])
+        d = pd.concat([pd.read_csv(f) for f in sorted((RES / "robustness").glob(f"sens_{key}_[0-9].csv"))])
         out.append(d.assign(setting=lab))
     return pd.concat(out, ignore_index=True)
 
@@ -819,13 +819,14 @@ def supp2():
 def supp1():
     r = pd.read_csv(RES / "rerconverge_compare.csv")
     # 10,000 permulations on all genes, rate-jump intensity 1 only (results/robustness)
-    allp = pd.read_csv(RES / "robustness" / "rerconverge_allperm10k.csv")
+    allp = pd.concat([pd.read_csv(RES / "robustness" / f) for f in ("rerconverge_allperm10k.csv",
+                                                                     "rerconverge_allperm10k_conf02.csv")])
     allp = allp[allp.method == "RERconverge_protein_permulation"].assign(method="RERconverge_allperm")
     r = pd.concat([r, allp], ignore_index=True)
     meth = [("final", "This method (final)", C6), ("RERconverge_protein", "RERconverge, protein", C1),
             ("RERconverge_nucleotide", "RERconverge, nucleotide", C2),
             ("RERconverge_protein_permulation", "+ permulations, 150 candidates", "#6250d6"),   # violet, slot 7
-            ("RERconverge_allperm", "+ permulations, all genes (intensity 1)", "#b3a8ef")]
+            ("RERconverge_allperm", "+ permulations, all genes", "#b3a8ef")]
     conf = sorted(r.confounding.unique())
     fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.5), gridspec_kw=dict(wspace=0.45))
     x = np.arange(len(conf))
@@ -1515,18 +1516,24 @@ def calls_panel(ax, d, letter):
 
 
 def calibration_panel(ax, d, letter):
+    from scipy.stats import beta as _beta
     y = np.arange(len(TRAITS))
+    n = 100                                         # control trait sets per analysis
     for i, (lay, name, col) in enumerate(LAYERS):
         v = d[d.layer == lay].any_call.to_numpy()
+        k = np.round(v * n / 100)
+        lo = np.where(k > 0, _beta.ppf(0.025, k, n - k + 1), 0) * 100        # exact 95% interval
+        hi = np.where(k < n, _beta.ppf(0.975, k + 1, n - k), 1) * 100
+        ax.hlines(y + (i - 1) * 0.22, lo, hi, color=col, lw=0.7, zorder=2)
         ax.scatter(v, y + (i - 1) * 0.22, s=14, color=col, edgecolor="white", lw=0.6, zorder=3, label=name)
     ax.axvline(10, color=INK2, lw=0.6, ls="--")
     ax.set_yticks(y, [""] * len(y))
     ax.set_ylim(len(TRAITS) - 0.5, -0.8)
     ax.text(10.6, -0.62, "nominal 10%", fontsize=5, color=INK2, va="center")
-    ax.set_xlim(-1.5, 25)
-    ax.set_xlabel("Control trait sets with any call (%)")
+    ax.set_xlim(-1.5, 32)
+    ax.set_xlabel("Control traits with any call (%)")
     grid(ax, "x")
-    panel(ax, letter, "Calibration, 20 control sets each")
+    panel(ax, letter, "Calibration, 100 controls")
 
 
 # ---------------------------------------------------------------------------------------
