@@ -31,10 +31,21 @@ One folder per analysis (`marine`, `hypoxia_subterranean`, `hypoxia_altitude`,
 | File | Contents |
 |---|---|
 | `<trait>_genes.csv` | Every tested gene: rate-layer z-scores and P, loss P (simulated null and GLS), trait species with the gene lost, combined P, calls at q = 0.1, convergence signature |
-| `control_calls.csv` | The 20 matched control traits: species and number of calls per layer |
+| `control_calls.csv` | The 100 matched control traits: species and number of calls per layer |
+| `control_pvalues.npz` | Rate and loss P values of every gene in every control trait (null P-value distributions) |
 | `summary.json` | Counts of genes, species, origins, calls and control-trait calibration |
 | `trait_species.txt` | Species coded as having the trait |
 | `signature_patterns.csv` | Fitted weights of the convergence-signature patterns |
+
+## audit/
+Robustness runs: `ctrl100_<trait>` (100 control traits), `Lonly_<trait>` (TOGA confident losses only),
+`ctrl100lm_marine` (control traits matched on annotated losses), `sims500_*`, `sims1000_*`,
+`tail100_*`, `tail500_*` (resolution of the simulated null and of its tail fit). Same files as per_trait/.
+
+## iut_check/
+Per-gene intersection-union check of each loss call (`p_loss_iut` and `p_loss_iut_origin<j>` in
+`<trait>_genes.csv`): 10,000 replicates per gene and origin, with that origin kept at its observed
+states and the rest simulated at background loss rates.
 
 ## supplementary/
 `supplementary_table1_convergent_losses.csv` (Supplementary Table 1, the 63 convergent
