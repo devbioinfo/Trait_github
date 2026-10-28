@@ -584,7 +584,7 @@ LOSS_METHODS = [("simulation", "This method (simulated null)", C1), ("gls", "Sam
 # and "Simulation null" sections; final row pooled over the five traits of the paper dataset)
 LOSS_NULLS = [("GLS t-test", 60, 5.1), ("Control sets, 200 available", 20, 0.25),
               ("Control sets, 142 available", 10, 0.15), ("Simulated, species error", 5, 0.05),
-              ("Simulated, species \u00d7 gene error", 8, 0.10)]
+              ("Simulated, species \u00d7 gene error", 13, 0.26)]
 
 
 def figure3():
@@ -1825,7 +1825,7 @@ def study_summary():
     axd.tick_params(axis="y", length=0)
     axd.text(-0.55, 1.16, "d", transform=axd.transAxes, fontsize=8, fontweight="bold", va="bottom")
     axd.text(-0.45, 1.16, "False calls are controlled", transform=axd.transAxes, fontsize=7, va="bottom")
-    axd.text(0, -0.48, "Real genomes: 2–8% of 100 control traits had any call", transform=axd.transAxes,
+    axd.text(0, -0.48, "Real genomes: 13% of 500 control traits had any loss call", transform=axd.transAxes,
              fontsize=5.5, color=INK2, va="top")
     fig.text(0.985, 0.004, "Silhouettes: game-icons.net (CC BY 3.0)", fontsize=5, color=MUTED, va="bottom", ha="right")
     save(fig, "StudySummary")
