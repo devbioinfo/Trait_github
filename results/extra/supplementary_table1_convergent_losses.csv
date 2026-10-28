@@ -17,7 +17,7 @@ Marine,Smell,OR2K2,0.0003223182355378,13,5,3,3,False,family-level only,Hayden et
 Marine,Smell,OR5H14,0.0003453409666477,14,6,3,3,False,family-level only,Hayden et al. 2010 Genome Res 20:1; Liu et al. 2019 BMC Genomics 20:977,olfactory receptor repertoire reduction
 Marine,Smell,TAAR5,0.0001688333614722,18,10,3,3,False,family-level only,Eyun et al. 2016 PLoS ONE,no TAAR genes in dolphin
 Marine,Taste,GNAT3,2.509963735383361e-05,15,0,2,3,True,named loss in some of these lineages (weak),Chikina et al. 2016 Mol Biol Evol 33:2182,named as an example of lesions; lineages not verified
-Marine,Taste,CALHM1,1.72982173219332e-05,9,0,2,3,False,not found (abstract-level search; verify against supplementary gene lists),,
+Marine,Taste,CALHM1,1.72982173219332e-05,9,0,2,3,True,named loss in some of these lineages,Feng et al. 2014 Genome Biol Evol 6:1254,ORF-disrupting mutations in 7 toothed and 4 baleen whales; no pinniped loss reported
 Marine,Taste,TAS1R3,0.0002916212607247,16,3,2,3,True,named loss in these lineages,Jiang et al. 2012 PNAS 109:4956; Feng et al. 2014 Genome Biol Evol 6:1254,cetaceans and sea lion; manatee not reported
 Marine,Taste,TAS2R1,0.0001151136555492,16,7,3,3,True,named loss in some of these lineages,Feng et al. 2014 Genome Biol Evol 6:1254,cetaceans
 Marine,Skin and hair,KRT1,0.0003410641200545,12,4,2,3,True,named loss in these lineages,Ehrlich et al. 2019 Mol Biol Evol 36:328,cetaceans and manatee
@@ -26,39 +26,39 @@ Marine,Skin and hair,KRT79,0.0001247795561175,12,1,2,3,False,family-level only,S
 Marine,Skin and hair,KRTAP24-1,0.0003125422354372,13,1,2,3,False,family-level only,Khan et al. 2014 BMC Genomics,KRTAP pseudogenisation in dolphin
 Marine,Skin and hair,KLK8,2.290384874975444e-05,15,2,3,3,True,named loss in some of these lineages,"Hecker, Sharma & Hiller 2017 Genome Biol Evol 9:3179; Sharma et al. 2018 Nat Commun 9:1215",cetaceans and manatee; pinnipeds not reported
 Marine,Skin and hair,GSDMA,0.0001436004865522,15,3,2,3,True,named loss in some of these lineages,Huelsmann et al. 2019 Sci Adv 5:eaaw6671,cetaceans
-Marine,Skin and hair,SERPINB12,0.0003125422354372,11,1,2,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Skin and hair,ANXA9,0.0003463305852142,13,3,2,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Muscle,MYH6,0.0001708856146981,7,14,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Muscle,MYH13,0.0002148788236919,17,12,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Muscle,MYBPHL,0.0001227878992525,18,9,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Muscle,MSS51,0.0002609242859116,14,4,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Muscle,ANKRD23,3.696178133271877e-05,18,9,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
+Marine,Skin and hair,SERPINB12,0.0003125422354372,11,1,2,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Skin and hair,ANXA9,0.0003463305852142,13,3,2,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Muscle,MYH6,0.0001708856146981,7,14,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Muscle,MYH13,0.0002148788236919,17,12,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Muscle,MYBPHL,0.0001227878992525,18,9,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Muscle,MSS51,0.0002609242859116,14,4,3,3,True,named loss in some of these lineages,Huelsmann et al. 2019 Sci Adv 5:eaaw6671,lost in the cetacean stem lineage
+Marine,Muscle,ANKRD23,3.696178133271877e-05,18,9,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
 Marine,Detoxification and metabolism,PON1,1.979857118988388e-05,16,0,3,3,True,named loss in these lineages,Meyer et al. 2018 Science 361:591,
-Marine,Detoxification and metabolism,ACSM4,3.35368959028904e-05,14,1,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Detoxification and metabolism,GLYATL3,0.0001689417488849,14,1,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Detoxification and metabolism,SULT6B1,0.0001436004865522,12,9,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Detoxification and metabolism,PTGR1,0.0001436004865522,15,2,2,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Detoxification and metabolism,GBA3,9.292433165113252e-05,17,16,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
+Marine,Detoxification and metabolism,ACSM4,3.35368959028904e-05,14,1,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Detoxification and metabolism,GLYATL3,0.0001689417488849,14,1,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Detoxification and metabolism,SULT6B1,0.0001436004865522,12,9,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Detoxification and metabolism,PTGR1,0.0001436004865522,15,2,2,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Detoxification and metabolism,GBA3,9.292433165113252e-05,17,16,3,3,True,named loss in these lineages,Lopes-Marques et al. 2020 Sci Rep 10:11565,lost in the cetacean ancestor and in all Pinnipedia analysed
 Marine,Other,SLC4A9,0.0003125422354372,13,2,2,3,True,named loss in some of these lineages,Huelsmann et al. 2019 Sci Adv 5:eaaw6671,cetaceans
-Marine,Other,ATP13A5,0.0001247795561175,14,3,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
+Marine,Other,ATP13A5,0.0001247795561175,14,3,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
 Marine,Other,TGM7,4.809646571101413e-05,14,1,3,3,True,named loss in some of these lineages,"Transglutaminase evolution, Mol Biol Evol 41:msae100 (2024)",cetaceans
-Marine,Other,HTRA4,9.150500781951884e-05,16,10,3,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Other,MRGPRX2,0.0002449655358832,9,4,2,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Other,ADGRF2,0.000282833660533,11,3,2,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Other,CCDC170,0.000149735467341,13,3,2,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Marine,Other,TLE7,0.0002618597107717,5,2,2,3,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Lens,LGSN,5.036024302923546e-09,6,0,4,6,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Lens,LCTL,1.3173741122011104e-06,6,5,4,6,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Lens,CRYGS,3.863190777655552e-06,4,0,3,6,False,not found (abstract-level search; verify against supplementary gene lists),,
+Marine,Other,HTRA4,9.150500781951884e-05,16,10,3,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Other,MRGPRX2,0.0002449655358832,9,4,2,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Other,ADGRF2,0.000282833660533,11,3,2,3,True,named loss in some of these lineages,Wittlake et al. 2021 Int J Mol Sci 22:11803,absent from cetacean genomes
+Marine,Other,CCDC170,0.000149735467341,13,3,2,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Marine,Other,TLE7,0.0002618597107717,5,2,2,3,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Subterranean,Lens,LGSN,5.0360243029235465e-09,6,0,4,6,False,rate acceleration only,Partha et al. 2017 eLife 6:e25884,accelerated evolution in subterranean mammals; no named loss
+Subterranean,Lens,LCTL,1.3173741122011104e-06,6,5,4,6,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Subterranean,Lens,CRYGS,3.863190777655552e-06,4,0,3,6,True,named loss in some of these lineages,Springer et al. 2023 Genes 14:2018,inactivated in marsupial mole and golden moles (eye-specific crystallin set)
 Subterranean,Lens,CRYBA4,4.84680804137261e-05,6,11,4,6,True,named loss in some of these lineages,"Kim et al. 2011 Nature 479:223; Springer, Emerling & Gatesy 2023 Genes 14:2018","naked mole-rat, golden moles"
 Subterranean,Lens,BFSP1,2.0995008842646736e-05,4,2,3,6,True,named loss in some of these lineages,"Springer, Emerling & Gatesy 2023 Genes 14:2018; Zheng et al. 2022 BMC Biol","golden moles, blind mole-rat"
 Subterranean,Lens,GJA8,6.63424906729642e-05,4,2,3,6,True,named loss in some of these lineages (secondary citation),Indrischek et al. 2022 eLife 11:e77999,species not verified
-Subterranean,Retina,MPP4,1.5843995331720994e-06,6,4,5,6,False,not found (abstract-level search; verify against supplementary gene lists),,
+Subterranean,Retina,MPP4,1.5843995331720994e-06,6,4,5,6,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
 Subterranean,Retina,ROM1,8.93034481469242e-06,5,2,4,6,True,named loss in some of these lineages (secondary citation),Indrischek et al. 2022 eLife 11:e77999,species not verified
-Subterranean,Retina,RGS11,1.3515743995095947e-05,5,9,4,6,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Retina,CABP5,2.4689792747086624e-05,4,0,3,6,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Vitreous,OPTC,3.5521041439680044e-05,7,22,5,6,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Other,RSKR,3.911409096642687e-06,6,3,4,6,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Other,LACTBL1,1.6978396338994958e-05,6,3,4,6,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Other,B3GNT4,3.195205701652625e-05,7,13,5,6,False,not found (abstract-level search; verify against supplementary gene lists),,
-Subterranean,Other,TPD52L3,8.342150495791018e-05,8,22,6,6,False,not found (abstract-level search; verify against supplementary gene lists),,
+Subterranean,Retina,RGS11,1.3515743995095947e-05,5,9,4,6,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Subterranean,Retina,CABP5,2.4689792747086624e-05,4,0,3,6,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Subterranean,Vitreous,OPTC,3.5521041439680044e-05,7,22,5,6,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Subterranean,Other,RSKR,3.911409096642687e-06,6,3,4,6,True,named loss in some of these lineages (lineages not itemised),Indrischek et al. 2022 eLife 11:e77999,convergently lost in at least three low-acuity mammal lineages
+Subterranean,Other,LACTBL1,1.6978396338994958e-05,6,3,4,6,True,named loss in some of these lineages (lineages not itemised),Indrischek et al. 2022 eLife 11:e77999,convergently lost in at least three low-acuity mammal lineages
+Subterranean,Other,B3GNT4,3.195205701652625e-05,7,13,5,6,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
+Subterranean,Other,TPD52L3,8.342150495791018e-05,8,22,6,6,False,"not found (searched abstracts and full texts; supplementary gene lists of Huelsmann 2019, Zheng 2022 and Gene Loss DB not checked)",,
