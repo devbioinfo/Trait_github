@@ -187,7 +187,7 @@ def _cond_stat(task):
     seed, idx, lam, e, tip_origin, n = task
     rng = np.random.default_rng(seed)
     m = int(tip_origin.max()) + 1
-    out = np.full((n, len(idx), m), np.nan)
+    out = np.zeros((n, len(idx), m))           # an untestable replicate carries no evidence: statistic 0
     for r in range(n):
         Ys = simulate_losses(SIM["tree"], lam, e, SIM["missing"][idx], rng)
         for j in range(m):
@@ -195,7 +195,7 @@ def _cond_stat(task):
             Ys_j = Ys.copy()
             Ys_j[:, cols] = SIM["Y"][idx][:, cols]
             ok = testable(Ys_j)
-            out[r, ok, j] = loss_stat(Ys_j[ok], SIM["Sig"], tip_origin)
+            out[r, ok, j] = np.nan_to_num(loss_stat(Ys_j[ok], SIM["Sig"], tip_origin))
     return out
 
 
