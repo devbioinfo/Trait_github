@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite the article and this software."
-title: "mlconv: calibrated detection of convergent gene loss and rate shifts (code for 'Convergent evolution in mammals is written in gene loss')"
+title: "mlconv: calibrated detection of convergent gene loss and rate shifts (code for 'Calibrated genome scans find recurrent gene loss in marine and subterranean mammals')"
 version: 1.0.0
 date-released: 2026-10-25
 license: MIT

@@ -1,4 +1,4 @@
-# Data for "Convergent evolution in mammals is written in gene loss"
+# Data for "Calibrated genome scans find recurrent gene loss in marine and subterranean mammals"
 
 Derived data behind every result and figure of the article. Code: [DOI of the software
 deposit] (GitHub: github.com/devbioinfo/Trait_github). Licence: CC BY 4.0.

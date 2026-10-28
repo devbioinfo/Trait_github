@@ -1,8 +1,8 @@
 {
-  "title": "mlconv: calibrated detection of convergent gene loss and rate shifts (code for \"Convergent evolution in mammals is written in gene loss\")",
+  "title": "mlconv: calibrated detection of convergent gene loss and rate shifts (code for \"Calibrated genome scans find recurrent gene loss in marine and subterranean mammals\")",
   "upload_type": "software",
   "version": "1.0.0",
-  "description": "<p>Code for the article <em>Convergent evolution in mammals is written in gene loss</em>. A convergence test that learns its null covariance from all genes (GLS), requires every signal to survive the removal of each independent origin, tests gene loss against a simulated irreversible-loss null with species and gene annotation error, and is repeated on matched control traits. Includes the analyses of 115 mammals (Zoonomia/TOGA), the AliSim benchmarks, the RERconverge comparison, and the code that draws every figure. Derived data are deposited separately (see related identifiers).</p>",
+  "description": "<p>Code for the article <em>Calibrated genome scans find recurrent gene loss in marine and subterranean mammals</em>. A convergence test that learns its null covariance from all genes (GLS), requires every signal to survive the removal of each independent origin, tests gene loss against a simulated irreversible-loss null with species and gene annotation error, and is repeated on matched control traits. Includes the analyses of 115 mammals (Zoonomia/TOGA), the AliSim benchmarks, the RERconverge comparison, and the code that draws every figure. Derived data are deposited separately (see related identifiers).</p>",
   "creators": [
     {"name": "[Family name], [Given names]", "affiliation": "[Affiliation]", "orcid": "[0000-0000-0000-0000]"}
   ],

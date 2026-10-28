@@ -5,7 +5,7 @@ convergent evolution in selected zoological traits: an in silico approach*.
 
 ## Final results (as in the manuscript)
 
-Manuscript: *Convergent evolution in mammals is written in gene loss* (in preparation for
+Manuscript: *Calibrated genome scans find recurrent gene loss in marine and subterranean mammals* (in preparation for
 *Nature Ecology & Evolution*). Every number below is produced by the scripts in this
 repository; sections further down are the development log that led here and are kept as a
 record (numbers there may be superseded by this section).

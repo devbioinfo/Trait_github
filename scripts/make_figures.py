@@ -1807,7 +1807,7 @@ def study_summary():
     axc.spines["left"].set_visible(False)
     axc.tick_params(axis="y", length=0)
     axc.text(-0.68, 1.16, "c", transform=axc.transAxes, fontsize=8, fontweight="bold", va="bottom")
-    axc.text(-0.56, 1.16, "Convergence is written in gene loss", transform=axc.transAxes, fontsize=7, va="bottom")
+    axc.text(-0.56, 1.16, "Convergence detected only as gene loss", transform=axc.transAxes, fontsize=7, va="bottom")
     axc.text(5, yy[-1], "no convergent rate shift in any trait", fontsize=5.5, color=INK2, va="center")
 
     # d: calibration
