@@ -3,3 +3,4 @@ results/*.log
 results/smoke*.csv
 Rplots.pdf
 zenodo/*.tar.gz
+data/bl_paper/
