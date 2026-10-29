@@ -1536,6 +1536,79 @@ def calibration_panel(ax, d, letter):
     panel(ax, letter, "Calibration, 100 controls")
 
 
+def supp_null_pvalues():
+    """Supplementary Fig. 1: P values of all genes in the 100 matched control traits of each analysis.
+
+    Every call in a control trait is false, so its P values should be uniform (or larger, if a test is
+    conservative). QQ plots per layer (band, 95% range over the 100 control traits at each rank; line,
+    their median) with the real trait for reference, and histograms of the pooled P values."""
+    rows, data = [], {}
+    for key, label in TRAITS:
+        z = np.load(RES / "audit" / f"ctrl100_{key}" / "control_pvalues.npz")
+        real = pd.read_csv(RES / f"{key}_toga" / f"{key}_genes.csv")
+        data[key] = {lay: (z[lay], real[f"p_{lay}"].dropna().to_numpy()) for lay in ("loss", "rate")}
+        for lay in ("loss", "rate"):
+            v = z[lay][np.isfinite(z[lay])]
+            rows.append(dict(analysis=key, layer=lay, control_traits=z[lay].shape[0], genes=z[lay].shape[1],
+                             share_p_below_0_05=np.mean(v < 0.05), share_p_below_0_01=np.mean(v < 0.01),
+                             share_p_below_0_001=np.mean(v < 0.001), median_p=np.median(v)))
+    pd.DataFrame(rows).to_csv(RES / "extra" / "control_null_pvalues.csv", index=False)
+
+    grid_x = np.linspace(0, 4.4, 200)                 # expected -log10 P
+
+    def qq(p):
+        p = np.sort(p[np.isfinite(p)])
+        n = len(p)
+        e = -np.log10((np.arange(1, n + 1) - 0.5) / n)
+        return np.interp(grid_x, e[::-1], -np.log10(np.clip(p, 1e-300, 1))[::-1], right=np.nan)
+
+    fig = plt.figure(figsize=(178 * MM, 128 * MM))
+    gs = fig.add_gridspec(3, 5, hspace=0.75, wspace=0.34, left=0.075, right=0.975, top=0.92, bottom=0.08)
+    for r, (lay, name, col) in enumerate((("loss", "Gene loss", C2), ("rate", "Rate", C1))):
+        for j, (key, label) in enumerate(TRAITS):
+            ax = fig.add_subplot(gs[r, j])
+            ctrl, real = data[key][lay]
+            Q = np.array([qq(row) for row in ctrl])
+            lo, med, hi = (np.nanpercentile(Q, q, axis=0) for q in (2.5, 50, 97.5))
+            ax.fill_between(grid_x, lo, hi, color="#d9d7d1", lw=0, zorder=1)
+            ax.plot(grid_x, med, color=MUTED, lw=1.0, zorder=2, label="100 control traits\n(median, 95% range)")
+            ax.plot(grid_x, qq(real), color=col, lw=1.0, zorder=3, label="Real trait")
+            ax.plot([0, 4.4], [0, 4.4], color=INK2, lw=0.6, ls="--", zorder=0)
+            ax.set_xlim(0, 4.4)
+            ax.set_ylim(0, 8)
+            grid(ax, "both")
+            if j == 0:
+                ax.set_ylabel(f"Observed −log$_{{10}}$P\n({name.lower()})")
+            ax.set_xlabel("Expected −log$_{10}$P")
+            ax.set_title(label, fontsize=6, color=INK, pad=3)
+            if r == 0 and j == 0:
+                panel(ax, "a", "", pad=10)
+            if r == 1 and j == 0:
+                panel(ax, "b", "", pad=10)
+            if j == 4:
+                ax.legend(loc="upper left", fontsize=5, handlelength=1.5, borderaxespad=0.2)
+    bins = np.linspace(0, 1, 21)
+    for j, (key, label) in enumerate(TRAITS):
+        ax = fig.add_subplot(gs[2, j])
+        for lay, name, col in (("loss", "Gene loss", C2), ("rate", "Rate", C1)):
+            v = data[key][lay][0].ravel()
+            v = v[np.isfinite(v)]
+            h, _ = np.histogram(v, bins=bins, density=True)
+            ax.stairs(h, bins, color=col, lw=1.0, label=name)
+        ax.axhline(1, color=INK2, lw=0.6, ls="--")
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 2.6)
+        grid(ax, "y")
+        ax.set_xlabel("P (control traits, pooled)")
+        ax.set_title(label, fontsize=6, color=INK, pad=3)
+        if j == 0:
+            ax.set_ylabel("Density")
+            panel(ax, "c", "", pad=10)
+        if j == 0:
+            ax.legend(loc="upper left", fontsize=5, handlelength=1.5, borderaxespad=0.2)
+    save(fig, "SupplementaryFigure1")
+
+
 # ---------------------------------------------------------------------------------------
 # Nature Ecology & Evolution figure set: Figs 1-6 and Extended Data Figs 1-10
 # ---------------------------------------------------------------------------------------
@@ -1848,4 +1921,5 @@ if __name__ == "__main__":
     figure9()              # Extended Data Fig. 5
     supp2()                # Extended Data Fig. 10
     supp3()                # Extended Data Fig. 9
+    supp_null_pvalues()    # Supplementary Fig. 1
     study_summary()        # one-page overview (talks, cover letter, preprint)
