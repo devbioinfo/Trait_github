@@ -749,7 +749,7 @@ def figure5():
     joint_panel(ax, mar, "beta_marine", "beta_semiaquatic", mg, ["PON1", "MMP12"], "d",
                 "Marine vs semi-aquatic", "Partial effect: marine", "Partial effect: semi-aquatic")
     ax.legend(loc="center left", bbox_to_anchor=(1.15, 0.5), fontsize=6, markerscale=1.2)
-    save(fig, "ExtendedDataFigure8")
+    save(fig, "timing_standalone")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1317,7 +1317,7 @@ def figure9():
                             color=INK2, transform=axes[1, j].transAxes)
             panel(axes[1, j], "cd"[j], f"{lab}: Reactome pathways")
         enrichment_bars(axes[2, j], go[go.trait == k], c, "ef"[j], f"{lab}: GO biological process", n=6, max_size=450)
-    save(fig, "ExtendedDataFigure5")
+    save(fig, "ExtendedDataFigure6")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1537,7 +1537,7 @@ def calibration_panel(ax, d, letter):
 
 
 def supp_null_pvalues():
-    """Supplementary Fig. 1: P values of all genes in the 100 matched control traits of each analysis.
+    """Extended Data Fig. 4: P values of all genes in the 100 matched control traits of each analysis.
 
     Every call in a control trait is false, so its P values should be uniform (or larger, if a test is
     conservative). QQ plots per layer (band, 95% range over the 100 control traits at each rank; line,
@@ -1606,7 +1606,7 @@ def supp_null_pvalues():
             panel(ax, "c", "", pad=10)
         if j == 0:
             ax.legend(loc="upper left", fontsize=5, handlelength=1.5, borderaxespad=0.2)
-    save(fig, "SupplementaryFigure1")
+    save(fig, "ExtendedDataFigure4")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1678,27 +1678,95 @@ def nee_fig6():
     save(fig, "Figure6")
 
 
-def ed_heatmaps():
+def ed_loss_matrix():
+    """Extended Data Fig. 4: which species lost each convergent gene, and when the loss arose in each origin.
+
+    Merges the loss-status matrix (115 species) with the timing per origin: a loss in a trait species is
+    coloured by its timing class for that gene and origin; losses in other species are black."""
+    from convergence_toga import origin_index
     tree, names = from_newick((RES / "toga" / "master_paper.nwk").read_text())
     status = pd.read_csv(RES / "toga" / "loss_status_paper.tsv.gz", sep="\t", index_col=0)
-    mar = pd.read_csv(RES / "marine_toga" / "marine_genes.csv")
-    sub = pd.read_csv(RES / "hypoxia_subterranean_toga" / "hypoxia_subterranean_genes.csv")
-    mar_genes = mar[mar.call_loss == True].sort_values("p_loss").symbol.tolist()  # noqa: E712
-    sub_genes = sub[sub.call_loss == True].sort_values("p_loss").symbol.tolist()  # noqa: E712
-    mar_species = (RES / "marine_toga" / "trait_species.txt").read_text().split()
-    sub_species = (RES / "hypoxia_subterranean_toga" / "trait_species.txt").read_text().split()
-    fig = plt.figure(figsize=(183 * MM, 176 * MM))
-    gs = fig.add_gridspec(2, 1, height_ratios=[3.4, 1.1], hspace=0.2)
-    loss_panel(fig.add_subplot(gs[0]), "marine", mar_genes, f"Marine mammals: {len(mar_genes)} convergent losses",
-               "a", tree, names, status, mar_species, C5)
-    loss_panel(fig.add_subplot(gs[1]), "sub", sub_genes, f"Subterranean mammals: {len(sub_genes)} convergent losses",
-               "b", tree, names, status, sub_species, C5)
-    handles = [Rectangle((0, 0), 1, 1, color=INK, label="lost (TOGA L or UL)"),
-               Rectangle((0, 0), 1, 1, color="#e8e7e3", label="intact (I or PI)"),
-               Rectangle((0, 0), 1, 1, fc="white", ec=MUTED, lw=0.5, label="missing"),
-               Rectangle((0, 0), 1, 1, color=C5, label="trait species")]
-    fig.legend(handles=handles, loc="lower center", ncol=4, bbox_to_anchor=(0.5, 0.0))
-    save(fig, "ExtendedDataFigure4")
+    t = pd.read_csv(RES / "extra" / "loss_timing.csv")
+    mar = pd.read_csv(RES / "extra" / "joint_marine_semiaquatic.csv")
+    timing_col = {c: col for c, _, col in TIMING}
+    # code: 0 missing, 1 intact, 2 lost (other species), 3.. timing classes of trait-species losses
+    cats = ["before origin", "at origin", "within origin"]
+    cmap = ListedColormap(["#ffffff", "#e8e7e3", INK] + [timing_col[c] for c in cats])
+
+    def matrix(key, folder):
+        genes = list(dict.fromkeys(t[t.trait == key].gene))
+        sp = (RES / folder / "trait_species.txt").read_text().split()
+        trait = np.isin(names, sp)
+        tip_o = origin_index(tree, trait)[: tree.n_tips]
+        d = t[t.trait == key]
+        oname = {}
+        for o in dict.fromkeys(d.origin):
+            genus = o.split("+")[0]
+            idx = [i for i, n in enumerate(names) if n.startswith(genus + "_") and tip_o[i] >= 0]
+            oname[tip_o[idx[0]]] = o
+        M = status.reindex(index=genes, columns=names).fillna("M")
+        code = np.where(M.isin(["L", "UL"]), 2, np.where(M.isin(["I", "PI"]), 1, 0))
+        cat = {(r.gene, r.origin): r.category for r in d.itertuples()}
+        for gi, g in enumerate(genes):
+            for si in np.nonzero(trait)[0]:
+                if code[gi, si] == 2:
+                    c = cat.get((g, oname[tip_o[si]]))
+                    code[gi, si] = 3 + cats.index(c) if c in cats else 2
+        return genes, code, trait
+
+    def draw(ax, genes, code, trait, letter, title):
+        ax.imshow(code, aspect="auto", cmap=cmap, vmin=0, vmax=len(cats) + 2, interpolation="nearest")
+        strip = blended_transform_factory(ax.transData, ax.transAxes)
+        for x in np.nonzero(trait)[0]:
+            ax.add_patch(Rectangle((x - 0.5, 1.012), 1, 0.03, color=C5, clip_on=False, lw=0, transform=strip))
+        ax.set_yticks(range(len(genes)), genes, fontsize=5)
+        ax.set_xticks([])
+        ax.set_xlim(-0.5, code.shape[1] - 0.5)
+        for s_ in ("left", "bottom"):
+            ax.spines[s_].set_visible(False)
+        ax.tick_params(length=0)
+        panel(ax, letter, title, pad=12)
+
+    mg, mc, mt = matrix("marine", "marine_toga")
+    sg, sc, st_ = matrix("hypoxia_subterranean", "hypoxia_subterranean_toga")
+    fig = plt.figure(figsize=(183 * MM, 170 * MM))
+    gs = fig.add_gridspec(3, 1, height_ratios=[48, 15, 15], hspace=0.26, left=0.08, right=0.99, top=0.96,
+                          bottom=0.07)
+    draw(fig.add_subplot(gs[0]), mg, mc, mt, "a", f"Marine mammals: {len(mg)} convergent losses")
+    ax = fig.add_subplot(gs[1])
+    draw(ax, sg, sc, st_, "b", f"Subterranean mammals: {len(sg)} convergent losses")
+    ax.set_xlabel(f"{len(names)} species in the order of the Zoonomia tree (pink: trait species)", fontsize=6)
+    low = gs[2].subgridspec(1, 3, width_ratios=[1.25, 1.1, 0.75], wspace=0.55)
+    lg = fig.add_subplot(low[0, 0])
+    lg.set_axis_off()
+    handles = [Rectangle((0, 0), 1, 1, color=timing_col[c], label=l) for c, l, _ in TIMING[:3]]
+    handles += [Rectangle((0, 0), 1, 1, color=INK, label="Lost in another species"),
+                Rectangle((0, 0), 1, 1, color="#e8e7e3", label="Intact"),
+                Rectangle((0, 0), 1, 1, fc="white", ec=MUTED, lw=0.5, label="Missing")]
+    lg.add_artist(lg.legend(handles=handles, loc="center left", fontsize=5.5, title="a, b: loss in a trait species",
+                            title_fontsize=6, alignment="left", handlelength=1.4))
+    pts = [plt.Line2D([], [], ls="", marker="o", ms=4, color=C1, mec="white", label="Convergent loss"),
+           plt.Line2D([], [], ls="", marker="D", ms=3.5, color=C2, mec="white", label="Gene of interest"),
+           plt.Line2D([], [], ls="", marker="o", ms=2.5, color="#c9c8c3", label="Other genes")]
+    lg.legend(handles=pts, loc="center left", bbox_to_anchor=(0.66, 0.42), fontsize=5.5, title="d", title_fontsize=6,
+              alignment="left", handlelength=1)
+    ax = fig.add_subplot(low[0, 1])
+    tot = t[t.category != "no data"].groupby(["trait", "category"]).size().unstack(fill_value=0)
+    tot = tot.div(tot.sum(1), axis=0)
+    left = np.zeros(len(tot))
+    for c, lab, col in TIMING[:4]:
+        v = tot.get(c, pd.Series(0, index=tot.index)).to_numpy()
+        ax.barh(range(len(tot)), v, left=left, color=col, height=0.6, edgecolor="white", lw=1)
+        left += v
+    ax.set_yticks(range(len(tot)), ["Marine" if i == "marine" else "Subterranean" for i in tot.index])
+    ax.set_xlabel("Share of gene \u00d7 origin pairs")
+    ax.set_xlim(0, 1)
+    ax.invert_yaxis()
+    panel(ax, "c", "Timing")
+    ax = fig.add_subplot(low[0, 2])
+    joint_panel(ax, mar, "beta_marine", "beta_semiaquatic", mg, ["PON1", "MMP12"], "d",
+                "Marine vs semi-aquatic", "Partial effect: marine", "Partial effect:\nsemi-aquatic")
+    save(fig, "ExtendedDataFigure5")
 
 
 def ed_marine_lineages():
@@ -1707,14 +1775,14 @@ def ed_marine_lineages():
     gs = fig.add_gridspec(2, 1, height_ratios=[1.6, 1], hspace=0.45)
     funnels_into(fig, gs[0], ctx)
     synteny_into(fig, gs[1], ctx, "d")
-    save(fig, "ExtendedDataFigure7")
+    save(fig, "ExtendedDataFigure8")
 
 
 def ed_taste_map():
     sm, _ = map_status()
     fig = plt.figure(figsize=(183 * MM, 118 * MM))
     taste_map(fig.add_subplot(111), sm, "a")
-    save(fig, "ExtendedDataFigure6")
+    save(fig, "ExtendedDataFigure7")
 
 
 # ---------------------------------------------------------------------------------------
@@ -1914,12 +1982,11 @@ if __name__ == "__main__":
     figure2()              # Extended Data Fig. 1
     supp1()                # Extended Data Fig. 2
     ed_sensitivity()       # Extended Data Fig. 3
-    ed_heatmaps()          # Extended Data Fig. 4
-    figure5()              # Extended Data Fig. 8
-    ed_marine_lineages()   # Extended Data Fig. 7
-    ed_taste_map()         # Extended Data Fig. 6
-    figure9()              # Extended Data Fig. 5
+    supp_null_pvalues()    # Extended Data Fig. 4
+    ed_loss_matrix()       # Extended Data Fig. 5
+    ed_marine_lineages()   # Extended Data Fig. 8
+    ed_taste_map()         # Extended Data Fig. 7
+    figure9()              # Extended Data Fig. 6
     supp2()                # Extended Data Fig. 10
     supp3()                # Extended Data Fig. 9
-    supp_null_pvalues()    # Supplementary Fig. 1
     study_summary()        # one-page overview (talks, cover letter, preprint)
