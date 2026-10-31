@@ -8,8 +8,8 @@ Two records, each with its own DOI:
 | Code | this GitHub repository at release v1.0.0 (metadata in `.zenodo.json`, `CITATION.cff`, `LICENSE`) | MIT | GitHub-Zenodo integration |
 
 ## Before starting
-Replace the placeholders `[Family name]`, `[Given names]`, `[Affiliation]`, ORCID and
-`[Author names]` in `.zenodo.json`, `CITATION.cff` and `LICENSE`, and commit.
+Author names, affiliations and ORCID iDs are filled in `.zenodo.json`, `CITATION.cff` and `LICENSE`
+(Konhar, Afzoon, Biswal); check them once before publishing.
 
 ## 1. Data record (do this first)
 1. Log in at https://zenodo.org (ORCID or GitHub login).

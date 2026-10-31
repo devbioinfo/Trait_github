@@ -4,13 +4,44 @@
   "version": "1.0.0",
   "description": "<p>Code for the article <em>Calibrated genome scans find recurrent gene loss in marine and subterranean mammals</em>. A convergence test that learns its null covariance from all genes (GLS), requires every signal to survive the removal of each independent origin, tests gene loss against a simulated irreversible-loss null with species and gene annotation error, and is repeated on matched control traits. Includes the analyses of 115 mammals (Zoonomia/TOGA), the AliSim benchmarks, the RERconverge comparison, and the code that draws every figure. Derived data are deposited separately (see related identifiers).</p>",
   "creators": [
-    {"name": "[Family name], [Given names]", "affiliation": "[Affiliation]", "orcid": "[0000-0000-0000-0000]"}
+    {
+      "name": "Konhar, Ruchishree",
+      "affiliation": "National Network Project @ Biodiversity Informatics Centre, North-Eastern Hill University, Shillong, India",
+      "orcid": "0000-0003-1147-1054"
+    },
+    {
+      "name": "Afzoon, Meher",
+      "affiliation": "Department of Zoology, North-Eastern Hill University, Shillong, India",
+      "orcid": "0009-0008-1197-603X"
+    },
+    {
+      "name": "Biswal, Devendra Kumar",
+      "affiliation": "Department of Zoology and Bioinformatics Centre, North-Eastern Hill University, Shillong, India",
+      "orcid": "0000-0003-1093-7166"
+    }
   ],
   "license": "MIT",
-  "keywords": ["convergent evolution", "gene loss", "comparative genomics", "mammals", "phylogenetic comparative methods", "false discovery rate", "TOGA", "Zoonomia"],
+  "keywords": [
+    "convergent evolution",
+    "gene loss",
+    "comparative genomics",
+    "mammals",
+    "phylogenetic comparative methods",
+    "false discovery rate",
+    "TOGA",
+    "Zoonomia"
+  ],
   "related_identifiers": [
-    {"relation": "isSupplementTo", "identifier": "[DOI of the article or bioRxiv preprint]", "resource_type": "publication-article"},
-    {"relation": "isSupplementedBy", "identifier": "[DOI of the data deposit]", "resource_type": "dataset"}
+    {
+      "relation": "isSupplementTo",
+      "identifier": "[DOI of the article or bioRxiv preprint]",
+      "resource_type": "publication-article"
+    },
+    {
+      "relation": "isSupplementedBy",
+      "identifier": "[DOI of the data deposit]",
+      "resource_type": "dataset"
+    }
   ],
   "notes": "Silhouettes in scripts/silhouettes.json: game-icons.net, CC BY 3.0. RERconverge (GPL-3.0) is not included; scripts/rerconverge_no_ggtree.patch is applied to commit 682ac34 by scripts/install_rerconverge.sh."
 }
