@@ -693,12 +693,12 @@ def timing_panel(ax, t, trait, genes, letter, title):
     panel(ax, letter, title)
 
 
-def joint_panel(ax, df, xa, xb, called, controls, letter, title, xlabel, ylabel):
+def joint_panel(ax, df, xa, xb, called, controls, letter, title, xlabel, ylabel, colours=(C1, C2)):
     ax.scatter(df[xa], df[xb], s=3, color="#c9c8c3", lw=0, rasterized=True, label="all genes")
     c = df[df.gene.isin(called)]
-    ax.scatter(c[xa], c[xb], s=14, color=C1, edgecolor="white", lw=0.5, zorder=3, label="convergent losses")
+    ax.scatter(c[xa], c[xb], s=14, color=colours[0], edgecolor="white", lw=0.5, zorder=3, label="convergent losses")
     k = df[df.gene.isin(controls)]
-    ax.scatter(k[xa], k[xb], s=16, color=C2, marker="D", edgecolor="white", lw=0.5, zorder=4, label="genes of interest")
+    ax.scatter(k[xa], k[xb], s=16, color=colours[1], marker="D", edgecolor="white", lw=0.5, zorder=4, label="genes of interest")
     for i, (_, r) in enumerate(k.sort_values(xa).iterrows()):
         dx, ha = ((-4, "right") if i % 2 == 0 else (4, "left"))
         ax.annotate(r.gene, (r[xa], r[xb]), fontsize=5.5, color=INK2, xytext=(dx, 3), textcoords="offset points",
@@ -1688,10 +1688,13 @@ def ed_loss_matrix():
     status = pd.read_csv(RES / "toga" / "loss_status_paper.tsv.gz", sep="\t", index_col=0)
     t = pd.read_csv(RES / "extra" / "loss_timing.csv")
     mar = pd.read_csv(RES / "extra" / "joint_marine_semiaquatic.csv")
-    timing_col = {c: col for c, _, col in TIMING}
+    # palette of this figure (validated for colour-vision deficiency): purple, teal, amber; soft neutrals
+    timing_col = {"before origin": "#7b5ea7", "at origin": "#2a9d8f", "within origin": "#e9a03b",
+                  "intact": "#ecebe6", "no data": "#ffffff"}
+    LOST, INTACT, TRAIT = "#33373d", "#ecebe6", "#d4789c"
     # code: 0 missing, 1 intact, 2 lost (other species), 3.. timing classes of trait-species losses
     cats = ["before origin", "at origin", "within origin"]
-    cmap = ListedColormap(["#ffffff", "#e8e7e3", INK] + [timing_col[c] for c in cats])
+    cmap = ListedColormap(["#ffffff", INTACT, LOST] + [timing_col[c] for c in cats])
 
     def matrix(key, folder):
         genes = list(dict.fromkeys(t[t.trait == key].gene))
@@ -1718,7 +1721,7 @@ def ed_loss_matrix():
         ax.imshow(code, aspect="auto", cmap=cmap, vmin=0, vmax=len(cats) + 2, interpolation="nearest")
         strip = blended_transform_factory(ax.transData, ax.transAxes)
         for x in np.nonzero(trait)[0]:
-            ax.add_patch(Rectangle((x - 0.5, 1.012), 1, 0.03, color=C5, clip_on=False, lw=0, transform=strip))
+            ax.add_patch(Rectangle((x - 0.5, 1.012), 1, 0.03, color=TRAIT, clip_on=False, lw=0, transform=strip))
         ax.set_yticks(range(len(genes)), genes, fontsize=5)
         ax.set_xticks([])
         ax.set_xlim(-0.5, code.shape[1] - 0.5)
@@ -1740,13 +1743,13 @@ def ed_loss_matrix():
     lg = fig.add_subplot(low[0, 0])
     lg.set_axis_off()
     handles = [Rectangle((0, 0), 1, 1, color=timing_col[c], label=l) for c, l, _ in TIMING[:3]]
-    handles += [Rectangle((0, 0), 1, 1, color=INK, label="Lost in another species"),
-                Rectangle((0, 0), 1, 1, color="#e8e7e3", label="Intact"),
+    handles += [Rectangle((0, 0), 1, 1, color=LOST, label="Lost in another species"),
+                Rectangle((0, 0), 1, 1, color=INTACT, label="Intact"),
                 Rectangle((0, 0), 1, 1, fc="white", ec=MUTED, lw=0.5, label="Missing")]
     lg.add_artist(lg.legend(handles=handles, loc="center left", fontsize=5.5, title="a, b: loss in a trait species",
                             title_fontsize=6, alignment="left", handlelength=1.4))
-    pts = [plt.Line2D([], [], ls="", marker="o", ms=4, color=C1, mec="white", label="Convergent loss"),
-           plt.Line2D([], [], ls="", marker="D", ms=3.5, color=C2, mec="white", label="Gene of interest"),
+    pts = [plt.Line2D([], [], ls="", marker="o", ms=4, color=timing_col["at origin"], mec="white", label="Convergent loss"),
+           plt.Line2D([], [], ls="", marker="D", ms=3.5, color=timing_col["within origin"], mec="white", label="Gene of interest"),
            plt.Line2D([], [], ls="", marker="o", ms=2.5, color="#c9c8c3", label="Other genes")]
     lg.legend(handles=pts, loc="center left", bbox_to_anchor=(0.66, 0.42), fontsize=5.5, title="d", title_fontsize=6,
               alignment="left", handlelength=1)
@@ -1754,7 +1757,8 @@ def ed_loss_matrix():
     tot = t[t.category != "no data"].groupby(["trait", "category"]).size().unstack(fill_value=0)
     tot = tot.div(tot.sum(1), axis=0)
     left = np.zeros(len(tot))
-    for c, lab, col in TIMING[:4]:
+    for c, lab, _ in TIMING[:4]:
+        col = timing_col[c]
         v = tot.get(c, pd.Series(0, index=tot.index)).to_numpy()
         ax.barh(range(len(tot)), v, left=left, color=col, height=0.6, edgecolor="white", lw=1)
         left += v
@@ -1765,7 +1769,8 @@ def ed_loss_matrix():
     panel(ax, "c", "Timing")
     ax = fig.add_subplot(low[0, 2])
     joint_panel(ax, mar, "beta_marine", "beta_semiaquatic", mg, ["PON1", "MMP12"], "d",
-                "Marine vs semi-aquatic", "Partial effect: marine", "Partial effect:\nsemi-aquatic")
+                "Marine vs semi-aquatic", "Partial effect: marine", "Partial effect:\nsemi-aquatic",
+                colours=(timing_col["at origin"], timing_col["within origin"]))
     save(fig, "ExtendedDataFigure5")
 
 
