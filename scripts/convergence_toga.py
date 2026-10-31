@@ -155,11 +155,11 @@ def testable(Y):
     return ((Y == 1).sum(1) >= 2) & ((Y == 0).sum(1) >= 2)
 
 
-def loss_data(path, names, lost_states):
+def loss_data(path, names, lost_states, intact_states=("I", "PI")):
     """(symbols, Y, e): Y (genes, species) 1 lost, 0 intact, NaN missing, testable genes only;
     e the per-species false-loss rate estimated from all genes."""
     m = pd.read_csv(path, sep="\t", index_col=0).reindex(columns=names).fillna("M")
-    Y = np.where(m.isin(lost_states), 1.0, np.where(m.isin(["I", "PI"]), 0.0, np.nan))
+    Y = np.where(m.isin(lost_states), 1.0, np.where(m.isin(list(intact_states)), 0.0, np.nan))
     ok = testable(Y)
     return m.index[ok].to_numpy(), Y[ok], false_loss_rates(Y)
 
@@ -293,6 +293,8 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=11)
     ap.add_argument("--loss", help="gene-loss status matrix from scripts/toga_loss_matrix.py")
     ap.add_argument("--loss-states", default="L,UL", help="TOGA classes counted as lost")
+    ap.add_argument("--intact-states", default="I,PI",
+                    help="TOGA classes counted as intact (sensitivity: I,PI,UL counts uncertain losses as intact)")
     ap.add_argument("--loss-null-mode", choices=("sim", "controls"), default="sim")
     ap.add_argument("--loss-null", type=int, default=200,
                     help="controls mode: control trait sets used to calibrate the loss layer "
@@ -372,7 +374,7 @@ def main() -> None:
     tip_origin = origin_index(tree, trait)[: tree.n_tips]
     if args.loss:
         lost_states = args.loss_states.split(",")
-        loss_sym, Yl, e_false = loss_data(args.loss, names, lost_states)
+        loss_sym, Yl, e_false = loss_data(args.loss, names, lost_states, args.intact_states.split(","))
         Sig_l = learn_covariance_missing(Yl)
         p_loss_gls = np.exp(-loss_stat(Yl, Sig_l, tip_origin))
         if args.loss_null_mode == "sim":
@@ -474,7 +476,11 @@ def main() -> None:
         pd.DataFrame(rows).to_csv(out / "control_calls.csv", index=False)
         np.savez_compressed(out / "control_pvalues.npz", **{k: np.array(v) for k, v in ctrl_p.items() if v})
     cc = pd.DataFrame(rows)
-    summary = dict(trait=args.trait, genes=len(genes), species=tree.n_tips, trait_species=int(trait.sum()),
+    summary = dict(intact_states=args.intact_states,
+                   false_intact=float(os.environ.get("MLCONV_FALSE_INTACT", "1e-3")),
+                   loss_cap=float(os.environ.get("MLCONV_LOSS_CAP", "0.5")),
+                   cov_shrink=float(os.environ.get("MLCONV_COV_SHRINK", "0")),
+                   trait=args.trait, genes=len(genes), species=tree.n_tips, trait_species=int(trait.sum()),
                    origins=len(origins), loss_states=args.loss_states if args.loss else None,
                    loss_null=(args.loss_null_mode if args.loss else None),
                    control_sets=len(cc), loss_sims=args.loss_sims, tail_n=args.tail_n, loss_test=args.loss_test,

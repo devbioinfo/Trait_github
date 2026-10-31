@@ -23,7 +23,10 @@ from scipy import stats as st
 
 from .tree import Tree
 
-FALSE_INTACT = 1e-3     # probability that a lost gene is reported intact
+import os as _os
+# sensitivity settings (environment): MLCONV_FALSE_INTACT, MLCONV_LOSS_CAP
+FALSE_INTACT = float(_os.environ.get("MLCONV_FALSE_INTACT", "1e-3"))  # lost gene reported intact
+LOSS_CAP = float(_os.environ.get("MLCONV_LOSS_CAP", "0.5"))            # cap on false-loss probability
 
 
 def false_loss_rates(Y: np.ndarray, floor: float = 1e-4) -> np.ndarray:
@@ -67,7 +70,7 @@ def loss_loglik(tree: Tree, Y: np.ndarray, e: np.ndarray, lams: np.ndarray) -> n
 
 def gene_false_loss(e: np.ndarray, kappa: np.ndarray) -> np.ndarray:
     """(genes, species) false-loss probabilities e_s kappa_g, capped at 0.5."""
-    return np.minimum(np.outer(kappa, e), 0.5)
+    return np.minimum(np.outer(kappa, e), LOSS_CAP)
 
 
 def fit_loss_rates(tree: Tree, Y: np.ndarray, e: np.ndarray, n_grid: int = 60,
@@ -76,7 +79,7 @@ def fit_loss_rates(tree: Tree, Y: np.ndarray, e: np.ndarray, n_grid: int = 60,
     tree length, fragility on `kappas` (1 = the species' baseline false-loss rate)."""
     T = tree.length.sum()
     lams = np.logspace(np.log10(0.01 / T), np.log10(100 / T), n_grid)
-    ll = np.stack([loss_loglik(tree, Y, np.minimum(k * e, 0.5)[None], lams) for k in kappas], -1)
+    ll = np.stack([loss_loglik(tree, Y, np.minimum(k * e, LOSS_CAP)[None], lams) for k in kappas], -1)
     best = ll.reshape(len(Y), -1).argmax(1)
     il, ik = np.unravel_index(best, (n_grid, len(kappas)))
     return lams[il], kappas[ik]

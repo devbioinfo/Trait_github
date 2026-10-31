@@ -14,6 +14,7 @@ Requires many more genes than branches (G >> B); real genomes have G ~ 10^4.
 """
 from __future__ import annotations
 
+import os
 import numpy as np
 from scipy import stats as st
 
@@ -183,6 +184,9 @@ def learn_covariance_missing(Y: np.ndarray, min_pairs: int = 50) -> np.ndarray:
     S = (Z0.T @ Z0) / np.maximum(n - 1, 1)
     S[n < min_pairs] = 0.0
     S = (S + S.T) / 2
+    a = float(os.environ.get("MLCONV_COV_SHRINK", "0"))      # sensitivity: shrink towards the identity
+    if a > 0:
+        S = (1 - a) * S + a * np.eye(len(S))
     w, V = np.linalg.eigh(S)
     w = np.maximum(w, 1e-4 * w.max())
     return (V * w) @ V.T

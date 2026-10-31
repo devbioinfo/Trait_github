@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import re
 from pathlib import Path
 
 import numpy as np
@@ -150,6 +151,9 @@ def enrich(sets, names, background, called, bins, min_size=5, max_size=1000):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--annot", default="/home/user/data_toga/annot")
+    ap.add_argument("--collapse-families", action="store_true",
+                    help="keep one called gene per gene family (sensitivity to clustered family losses)")
+    ap.add_argument("--suffix", default="", help="appended to output file names")
     args = ap.parse_args()
     annot = Path(args.annot)
     m = pd.read_csv(RES / "toga" / "loss_status_paper.tsv.gz", sep="\t", index_col=0)
@@ -168,6 +172,15 @@ def main():
             if name == "tissue":
                 background &= hpa_genes
             called = set(d[d.call_loss == True].symbol) & background  # noqa: E712
+            if args.collapse_families:
+                # one representative (smallest loss P) per family: OR<n><letters>, KRTAP<n>, KRT, TAAR, TAS2R, CRY
+                fam = lambda g: (re.match(r"^(OR\d+[A-Z]*|KRTAP\d+|KRT|TAAR|TAS2R|TAS1R|CRY[ABG]|BFSP|SERPIN[AB])", g) or
+                                 re.match(r"^(.*)", g)).group(1)
+                pv = d.set_index("symbol").p_loss
+                keep = {}
+                for g in sorted(called, key=lambda g: pv[g]):
+                    keep.setdefault(fam(g), g)
+                called = set(keep.values())
             tb = total.reindex(sorted(background)).fillna(0)
             bins = pd.Series(pd.qcut(tb.rank(method="first"), 20, labels=False).to_numpy(), index=tb.index)
             r = enrich(sets, names, background, called, bins)
@@ -177,7 +190,7 @@ def main():
                 rows.append(r)
             print(name, k, f"{len(called)} called of {len(background)};",
                   "q<0.1:", ", ".join(r[r.q < 0.1].name.head(8)) if len(r) else "-", flush=True)
-        pd.concat(rows).to_csv(OUT / f"enrichment_{name}.csv", index=False)
+        pd.concat(rows).to_csv(OUT / f"enrichment_{name}{args.suffix}.csv", index=False)
 
 
 if __name__ == "__main__":
