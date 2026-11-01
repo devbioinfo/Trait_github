@@ -1,4 +1,4 @@
-# Data for "Calibrated genome scans find recurrent gene loss in marine and subterranean mammals"
+# Data for "Genome scans with empirical calibration identify recurrent gene loss in marine and subterranean mammals"
 
 Derived data behind every result and figure of the article. Code: [DOI of the software
 deposit] (GitHub: github.com/devbioinfo/Trait_github). Licence: CC BY 4.0.
@@ -70,3 +70,10 @@ and earlier development benchmarks (`benchmark_v0-v2.csv`).
 
 ## figures/
 All main and Extended Data figures and the study summary as PDF (editable text) and PNG.
+
+## review/
+Checks added after review: held-out control traits (`heldout_controls.csv`), the composite-null
+single-origin tier with 100,000 replicates (`composite_null_tier.csv`), call-set stability under
+the loss-model settings and loss codings (`callset_stability.csv`, one `summary.json` per run),
+enrichment with gene families collapsed (`enrichment_collapse.csv`), the commands, software
+versions (`ENVIRONMENT.txt`, `commands.txt`) and `summary.md`.
