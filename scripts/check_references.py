@@ -10,6 +10,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REFS = ROOT / "manuscript_refs" / "references.txt"
 OUT = ROOT / "results" / "review" / "reference_check.csv"
+DOIS = ROOT / "manuscript_refs" / "dois.tsv"   # optional: reference number -> DOI (direct lookup)
+doi_of = {}
+if DOIS.exists():
+    for l in DOIS.read_text().splitlines():
+        if l.strip() and not l.startswith("#"):
+            k, v = l.split("\t")[:2]
+            doi_of[k.strip()] = v.strip()
 
 
 def norm(s):
@@ -54,6 +61,8 @@ for line in REFS.read_text().splitlines():
     if not line.strip():
         continue
     r = parse(line)
+    if r["n"] in doi_of:
+        r["doi"] = doi_of[r["n"]]
     try:
         it = lookup(r)
     except Exception as e:  # network or HTTP error
@@ -71,7 +80,8 @@ for line in REFS.read_text().splitlines():
     issues = []
     if sim < 0.9:
         issues.append(f'title differs ({sim:.2f}): "{ct}"')
-    if r["year"] and y and y != r["year"]:
+    yp = str((it.get("published-print", {}).get("date-parts") or [[""]])[0][0])
+    if r["year"] and y and r["year"] not in (y, yp):
         issues.append(f"year {y}")
     if r["vol"] and v and v != r["vol"]:
         issues.append(f"volume {v}")
