@@ -199,10 +199,12 @@ def _cond_stat(task):
     return out
 
 
-def iut_p(pool, stat, idx, lam, e, tip_origin, n_sims, n_tail=250, chunk=100, seed=10**6):
+def iut_p(pool, stat, idx, lam, e, tip_origin, n_sims, n_tail=250, chunk=100, seed=10**6, counts=False):
     """(len(idx), m) p-values, gene by gene: for each origin j, P(statistic >= observed) under a null
     in which origin j keeps its observed states (a real loss in that origin alone) and the rest are
-    simulated with background loss rates. The largest over j is an intersection-union p-value."""
+    simulated with background loss rates. The largest over j is an intersection-union p-value.
+    counts=True also returns the (len(idx), m) numbers of replicates reaching the observed statistic,
+    from which Monte Carlo p-values (k + 1) / (n_sims + 1) follow without any tail extrapolation."""
     e = e[idx] if np.ndim(e) == 2 else e
     tasks = [(seed + k, idx, lam[idx], e, tip_origin, min(chunk, n_sims - k * chunk))
              for k in range(-(-n_sims // chunk))]
@@ -212,8 +214,13 @@ def iut_p(pool, stat, idx, lam, e, tip_origin, n_sims, n_tail=250, chunk=100, se
         # kept origin), which makes a fitted tail far too heavy
         emp = (np.sum(v >= x) + 1) / (len(v) + 1)
         return min(tail_p(np.array([x]), v, n_tail=n_tail)[0], emp)
-    return np.array([[p1(stat[i], null[:, g, j]) for j in range(null.shape[2])]
-                     for g, i in enumerate(idx)]).reshape(len(idx), null.shape[2])
+    p = np.array([[p1(stat[i], null[:, g, j]) for j in range(null.shape[2])]
+                  for g, i in enumerate(idx)]).reshape(len(idx), null.shape[2])
+    if not counts:
+        return p
+    k = np.array([[int(np.sum(null[:, g, j] >= stat[i])) for j in range(null.shape[2])]
+                  for g, i in enumerate(idx)]).reshape(len(idx), null.shape[2])
+    return p, k
 
 
 def sim_null(pool, tip_origin, n_sims, seed=0):
@@ -305,6 +312,9 @@ def main() -> None:
                          "one origin keeps its observed states; the largest p-value is used (intersection-union "
                          "test). global: null with no association in any origin only (earlier runs)")
     ap.add_argument("--iut-sims", type=int, default=10000, help="per-gene replicates for the iut check")
+    ap.add_argument("--iut-genes", default="",
+                    help="comma-separated symbols checked by the iut test in addition to the calls "
+                         "(to follow the same genes across loss codings)")
     ap.add_argument("--match-losses", action="store_true",
                     help="draw control sets whose species carry as many annotated losses as the trait species")
     ap.add_argument("--tail-n", type=int, default=250,
@@ -404,16 +414,28 @@ def main() -> None:
         if args.loss_test == "iut" and args.loss_null_mode == "sim":
             # gene-by-gene intersection-union check of the calls, with background (non-trait) loss rates
             idx = np.where(bh(p_loss, args.q))[0]
+            extra = [g for g in args.iut_genes.split(",") if g]
+            if extra:
+                idx = np.union1d(idx, np.where(np.isin(loss_sym, extra))[0]).astype(int)
             Yb = Yl.copy()
             Yb[:, trait] = np.nan
             lam_bg, kappa_bg = fit_loss_rates(tree, Yb, e_false)
-            pij = iut_p(sim_pool, loss_stat(Yl, Sig_l, tip_origin), idx, lam_bg, gene_false_loss(e_false, kappa_bg),
-                        tip_origin, args.iut_sims, args.tail_n)
+            pij, kij = iut_p(sim_pool, loss_stat(Yl, Sig_l, tip_origin), idx, lam_bg,
+                             gene_false_loss(e_false, kappa_bg), tip_origin, args.iut_sims, args.tail_n, counts=True)
             loss["p_loss_iut"] = np.nan
             loss.loc[loss.index[idx], "p_loss_iut"] = pij.max(1) if len(idx) else []
+            # Monte Carlo p-value without tail extrapolation, and the replicate counts behind it
+            loss["p_loss_iut_mc"] = np.nan
+            loss.loc[loss.index[idx], "p_loss_iut_mc"] = ((kij + 1) / (args.iut_sims + 1)).max(1) if len(idx) else []
+            loss["iut_sims"] = np.nan
+            loss.loc[loss.index[idx], "iut_sims"] = args.iut_sims
+            loss["iut_checked_only"] = False
+            loss.loc[loss.index[idx], "iut_checked_only"] = ~bh(p_loss, args.q)[idx]
             for j in range(pij.shape[1]):
                 loss[f"p_loss_iut_origin{j}"] = np.nan
                 loss.loc[loss.index[idx], f"p_loss_iut_origin{j}"] = pij[:, j]
+                loss[f"k_loss_iut_origin{j}"] = np.nan
+                loss.loc[loss.index[idx], f"k_loss_iut_origin{j}"] = kij[:, j]
             print(f"intersection-union check: {len(idx)} calls, {(pij.max(1) < 0.01).sum() if len(idx) else 0} "
                   f"with p < 0.01 whichever single origin is held at its observed states", flush=True)
         res = res.merge(loss, on="symbol", how="outer")
