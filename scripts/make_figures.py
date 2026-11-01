@@ -392,7 +392,7 @@ def figure1():           # saved as Figure2 (method overview)
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
     ax.set_axis_off()
-    boxes = [(8.0, "Matched control trait sets\non real genomes\n(every call is false)", C3),
+    boxes = [(8.0, "Matched control trait sets\non real genomes\n(calls assumed false)", C3),
              (5.0, "Simulated null for gene loss\n(loss rate × gene fragility ×\nspecies error rate)", C2),
              (1.8, "FDR (Benjamini–Hochberg)\nper layer, q = 0.1", C1)]
     for yy, text, c in boxes:
@@ -2062,7 +2062,7 @@ def study_summary():
     axd.spines["left"].set_visible(False)
     axd.tick_params(axis="y", length=0)
     axd.text(-0.55, 1.16, "d", transform=axd.transAxes, fontsize=8, fontweight="bold", va="bottom")
-    axd.text(-0.45, 1.16, "False calls are controlled", transform=axd.transAxes, fontsize=7, va="bottom")
+    axd.text(-0.45, 1.16, "False calls in simulations", transform=axd.transAxes, fontsize=7, va="bottom")
     axd.text(0, -0.48, "Real genomes: 13% of 500 control traits had any loss call", transform=axd.transAxes,
              fontsize=5.5, color=INK2, va="top")
     fig.text(0.985, 0.004, "Silhouettes: game-icons.net (CC BY 3.0)", fontsize=5, color=MUTED, va="bottom", ha="right")
