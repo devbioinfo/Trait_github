@@ -1473,7 +1473,7 @@ def taste_map(ax, sm, letter, title="Marine mammals: taste, smell and detoxifica
     gene_node(ax, 25, 27.5, "PLCB2", sm, c)
     arrow(ax, (25, 32.3), (25, 29.2))
     gene_node(ax, 25, 21, "ITPR3", sm, c)
-    arrow(ax, (25, 25.8), (25, 22.7)); note(ax, 28.5, 24.3, "IP₃", ha="left")
+    arrow(ax, (25, 25.8), (25, 22.7)); note(ax, 28.5, 24.3, "IP$_3$", ha="left")
     gene_node(ax, 25, 14.5, "TRPM5", sm, c)
     arrow(ax, (25, 19.3), (25, 16.2)); note(ax, 28.5, 17.8, "Ca$^{2+}$", ha="left")
     gene_node(ax, 15, 8.5, "CALHM1", sm, c); gene_node(ax, 35, 8.5, "CALHM3", sm, c)
@@ -1724,7 +1724,7 @@ def nee_fig4():
         ax = fig.add_subplot(vs[i])
         volcano_panel(ax, k, lab, c, Y, trait, "defg"[i], n_label=6)
         if i == 0:
-            ax.set_ylabel("−log₁₀ p (loss)")
+            ax.set_ylabel("−log$_{10}$ P (loss)")
         if i == 3:
             ax.legend(handles=[plt.Line2D([], [], ls="", marker="o", ms=4.2, mfc="none", mec=INK, mew=0.7,
                                           label="high-confidence core"),
