@@ -1,0 +1,11 @@
+source,collapsed,trait,significant_terms,top
+tissue,False,hypoxia_subterranean,1,retina
+tissue,False,marine,0,
+tissue,True,hypoxia_subterranean,1,retina
+tissue,True,marine,0,
+reactome,False,marine,5,"Sensory Perception, Expression and translocation of olfactory receptors, Olfactory Signaling Pathway, Sensory perception of taste, Sensory perception of sweet, bitter, and umami (glutamate) taste"
+reactome,True,marine,5,"Sensory Perception, Sensory perception of taste, Sensory perception of sweet, bitter, and umami (glutamate) taste, Expression and translocation of olfactory receptors, Olfactory Signaling Pathway"
+go,False,hypoxia_subterranean,7,"lens development in camera-type eye, camera-type eye development, visual perception, sensory perception of light stimulus, eye development"
+go,False,marine,13,"sensory perception of chemical stimulus, nervous system process, sensory perception, detection of stimulus involved in sensory perception, G protein-coupled receptor signaling pathway"
+go,True,hypoxia_subterranean,7,"lens development in camera-type eye, camera-type eye development, visual perception, sensory perception of light stimulus, eye development"
+go,True,marine,12,"sensory perception of chemical stimulus, nervous system process, sensory perception, detection of stimulus involved in sensory perception, G protein-coupled receptor signaling pathway"

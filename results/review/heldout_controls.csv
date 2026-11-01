@@ -1,0 +1,21 @@
+coding,trait,controls,n,any_loss_call,mean_false_loss_calls
+L+UL,marine,development (1-20),20,20% (6-44%),0.25
+L+UL,marine,held out (21-100),80,15% (8-25%),0.188
+L+UL,hypoxia_subterranean,development (1-20),20,10% (1-32%),0.1
+L+UL,hypoxia_subterranean,held out (21-100),80,6% (2-14%),0.075
+L+UL,hypoxia_altitude,development (1-20),20,10% (1-32%),0.1
+L+UL,hypoxia_altitude,held out (21-100),80,21% (13-32%),0.8
+L+UL,hypoxia,development (1-20),20,10% (1-32%),0.1
+L+UL,hypoxia,held out (21-100),80,10% (4-19%),0.125
+L+UL,echolocation,development (1-20),20,15% (3-38%),0.15
+L+UL,echolocation,held out (21-100),80,11% (5-20%),0.238
+L only,marine,development (1-20),20,5% (0-25%),0.05
+L only,marine,held out (21-100),80,6% (2-14%),0.162
+L only,hypoxia_subterranean,development (1-20),20,15% (3-38%),0.15
+L only,hypoxia_subterranean,held out (21-100),80,10% (4-19%),0.175
+L only,hypoxia_altitude,development (1-20),20,20% (6-44%),0.2
+L only,hypoxia_altitude,held out (21-100),80,15% (8-25%),0.238
+L only,hypoxia,development (1-20),20,10% (1-32%),0.1
+L only,hypoxia,held out (21-100),80,15% (8-25%),0.212
+L only,echolocation,development (1-20),20,5% (0-25%),0.05
+L only,echolocation,held out (21-100),80,4% (1-11%),0.038
