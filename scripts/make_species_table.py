@@ -29,7 +29,7 @@ for s, a in sp.itertuples(index=False):
                  **{lab: ("yes" if s in member[lab] else "") for lab in traits.values()}})
 t = pd.DataFrame(rows)
 t.to_csv(RES / "extra" / "supplementary_table3_species.csv", index=False)
-with pd.ExcelWriter(RES / "extra" / "supplementary_table3_species.xlsx") as xw:
+with pd.ExcelWriter(RES / "extra" / "supplementary_table3_species.xlsx", engine="openpyxl") as xw:
     t.to_excel(xw, sheet_name="Supplementary Table 3", index=False, startrow=2)
     ws = xw.sheets["Supplementary Table 3"]
     ws["A1"] = "Supplementary Table 3 | The 115 species, genome assemblies and trait coding"
