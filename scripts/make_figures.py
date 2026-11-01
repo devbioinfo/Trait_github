@@ -1578,7 +1578,7 @@ def calls_panel(ax, d, letter):
     ax.set_xlabel("Genes called (q = 0.1)")
     ax.legend(handles=[Rectangle((0, 0), 1, 1, fc=c, ec=C2 if lay == "lonly" else c, hatch="////" if lay == "lonly" else None,
                                  lw=0.6, label=n + (" (no calls)" if lay == "rate" else "")) for lay, n, c, _ in bars],
-              loc="lower right", fontsize=5.5, borderaxespad=0.1)
+              loc="center right", bbox_to_anchor=(1, 0.56), fontsize=5.5, borderaxespad=0.1)
     grid(ax, "x")
     panel(ax, letter, "Candidate genes (origins)")
 
