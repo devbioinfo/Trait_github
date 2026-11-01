@@ -1,5 +1,7 @@
 # mlconv — calibrated multi-layer detection of convergent molecular evolution
 
+[![Code DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23862248.svg)](https://doi.org/10.5281/zenodo.23862248) Data: [10.5281/zenodo.23858426](https://doi.org/10.5281/zenodo.23858426)
+
 Working name. Prototype for Manuscript 1 of the PhD project *A multi-omics study of
 convergent evolution in selected zoological traits: an in silico approach*.
 
