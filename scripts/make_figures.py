@@ -50,7 +50,14 @@ INK, INK2, MUTED, GRID, PALE = "#0b0b0b", "#52514e", "#8a8984", "#e4e3df", "#f1f
 MM = 1 / 25.4
 MAX_W, MAX_H = 183, 170                       # mm
 MIN_PT = 5.0
-plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 6, "axes.edgecolor": INK2,
+def _first_font(*names):
+    """First installed font of names (Arial on macOS, metric-compatible Liberation on Linux)."""
+    from matplotlib import font_manager
+    have = {f.name for f in font_manager.fontManager.ttflist}
+    return next((n for n in names if n in have), names[-1])
+
+
+plt.rcParams.update({"font.family": _first_font("Arial", "Helvetica", "Liberation Sans", "DejaVu Sans"), "font.size": 6, "axes.edgecolor": INK2,
                      "axes.labelcolor": INK, "xtick.color": INK2, "ytick.color": INK2,
                      "axes.labelsize": 6.5, "xtick.labelsize": 5.5, "ytick.labelsize": 5.5,
                      "axes.spines.top": False, "axes.spines.right": False, "axes.titlesize": 7,
@@ -1255,7 +1262,7 @@ def alignment_panel(ax, gene, windows, species, common, marine_like, colour, let
     ax.set_xlim(-0.6, len(cols) - 0.4)
     ax.set_ylim(len(species) + 0.5, -1.9)
     ax.set_axis_off()
-    mono = dict(family="Liberation Mono", fontsize=fs, ha="center", va="center")
+    mono = dict(family=_first_font("Courier New", "Liberation Mono", "DejaVu Sans Mono"), fontsize=fs, ha="center", va="center")
     by = {s_: g.set_index("ref_pos")["query"] for s_, g in a.groupby("species")}
     for j, c in enumerate(cols):
         if c is None:
