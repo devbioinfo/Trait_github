@@ -617,14 +617,28 @@ def figure3():
                loc="upper center", ncol=3, bbox_to_anchor=(0.5, 0.975))
 
     ax = fig.add_subplot(gs[2, :])
-    yy = np.arange(len(LOSS_NULLS))
-    vals = [v for _, v, _ in LOSS_NULLS]
+    # final null split into the control traits used while it was developed (1-20) and held-out ones (21-100)
+    ho = pd.read_csv(RES / "review" / "heldout_controls.csv")
+    ho = ho[ho.coding == "L+UL"].copy()
+    ho["pct"] = ho.any_loss_call.str.extract(r"^(\d+)%")[0].astype(float)
+    rows = list(LOSS_NULLS[:-1])
+    pts = {}
+    for lab, part in (("Final null, development controls (1\u201320)", "development"),
+                      ("Final null, held-out controls (21\u2013100)", "held out")):
+        g = ho[ho.controls.str.startswith(part)]
+        k = (g.pct * g.n / 100).round().sum()
+        rows.append((lab, round(100 * k / g.n.sum()), round(float((g.mean_false_loss_calls * g.n).sum() / g.n.sum()), 2)))
+        pts[len(rows) - 1] = g.pct.to_numpy()
+    yy = np.arange(len(rows))
+    vals = [v for _, v, _ in rows]
     ax.hlines(yy, 0, vals, color=GRID, lw=3, zorder=1)
-    ax.scatter(vals, yy, s=40, color=[MUTED] * 4 + [C1], edgecolor="white", lw=1, zorder=3)   # final = this method
-    for v, yv, (_, _, mean) in zip(vals, yy, LOSS_NULLS):
-        ax.text(max(v, 10) + 1.5, yv, f"{v}%  ({mean:g} false calls per set)", va="center", fontsize=6.8, color=INK2)
+    ax.scatter(vals, yy, s=40, color=[MUTED] * (len(rows) - 2) + [C1, C1], edgecolor="white", lw=1, zorder=3)
+    for i, v in pts.items():                                     # one point per analysis (five traits)
+        ax.scatter(v, np.full(len(v), i) + np.linspace(-0.18, 0.18, len(v)), s=7, color=INK, lw=0, zorder=4)
+    for v, yv, (_, _, mean) in zip(vals, yy, rows):
+        ax.text(max(v, 22) + 1.5, yv, f"{v}%  ({mean:g} false calls per set)", va="center", fontsize=6.8, color=INK2)
     ax.axvline(10, color=INK2, lw=0.8, ls="--")
-    ax.set_yticks(yy, [n for n, _, _ in LOSS_NULLS])
+    ax.set_yticks(yy, [n for n, _, _ in rows])
     ax.invert_yaxis()
     ax.set_xlim(0, 85)
     ax.set_xlabel("Matched control trait sets with any loss call (%), real genomes")
@@ -761,7 +775,11 @@ def supp2():
     ag = pd.read_csv(RES / "extra" / "adequacy_losses_per_gene.csv")
     asp = pd.read_csv(RES / "extra" / "adequacy_losses_per_species.csv")
     mp = pd.read_csv(RES / "extra" / "loss_model_parameters.csv")
-    fig, axes = plt.subplots(2, 2, figsize=(7.2, 6.0), gridspec_kw=dict(hspace=0.55, wspace=0.4))
+    fig = plt.figure(figsize=(183 * MM, 150 * MM))
+    gsx = fig.add_gridspec(2, 3, hspace=0.55, wspace=0.45)
+    axes = np.array([[fig.add_subplot(gsx[0, 0]), fig.add_subplot(gsx[0, 1])],
+                     [fig.add_subplot(gsx[0, 2]), fig.add_subplot(gsx[1, 0])]])
+    ax_e = fig.add_subplot(gsx[1, 1:3])
     ax = axes[0, 0]
     ax.scatter(q.contig_n50, 100 * q.false_loss_rate, s=12, color=C1, edgecolor="white", lw=0.5)
     ax.set_xscale("log")
@@ -789,7 +807,7 @@ def supp2():
     ax.bar(x - 0.2, ag.observed, width=0.4, color=INK2, label="observed")
     ax.bar(x + 0.2, ag.sim_mean, width=0.4, color=C1, label="simulated (20 genomes)")
     ax.vlines(x + 0.2, ag.sim_low, ag.sim_high, color=INK, lw=0.8)
-    ax.set_xticks(x, labels, rotation=45, ha="right", fontsize=6.5)
+    ax.set_xticks(x, labels, rotation=60, ha="right", fontsize=5.5)
     ax.set_xlabel("Species with the gene lost")
     ax.set_ylabel("Share of testable genes")
     ax.legend(loc="upper right")
@@ -809,6 +827,29 @@ def supp2():
     ax.set_ylabel("Simulated share (%)")
     grid(ax, "both")
     panel(ax, "d", "Losses per species")
+
+    # e: residual misfit (observed minus simulated share of genes lost) by trait group
+    ax = ax_e
+    groups = [("marine", "Marine", C1), ("hypoxia_subterranean", "Subterranean", C3),
+              ("hypoxia_altitude", "High altitude", C4), ("echolocation", "Echolocation", C2)]
+    res = asp.set_index("species")
+    resid = 100 * (res.observed - res.sim_mean)
+    member = {}
+    for k, lab, col in groups:
+        member[lab] = set((RES / f"{k}_toga" / "trait_species.txt").read_text().split())
+    other = set(resid.index) - set().union(*member.values()) - {"Homo_sapiens"}
+    rows_ = [(lab, col, resid.reindex(sorted(member[lab])).dropna()) for _, lab, col in groups]
+    rows_.append(("Other species", MUTED, resid.reindex(sorted(other)).dropna()))
+    for i, (lab, col, v) in enumerate(rows_):
+        jit = np.linspace(-0.22, 0.22, len(v)) if len(v) > 1 else np.zeros(len(v))
+        ax.scatter(v.to_numpy(), i + jit, s=8, color=col, lw=0, zorder=3)
+        ax.vlines(np.median(v), i - 0.32, i + 0.32, color=INK, lw=1.0, zorder=4)
+    ax.axvline(0, color=INK2, lw=0.6, ls="--")
+    ax.set_yticks(range(len(rows_)), [r[0] for r in rows_])
+    ax.invert_yaxis()
+    ax.set_xlabel("Observed \u2212 simulated share\nof genes lost (percentage points)")
+    grid(ax, "x")
+    panel(ax, "e", "Misfit by trait group")
     save(fig, "ExtendedDataFigure10")
 
 
@@ -1122,6 +1163,12 @@ def volcano_panel(ax, key, label, colour, Y, trait, letter, n_label=8):
     call = d.call_loss.astype(bool).to_numpy()
     ax.scatter(diff[~call], y[~call], s=3, color=MUTED, alpha=0.35, lw=0, rasterized=True)
     ax.scatter(diff[call], y[call], s=9, color=colour, lw=0, zorder=3)
+    st1 = pd.read_csv(RES / "extra" / "supplementary_table1_convergent_losses.csv")
+    core = set(st1[st1.high_confidence == True].gene)  # noqa: E712
+    comp = set(", ".join(pd.read_csv(RES / "review" / "composite_null_tier.csv").genes.fillna("")).split(", ")) - {""}
+    for genes, size, lw in ((core, 26, 0.7), (comp, 60, 0.7)):
+        m_ = d.index.isin(list(genes)) & call
+        ax.scatter(diff[m_], y[m_], s=size, facecolors="none", edgecolors=INK, lw=lw, zorder=4)
     if call.any():
         thr = y[call].min()
         ax.axhline(thr, color=INK2, lw=0.6, ls="--")
@@ -1330,25 +1377,33 @@ def gene_status(key, genes, tree, names, Y, trait):
     t = trait[key]
     D = tree.tip_sets()
     orig = origin_nodes(tree, t)
+    raw = pd.read_csv(RES / "toga" / "loss_status_paper.tsv.gz", sep="\t", index_col=0).reindex(columns=names)
     out = {}
     for g in genes:
         y = Y.loc[g].to_numpy() if g in Y.index else np.full(len(names), np.nan)
+        r = raw.loc[g].to_numpy()[t] if g in raw.index else np.array(["M"] * int(t.sum()))
         out[g] = dict(called=bool(d.call_loss.get(g, False)) if g in d.index else False,
                       lost=int(np.nansum(y[t] == 1)), n=int((~np.isnan(y[t])).sum()),
+                      confident=int((r == "L").sum()), uncertain=int((r == "UL").sum()),
                       origins=[bool(np.nansum(y[D[o]] == 1) > 0) for o in orig])
     return out
 
 
 def gene_node(ax, x, y, g, st, colour, w=9.0, h=3.2, fs=5.6):
     s = st[g]
+    ls = "-"
     if s["called"]:
         fc, ec, tc, lw = colour, colour, "white", 0.8
-    elif s["lost"] > 0:
+    elif s.get("confident", s["lost"]) > 0:
         fc, ec, tc, lw = "white", colour, INK, 1.1
-    else:
+    elif s["lost"] > 0:                                  # only uncertain losses in trait species
+        fc, ec, tc, lw, ls = "white", colour, INK, 0.9, (0, (2, 1.2))
+    elif s["n"] > 0:
         fc, ec, tc, lw = PALE, GRID, INK2, 0.6
+    else:                                                # no data in any trait species
+        fc, ec, tc, lw, ls = "white", MUTED, MUTED, 0.6, (0, (1, 1))
     ax.add_patch(FancyBboxPatch((x - w / 2, y - h / 2), w, h, boxstyle="round,pad=0,rounding_size=0.8",
-                                fc=fc, ec=ec, lw=lw, zorder=3))
+                                fc=fc, ec=ec, lw=lw, ls=ls, zorder=3))
     ax.text(x, y + 0.35, g, ha="center", va="center", fontsize=fs, color=tc, zorder=4,
             fontweight="bold" if s["called"] else "normal")
     k = len(s["origins"])
@@ -1383,12 +1438,14 @@ def map_axes(ax, ymax=62):
 
 
 def map_legend(ax, c, y, dots_note):
-    for i, (lab, fc, ec) in enumerate((("convergent loss (q = 0.1)", c, c), ("lost in some trait species", "white", c),
-                                       ("intact in all trait species", PALE, GRID))):
-        lx = 3 + i * 25
-        ax.add_patch(FancyBboxPatch((lx, y - 1.2), 4.5, 2.4, boxstyle="round,pad=0,rounding_size=0.6", fc=fc, ec=ec,
-                                    lw=0.9))
-        ax.text(lx + 5.5, y, lab, fontsize=5.5, color=INK, va="center")
+    for lx, (lab, fc, ec, ls) in zip((1, 19.5, 38.5, 57.5, 78),
+                                     (("candidate (q = 0.1)", c, c, "-"), ("lost in some species", "white", c, "-"),
+                                      ("uncertain loss only", "white", c, (0, (2, 1.2))),
+                                      ("coding sequence intact", PALE, GRID, "-"),
+                                      ("no data", "white", MUTED, (0, (1, 1))))):
+        ax.add_patch(FancyBboxPatch((lx, y - 1.2), 4.0, 2.4, boxstyle="round,pad=0,rounding_size=0.6", fc=fc, ec=ec,
+                                    lw=0.9, ls=ls))
+        ax.text(lx + 5.0, y, lab, fontsize=5.2, color=INK, va="center")
     ax.text(97, y - 3.2, dots_note, fontsize=5.2, color=INK2, va="center", ha="right")
 
 
@@ -1497,22 +1554,26 @@ def trait_summary():
 
 def calls_panel(ax, d, letter):
     y = np.arange(len(TRAITS))
-    h = 0.26
-    for i, (lay, name, col) in enumerate(LAYERS):
-        v = d[d.layer == lay].calls.to_numpy()
-        ax.barh(y + (i - 1) * h, v, height=h - 0.04, color=col, label=name)
-        for yy, vv in zip(y + (i - 1) * h, v):
+    h = 0.21
+    lonly = [json.loads((RES / "audit" / f"Lonly100_{k}" / "summary.json").read_text())["calls_loss"] for k, _ in TRAITS]
+    bars = [(lay, name, col, d[d.layer == lay].calls.to_numpy()) for lay, name, col in LAYERS]
+    bars.insert(2, ("lonly", "Gene loss, confident only", "white", np.array(lonly)))
+    for i, (lay, name, col, v) in enumerate(bars):
+        ax.barh(y + (i - 1.5) * h, v, height=h - 0.03, color=col, label=name,
+                edgecolor=C2 if lay == "lonly" else col, hatch="////" if lay == "lonly" else None, lw=0.6)
+        for yy, vv in zip(y + (i - 1.5) * h, v):
             if vv:
                 ax.text(vv + 0.8, yy, str(vv), va="center", fontsize=5, color=INK2)
     origins = d.drop_duplicates("trait").origins.tolist()
     ax.set_yticks(y, [f"{t} ({o})" for (_, t), o in zip(TRAITS, origins)])
     ax.set_ylim(len(TRAITS) - 0.5, -0.8)
-    ax.set_xlim(0, 60)
+    ax.set_xlim(0, 85)
     ax.set_xlabel("Genes called (q = 0.1)")
-    ax.legend(handles=[Rectangle((0, 0), 1, 1, color=c, label=n + (" (no calls)" if lay == "rate" else ""))
-                       for lay, n, c in LAYERS], loc="lower right")
+    ax.legend(handles=[Rectangle((0, 0), 1, 1, fc=c, ec=C2 if lay == "lonly" else c, hatch="////" if lay == "lonly" else None,
+                                 lw=0.6, label=n + (" (no calls)" if lay == "rate" else "")) for lay, n, c, _ in bars],
+              loc="lower right", fontsize=5.5, borderaxespad=0.1)
     grid(ax, "x")
-    panel(ax, letter, "Convergent genes (origins)")
+    panel(ax, letter, "Candidate genes (origins)")
 
 
 def calibration_panel(ax, d, letter):
@@ -1562,8 +1623,8 @@ def supp_null_pvalues():
         e = -np.log10((np.arange(1, n + 1) - 0.5) / n)
         return np.interp(grid_x, e[::-1], -np.log10(np.clip(p, 1e-300, 1))[::-1], right=np.nan)
 
-    fig = plt.figure(figsize=(178 * MM, 128 * MM))
-    gs = fig.add_gridspec(3, 5, hspace=0.75, wspace=0.34, left=0.075, right=0.975, top=0.92, bottom=0.08)
+    fig = plt.figure(figsize=(178 * MM, 168 * MM))
+    gs = fig.add_gridspec(4, 5, hspace=0.8, wspace=0.34, left=0.075, right=0.975, top=0.92, bottom=0.08)
     for r, (lay, name, col) in enumerate((("loss", "Gene loss", C2), ("rate", "Rate", C1))):
         for j, (key, label) in enumerate(TRAITS):
             ax = fig.add_subplot(gs[r, j])
@@ -1606,6 +1667,29 @@ def supp_null_pvalues():
             panel(ax, "c", "", pad=10)
         if j == 0:
             ax.legend(loc="upper left", fontsize=5, handlelength=1.5, borderaxespad=0.2)
+    # extreme tail: smallest loss P per control trait, against the smallest of m independent uniforms
+    for j, (key, label) in enumerate(TRAITS):
+        ax = fig.add_subplot(gs[3, j])
+        ctrl, real = data[key]["loss"]
+        m = int(np.isfinite(ctrl[0]).sum())
+        mins = -np.log10(np.nanmin(ctrl, axis=1))
+        b = np.linspace(0, 12, 37)
+        ax.hist(mins, bins=b, density=True, color="#d9d7d1", lw=0, label="100 control traits")
+        xs = np.linspace(0, 12, 400)
+        u = 10 ** -xs
+        dens = m * (1 - u) ** (m - 1) * u * np.log(10)          # density of -log10(min of m uniforms)
+        ax.plot(xs, dens, color=INK2, lw=0.8, label="independent uniform")
+        ax.axvline(-np.log10(0.1 / m), color=INK2, lw=0.6, ls="--")
+        ax.axvline(-np.log10(np.nanmin(real)), color=C2, lw=1.0, label="real trait")
+        ax.set_xlim(0, 12)
+        ax.set_xlabel("\u2212log$_{10}$ smallest loss P")
+        ax.set_title(label, fontsize=6, color=INK, pad=3)
+        grid(ax, "y")
+        if j == 0:
+            ax.set_ylabel("Density")
+            panel(ax, "d", "", pad=10)
+        if j == 4:
+            ax.legend(loc="upper right", fontsize=5, handlelength=1.2, borderaxespad=0.2)
     save(fig, "ExtendedDataFigure4")
 
 
@@ -1634,6 +1718,12 @@ def nee_fig4():
         volcano_panel(ax, k, lab, c, Y, trait, "defg"[i], n_label=6)
         if i == 0:
             ax.set_ylabel("−log₁₀ p (loss)")
+        if i == 3:
+            ax.legend(handles=[plt.Line2D([], [], ls="", marker="o", ms=4.2, mfc="none", mec=INK, mew=0.7,
+                                          label="high-confidence core"),
+                               plt.Line2D([], [], ls="", marker="o", ms=6.6, mfc="none", mec=INK, mew=0.7,
+                                          label="passes genome-wide\nsingle-origin test")],
+                      loc="center right", fontsize=5, handletextpad=0.3, borderaxespad=0.2)
     save(fig, "Figure4")
 
 
