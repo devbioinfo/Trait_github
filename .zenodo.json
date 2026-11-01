@@ -33,10 +33,10 @@
   ],
   "related_identifiers": [
     {
-      "relation": "isSupplementTo",
-      "identifier": "https://github.com/devbioinfo/Trait_github",
-      "resource_type": "software",
-      "scheme": "url"
+      "relation": "isSupplementedBy",
+      "identifier": "10.5281/zenodo.23858426",
+      "scheme": "doi",
+      "resource_type": "dataset"
     }
   ],
   "notes": "Silhouettes in scripts/silhouettes.json: game-icons.net, CC BY 3.0. RERconverge (GPL-3.0) is not included; scripts/rerconverge_no_ggtree.patch is applied to commit 682ac34 by scripts/install_rerconverge.sh."
