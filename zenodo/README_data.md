@@ -1,7 +1,6 @@
 # Data for "Genome scans with empirical calibration identify recurrent gene loss in marine and subterranean mammals"
 
-Derived data behind every result and figure of the article. Code: [DOI of the software
-deposit] (GitHub: github.com/devbioinfo/Trait_github). Licence: CC BY 4.0.
+Derived data behind every result and figure of the article. Code: [DOI of the software deposit] (GitHub: github.com/devbioinfo/Trait_github). Licence: CC BY 4.0.
 
 Inputs are public and are not redistributed here: TOGA orthology, loss classifications,
 inactivating mutations and codon alignments for the human hg38 reference
