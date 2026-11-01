@@ -3,8 +3,7 @@
 Inputs: results/toga/species_paper.tsv (species, assembly identifier used by TOGA),
 results/toga/assemblies_paper.tsv (common name, contig and scaffold N50), results/<trait>_toga/trait_species.txt.
 Output: results/extra/supplementary_table3_species.xlsx (and .csv).
-Assembly identifiers are those of the TOGA/Zoonomia resources; public accessions (GCA_...) are not in these inputs and
-must be added from NCBI before submission (column left empty).
+results/toga/assembly_accessions.tsv (NCBI accession or other source per assembly, from the TOGA overview table).
 """
 from pathlib import Path
 
@@ -14,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "results"
 sp = pd.read_csv(RES / "toga" / "species_paper.tsv", sep="\t", header=None, names=["species", "assembly"])
 asm = pd.read_csv(RES / "toga" / "assemblies_paper.tsv", sep="\t").set_index("species")
+acc = pd.read_csv(RES / "toga" / "assembly_accessions.tsv", sep="\t", comment="#").set_index("species")["accession_or_source"]
 traits = {"marine": "Marine", "hypoxia_subterranean": "Subterranean", "hypoxia_altitude": "High altitude",
           "echolocation": "Echolocation"}
 member = {lab: set((RES / f"{k}_toga" / "trait_species.txt").read_text().split()) for k, lab in traits.items()}
@@ -23,7 +23,7 @@ for s, a in sp.itertuples(index=False):
     rows.append({"Scientific name": s.replace("_", " "),
                  "Common name": (r["Common name"] if r is not None else ("human" if s == "Homo_sapiens" else "")),
                  "Assembly identifier (TOGA/Zoonomia)": a,
-                 "Public accession (to be added)": "",
+                 "NCBI accession or source": acc.get(s, ""),
                  "Contig N50 (bp)": (int(r["contig N50 (bp)"]) if r is not None and pd.notna(r["contig N50 (bp)"]) else None),
                  "Scaffold N50 (bp)": (int(r["scaffold N50 (bp)"]) if r is not None and pd.notna(r["scaffold N50 (bp)"]) else None),
                  **{lab: ("yes" if s in member[lab] else "") for lab in traits.values()}})

@@ -1,0 +1,117 @@
+# Source: https://genome.senckenberg.de/download/TOGA/human_hg38_reference/overview.table.tsv (downloaded 2026-11-01); human reference added by hand.
+species	assembly	accession_or_source
+Homo_sapiens	REFERENCE	GCF_000001405.26 (GRCh38/hg38)
+Rousettus_aegyptiacus	HLrouAeg4	GCA_014176215.1
+Myotis_myotis	HLmyoMyo6	GCA_014108235.1
+Rhinolophus_sinicus	HLrhiSin1	GCA_001888835.1
+Miniopterus_schreibersii	HLminSch1	GCA_004026525.1
+Macroglossus_sobrinus	HLmacSob1	GCA_004027375.1
+Artibeus_jamaicensis	HLartJam2	GCA_014825515.1
+Anoura_caudifer	HLanoCau1	GCA_004027475.1
+Hipposideros_galeritus	HLhipGal1	GCA_004027415.1
+Noctilio_leporinus	HLnocLep1	GCA_004026585.1
+Hipposideros_armiger	HLhipArm1	GCA_001890085.1
+Pteropus_alecto	pteAle1	GCF_000325575.1
+Eptesicus_fuscus	HLeptFus2	DNA Zoo Consortium
+Craseonycteris_thonglongyai	HLcraTho1	GCA_004027555.1
+Mormoops_blainvillei	HLmorBla1	GCA_004026545.1
+Pteropus_vampyrus	HLpteVam2	GCA_000151845.2
+Miniopterus_natalensis	HLminNat1	GCA_001595765.1
+Tadarida_brasiliensis	HLtadBra1	GCA_004025005.1
+Micronycteris_hirsuta	HLmicHir1	GCA_004026765.1
+Pipistrellus_pipistrellus	HLpipPip2	GCA_903992545.1
+Myotis_brandtii	myoBra1	GCF_000412655.1
+Eschrichtius_robustus	HLescRob2	DNA Zoo Consortium
+Eubalaena_japonica	HLeubJap1	GCA_004363455.1
+Orcinus_orca	HLorcOrc2	DNA Zoo Consortium
+Tursiops_truncatus	HLturTru4	GCA_011762595.1
+Delphinapterus_leucas	HLdelLeu2	GCA_002288925.3
+Monodon_monoceros	HLmonMon1	GCA_005190385.2
+Phocoena_phocoena	HLphoPho1	GCA_004363495.1
+Lipotes_vexillifer	lipVex1	GCF_000442215.1
+Mesoplodon_bidens	HLmesBid1	GCA_004027085.1
+Kogia_breviceps	HLkogBre1	GCA_004363705.1
+Inia_geoffrensis	HLlniGeo1	GCA_004363515.1
+Balaenoptera_bonaerensis	HLbalBon1	GCA_000978805.1
+Hippopotamus_amphibius	HLhipAmp3	GCA_004027065.2
+Bos_taurus	bosTau9	GCF_002263795.1
+Capra_aegagrus	HLcapAeg1	GCA_000765075.1
+Ammotragus_lervia	HLammLer1	GCA_002201775.1
+Bubalus_bubalis	HLbubBub2	GCA_003121395.1
+Moschus_moschiferus	HLmosMos1	GCA_004024705.2
+Capra_hircus	HLcapHir2	GCA_001704415.1
+Odocoileus_virginianus	HLodoVir2	DNA Zoo Consortium
+Antilocapra_americana	HLantAme1	GCA_007570785.1
+Catagonus_wagneri	HLcatWag1	GCA_004024745.2
+Sus_scrofa	susScr11	GCF_000003025.6
+Camelus_ferus	HLcamFer3	GCA_009834535.1
+Camelus_dromedarius	HLcamDro2	GCA_000803125.3
+Hyaena_hyaena	HLhyaHya1	GCA_003009895.1
+Felis_catus	felCat9	GCF_000181335.3
+Acinonyx_jubatus	HLaciJub2	GCF_003709585.1
+Odobenus_rosmarus	HLodoRos1	DNA Zoo Consortium
+Canis_lupus_familiaris	canFam5	GCA_005444595.1
+Pteronura_brasiliensis	HLpteBra2	DNA Zoo Consortium
+Panthera_pardus	HLpanPar1	GCA_001857705.1
+Zalophus_californianus	HLzalCal1	GCA_009762305.1
+Cryptoprocta_ferox	HLcryFer2	DNA Zoo Consortium
+Panthera_onca	HLpanOnc1	GCA_004023805.1
+Canis_lupus_dingo	HLcanLupDin1	GCA_003254725.1
+Neomonachus_schauinslandi	neoSch1	GCF_002201575.1
+Tapirus_indicus	HLtapInd1	GCA_004024905.1
+Diceros_bicornis	HLdicBic1	GCA_004027315.2
+Equus_caballus	equCab3	GCF_002863925.1
+Tapirus_terrestris	HLtapTer1	GCA_004025025.1
+Manis_pentadactyla	HLmanPen2	GCA_014570555.1
+Manis_javanica	HLmanJav2	GCA_014570535.1
+Scalopus_aquaticus	HLscaAqu1	GCA_004024925.1
+Erinaceus_europaeus	eriEur2	GCF_000296755.1
+Condylura_cristata	conCri1	GCF_000260355.1
+Daubentonia_madagascariensis	HLdauMad1	GCA_004027145.1
+Prolemur_simus	HLproSim1	GCA_003258685.1
+Pongo_abelii	ponAbe3	GCF_002880775.1
+Lemur_catta	HLlemCat1	GCA_004024665.1
+Pan_troglodytes	panTro6	GCF_002880755.1
+Eulemur_flavifrons	HLeulFla1	DNA Zoo Consortium
+Otolemur_garnettii	otoGar3	GCF_000181295.1
+Eulemur_macaco	eulMac1	GCA_001262655.1
+Mus_musculus	mm10	GCF_000001635.20
+Rattus_norvegicus	HLratNor7	GCA_015227675.1
+Cricetulus_griseus	HLcriGri3	GCA_003668045.1
+Mus_pahari	HLmusPah1	GCA_900095145.2
+Mus_caroli	HLmusCar1	GCA_900094665.2
+Mus_spretus	HLmusSpr1	GCA_001624865.1
+Psammomys_obesus	HLpsaObe1	GCA_002215935.2
+Microtus_ochrogaster	micOch1	GCF_000317375.1
+Ctenodactylus_gundi	HLcteGun1	GCA_004027205.1
+Onychomys_torridus	HLonyTor1	GCA_903995425.1
+Xerus_inauris	HLxerIna1	GCA_004024805.1
+Dinomys_branickii	HLdinBra1	GCA_004027595.1
+Ochotona_princeps	ochPri3	GCF_000292845.1
+Oryctolagus_cuniculus	oryCun2	GCF_000003625.2
+Lepus_americanus	HLlepAme1	GCA_004026855.1
+Tupaia_chinensis	tupChi1	GCF_000334495.1
+Galeopterus_variegatus	HLgalVar2	GCA_004027255.2
+Chrysochloris_asiatica	chrAsi1	GCF_000296735.1
+Procavia_capensis	HLproCap3	GCA_004026925.2
+Trichechus_manatus	HLtriManLat2	DNA Zoo Consortium
+Loxodonta_africana	HLloxAfr4	ftp://ftp.broadinstitute.org/pub/assemblies/mammals/elephant/loxAfr4/
+Elephantulus_edwardii	eleEdw1	GCF_000299155.1
+Heterohyrax_brucei	HLhetBru1	GCA_004026845.1
+Choloepus_didactylus	HLchoDid2	GCF_015220235.1
+Choloepus_hoffmanni	HLchoHof3	DNA Zoo Consortium
+Myrmecophaga_tridactyla	HLmyrTri1	GCA_004026745.1
+Mirounga_angustirostris	HLmirAng2	DNA Zoo Consortium
+Leptonychotes_weddellii	lepWed1	GCF_000349705.1
+Castor_canadensis	HLcasCan3	DNA Zoo Consortium
+Ondatra_zibethicus	HLondZib1	GCA_004026605.1
+Heterocephalus_glaber	HLhetGla3	DNA Zoo Consortium
+Fukomys_damarensis	HLfukDam2	GCA_012274545.1
+Ctenomys_sociabilis	HLcteSoc1	GCA_004027165.1
+Nannospalax_galili	nanGal1	GCF_000622305.1
+Ellobius_talpinus	HLellTal1	GCA_001685095.1
+Bos_mutus	HLbosMut2	GCA_007646595.3
+Pantholops_hodgsonii	panHod1	GCF_000400835.1
+Vicugna_pacos	vicPac2	GCF_000164845.1
+Thryonomys_swinderianus	HLthrSwi1	GCA_004025085.1
+Mellivora_capensis	HLmelCap1	GCA_004024625.1

@@ -1,116 +1,116 @@
-Scientific name,Common name,Assembly identifier (TOGA/Zoonomia),Public accession (to be added),Contig N50 (bp),Scaffold N50 (bp),Marine,Subterranean,High altitude,Echolocation
-Homo sapiens,human,REFERENCE,,,,,,,
-Rousettus aegyptiacus,Egyptian rousette,HLrouAeg4,,21756723.0,113811795.0,,,,
-Myotis myotis,greater mouse-eared bat,HLmyoMyo6,,11795106.0,94448911.0,,,,yes
-Rhinolophus sinicus,Chinese rufous horseshoe bat,HLrhiSin1,,37803.0,3754400.0,,,,yes
-Miniopterus schreibersii,Schreibers long-fingered bat,HLminSch1,,82539.0,108707.0,,,,yes
-Macroglossus sobrinus,Long-tongued fruit bat,HLmacSob1,,338389.0,453401.0,,,,
-Artibeus jamaicensis,Jamaican fruit-eating bat,HLartJam2,,374929.0,2589479.0,,,,yes
-Anoura caudifer,tailed tailless bat,HLanoCau1,,143417.0,185021.0,,,,yes
-Hipposideros galeritus,Cantors roundleaf bat,HLhipGal1,,33704.0,37985.0,,,,yes
-Noctilio leporinus,greater bulldog bat,HLnocLep1,,135651.0,191494.0,,,,yes
-Hipposideros armiger,great roundleaf bat,HLhipArm1,,39863.0,2328177.0,,,,yes
-Pteropus alecto,black flying fox,pteAle1,,31841.0,15954802.0,,,,
-Eptesicus fuscus,big brown bat,HLeptFus2,,18728.0,102216854.0,,,,yes
-Craseonycteris thonglongyai,hog-nosed bat,HLcraTho1,,23218.0,25762.0,,,,yes
-Mormoops blainvillei,Antillean ghost-faced bat,HLmorBla1,,142682.0,156292.0,,,,yes
-Pteropus vampyrus,large flying fox,HLpteVam2,,21866.0,5954017.0,,,,
-Miniopterus natalensis,Natal long-fingered bat,HLminNat1,,29777.0,4315193.0,,,,yes
-Tadarida brasiliensis,Brazilian free-tailed bat,HLtadBra1,,22617.0,24311.0,,,,yes
-Micronycteris hirsuta,hairy big-eared bat,HLmicHir1,,62961.0,68868.0,,,,yes
-Pipistrellus pipistrellus,common pipistrelle,HLpipPip2,,4446752.0,94929986.0,,,,yes
-Myotis brandtii,Brandts myotis bat,myoBra1,,23289.0,3225832.0,,,,yes
-Eschrichtius robustus,grey whale,HLescRob2,,66695.0,103007579.0,yes,,,
-Eubalaena japonica,North Pacific right whale,HLeubJap1,,34866.0,39813.0,yes,,,
-Orcinus orca,killer whale,HLorcOrc2,,66136.0,110405485.0,yes,,,yes
-Tursiops truncatus,common bottlenose dolphin,HLturTru4,,9729386.0,108430135.0,yes,,,yes
-Delphinapterus leucas,beluga whale,HLdelLeu2,,196689.0,31183418.0,yes,,,yes
-Monodon monoceros,narwhal,HLmonMon1,,255327.0,107566389.0,yes,,,yes
-Phocoena phocoena,harbor porpoise,HLphoPho1,,89111.0,115969.0,yes,,,yes
-Lipotes vexillifer,Yangtze River dolphin,lipVex1,,31902.0,2419148.0,yes,,,yes
-Mesoplodon bidens,Sowerbys beaked whale,HLmesBid1,,28959.0,33532.0,yes,,,yes
-Kogia breviceps,pygmy sperm whale,HLkogBre1,,26201.0,28812.0,yes,,,yes
-Inia geoffrensis,boutu,HLlniGeo1,,24570.0,26707.0,yes,,,yes
-Balaenoptera bonaerensis,Antarctic minke whale,HLbalBon1,,8410.0,20082.0,yes,,,
-Hippopotamus amphibius,hippopotamus,HLhipAmp3,,76609.0,4444377.0,,,,
-Bos taurus,cattle,bosTau9,,25896116.0,103308737.0,,,,
-Capra aegagrus,wild goat,HLcapAeg1,,51868.0,1750063.0,,,,
-Ammotragus lervia,aoudad,HLammLer1,,52017.0,1301762.0,,,,
-Bubalus bubalis,water buffalo,HLbubBub2,,22441509.0,117219835.0,,,,
-Moschus moschiferus,Siberian musk deer,HLmosMos1,,34785.0,11728851.0,,,,
-Capra hircus,goat,HLcapHir2,,26244591.0,87277232.0,,,,
-Odocoileus virginianus,white-tailed deer,HLodoVir2,,114510.0,69881861.0,,,,
-Antilocapra americana,pronghorn,HLantAme1,,220431.0,18739554.0,,,,
-Catagonus wagneri,Chacoan peccary,HLcatWag1,,65965.0,19204659.0,,,,
-Sus scrofa,pig,susScr11,,48231277.0,88231837.0,,,,
-Camelus ferus,Wild Bactrian camel,HLcamFer3,,5365398.0,76025729.0,,,,
-Camelus dromedarius,Arabian camel,HLcamDro2,,236391.0,70369702.0,,,,
-Hyaena hyaena,striped hyena,HLhyaHya1,,311202.0,2001327.0,,,,
-Felis catus,domestic cat,felCat9,,41915695.0,83967707.0,,,,
-Acinonyx jubatus,cheetah,HLaciJub2,,179924.0,48500042.0,,,,
-Odobenus rosmarus,walrus,HLodoRos1,,85053.0,154349455.0,yes,,,
-Canis lupus familiaris,dog,canFam5,,4722218.0,64204256.0,,,,
-Pteronura brasiliensis,giant otter,HLpteBra2,,97105.0,133376390.0,,,,
-Panthera pardus,leopard,HLpanPar1,,20993.0,21701857.0,,,,
-Zalophus californianus,California sea lion,HLzalCal1,,60554208.0,146931682.0,yes,,,
-Cryptoprocta ferox,fossa,HLcryFer2,,123817.0,107277967.0,,,,
-Panthera onca,jaguar,HLpanOnc1,,62836.0,116574.0,,,,
-Canis lupus dingo,dingo,HLcanLupDin1,,5390770.0,34446301.0,,,,
-Neomonachus schauinslandi,Hawaiian monk seal,neoSch1,,112698.0,29518589.0,yes,,,
-Tapirus indicus,Asiatic tapir,HLtapInd1,,225792.0,308930.0,,,,
-Diceros bicornis,black rhinoceros,HLdicBic1,,91002.0,14664201.0,,,,
-Equus caballus,horse,equCab3,,1502753.0,87230776.0,,,,
-Tapirus terrestris,Brazilian tapir,HLtapTer1,,164193.0,186384.0,,,,
-Manis pentadactyla,Chinese pangolin,HLmanPen2,,151937.0,7836868.0,,,,
-Manis javanica,Malayan pangolin,HLmanJav2,,83964.0,13854118.0,,,,
-Scalopus aquaticus,eastern mole,HLscaAqu1,,72421.0,94879.0,,yes,,
-Erinaceus europaeus,western European hedgehog,eriEur2,,21359.0,3264618.0,,,,
-Condylura cristata,star-nosed mole,conCri1,,46163.0,55520359.0,,yes,,
-Daubentonia madagascariensis,aye-aye,HLdauMad1,,298834.0,379919.0,,,,
-Prolemur simus,greater bamboo lemur,HLproSim1,,47757.0,2710671.0,,,,
-Pongo abelii,Sumatran orangutan,ponAbe3,,11074009.0,98475126.0,,,,
-Lemur catta,Ring-tailed lemur,HLlemCat1,,158439.0,215715.0,,,,
-Pan troglodytes,chimpanzee,panTro6,,12268567.0,53103722.0,,,,
-Eulemur flavifrons,Sclaters lemur,HLeulFla1,,26840.0,156661540.0,,,,
-Otolemur garnettii,small-eared galago,otoGar3,,27100.0,13852661.0,,,,
-Eulemur macaco,black lemur,eulMac1,,20038.0,405987.0,,,,
-Mus musculus,house mouse,mm10,,32273079.0,52589046.0,,,,
-Rattus norvegicus,Norway rat,HLratNor7,,29198295.0,135012528.0,,,,
-Cricetulus griseus,Chinese hamster,HLcriGri3,,2098530.0,19581774.0,,,,
-Mus pahari,shrew mouse,HLmusPah1,,29465.0,111406228.0,,,,
-Mus caroli,Ryukyu mouse,HLmusCar1,,30916.0,122627250.0,,,,
-Mus spretus,western wild mouse,HLmusSpr1,,17887.0,131945496.0,,,,
-Psammomys obesus,fat sand rat,HLpsaObe1,,76389.0,10472398.0,,,,
-Microtus ochrogaster,prairie vole,micOch1,,21250.0,17270019.0,,,,
-Ctenodactylus gundi,northern gundi,HLcteGun1,,218543.0,354548.0,,,,
-Onychomys torridus,southern grasshopper mouse,HLonyTor1,,2276141.0,112723509.0,,,,
-Xerus inauris,South African ground squirrel,HLxerIna1,,64054.0,83865.0,,,,
-Dinomys branickii,pacarana,HLdinBra1,,64805.0,77918.0,,,,
-Ochotona princeps,American pika,ochPri3,,42347.0,26863993.0,,,yes,
-Oryctolagus cuniculus,rabbit,oryCun2,,64648.0,35972871.0,,,,
-Lepus americanus,snowshoe hare,HLlepAme1,,15057.0,16725.0,,,,
-Tupaia chinensis,Chinese tree shrew,tupChi1,,25938.0,3670124.0,,,,
-Galeopterus variegatus,Sunda flying lemur,HLgalVar2,,34666.0,7885395.0,,,,
-Chrysochloris asiatica,Cape golden mole,chrAsi1,,19631.0,13470186.0,,yes,,
-Procavia capensis,Cape rock hyrax,HLproCap3,,38095.0,9071062.0,,,,
-Trichechus manatus,West Indian manatee,HLtriManLat2,,33836.0,143724118.0,yes,,,
-Loxodonta africana,African savanna elephant,HLloxAfr4,,65481.0,94531929.0,,,,
-Elephantulus edwardii,Cape elephant shrew,eleEdw1,,24219.0,15011382.0,,,,
-Heterohyrax brucei,yellow-spotted hyrax,HLhetBru1,,62841.0,67904.0,,,,
-Choloepus didactylus,southern two-toed sloth,HLchoDid2,,20994632.0,146178362.0,,,,
-Choloepus hoffmanni,Hoffmanns two-fingered sloth,HLchoHof3,,62424.0,140950122.0,,,,
-Myrmecophaga tridactyla,giant anteater,HLmyrTri1,,36434.0,41255.0,,,,
-Mirounga angustirostris,Northern elephant seal,HLmirAng2,,75715.0,139676048.0,yes,,,
-Leptonychotes weddellii,Weddell seal,lepWed1,,23664.0,904031.0,yes,,,
-Castor canadensis,American beaver,HLcasCan3,,266367.0,136673807.0,,,,
-Ondatra zibethicus,muskrat,HLondZib1,,73746.0,89093.0,,,,
-Heterocephalus glaber,naked mole-rat,HLhetGla3,,40135.0,100148522.0,,yes,,
-Fukomys damarensis,Damara mole-rat,HLfukDam2,,44756.0,62586000.0,,yes,,
-Ctenomys sociabilis,social tuco-tuco,HLcteSoc1,,37562.0,49073.0,,yes,,
-Nannospalax galili,Upper Galilee mountains blind mole rat,nanGal1,,30353.0,3618479.0,,yes,,
-Ellobius talpinus,Northern mole vole,HLellTal1,,8259.0,15246.0,,yes,,
-Bos mutus,wild yak,HLbosMut2,,90625.0,16589160.0,,,yes,
-Pantholops hodgsonii,chiru,panHod1,,18674.0,2772860.0,,,yes,
-Vicugna pacos,alpaca,vicPac2,,24617.0,7263804.0,,,yes,
-Thryonomys swinderianus,Greater cane rat,HLthrSwi1,,18955.0,21523.0,,,,
-Mellivora capensis,ratel,HLmelCap1,,50213.0,59143.0,,,,
+Scientific name,Common name,Assembly identifier (TOGA/Zoonomia),NCBI accession or source,Contig N50 (bp),Scaffold N50 (bp),Marine,Subterranean,High altitude,Echolocation
+Homo sapiens,human,REFERENCE,GCF_000001405.26 (GRCh38/hg38),,,,,,
+Rousettus aegyptiacus,Egyptian rousette,HLrouAeg4,GCA_014176215.1,21756723.0,113811795.0,,,,
+Myotis myotis,greater mouse-eared bat,HLmyoMyo6,GCA_014108235.1,11795106.0,94448911.0,,,,yes
+Rhinolophus sinicus,Chinese rufous horseshoe bat,HLrhiSin1,GCA_001888835.1,37803.0,3754400.0,,,,yes
+Miniopterus schreibersii,Schreibers long-fingered bat,HLminSch1,GCA_004026525.1,82539.0,108707.0,,,,yes
+Macroglossus sobrinus,Long-tongued fruit bat,HLmacSob1,GCA_004027375.1,338389.0,453401.0,,,,
+Artibeus jamaicensis,Jamaican fruit-eating bat,HLartJam2,GCA_014825515.1,374929.0,2589479.0,,,,yes
+Anoura caudifer,tailed tailless bat,HLanoCau1,GCA_004027475.1,143417.0,185021.0,,,,yes
+Hipposideros galeritus,Cantors roundleaf bat,HLhipGal1,GCA_004027415.1,33704.0,37985.0,,,,yes
+Noctilio leporinus,greater bulldog bat,HLnocLep1,GCA_004026585.1,135651.0,191494.0,,,,yes
+Hipposideros armiger,great roundleaf bat,HLhipArm1,GCA_001890085.1,39863.0,2328177.0,,,,yes
+Pteropus alecto,black flying fox,pteAle1,GCF_000325575.1,31841.0,15954802.0,,,,
+Eptesicus fuscus,big brown bat,HLeptFus2,DNA Zoo Consortium,18728.0,102216854.0,,,,yes
+Craseonycteris thonglongyai,hog-nosed bat,HLcraTho1,GCA_004027555.1,23218.0,25762.0,,,,yes
+Mormoops blainvillei,Antillean ghost-faced bat,HLmorBla1,GCA_004026545.1,142682.0,156292.0,,,,yes
+Pteropus vampyrus,large flying fox,HLpteVam2,GCA_000151845.2,21866.0,5954017.0,,,,
+Miniopterus natalensis,Natal long-fingered bat,HLminNat1,GCA_001595765.1,29777.0,4315193.0,,,,yes
+Tadarida brasiliensis,Brazilian free-tailed bat,HLtadBra1,GCA_004025005.1,22617.0,24311.0,,,,yes
+Micronycteris hirsuta,hairy big-eared bat,HLmicHir1,GCA_004026765.1,62961.0,68868.0,,,,yes
+Pipistrellus pipistrellus,common pipistrelle,HLpipPip2,GCA_903992545.1,4446752.0,94929986.0,,,,yes
+Myotis brandtii,Brandts myotis bat,myoBra1,GCF_000412655.1,23289.0,3225832.0,,,,yes
+Eschrichtius robustus,grey whale,HLescRob2,DNA Zoo Consortium,66695.0,103007579.0,yes,,,
+Eubalaena japonica,North Pacific right whale,HLeubJap1,GCA_004363455.1,34866.0,39813.0,yes,,,
+Orcinus orca,killer whale,HLorcOrc2,DNA Zoo Consortium,66136.0,110405485.0,yes,,,yes
+Tursiops truncatus,common bottlenose dolphin,HLturTru4,GCA_011762595.1,9729386.0,108430135.0,yes,,,yes
+Delphinapterus leucas,beluga whale,HLdelLeu2,GCA_002288925.3,196689.0,31183418.0,yes,,,yes
+Monodon monoceros,narwhal,HLmonMon1,GCA_005190385.2,255327.0,107566389.0,yes,,,yes
+Phocoena phocoena,harbor porpoise,HLphoPho1,GCA_004363495.1,89111.0,115969.0,yes,,,yes
+Lipotes vexillifer,Yangtze River dolphin,lipVex1,GCF_000442215.1,31902.0,2419148.0,yes,,,yes
+Mesoplodon bidens,Sowerbys beaked whale,HLmesBid1,GCA_004027085.1,28959.0,33532.0,yes,,,yes
+Kogia breviceps,pygmy sperm whale,HLkogBre1,GCA_004363705.1,26201.0,28812.0,yes,,,yes
+Inia geoffrensis,boutu,HLlniGeo1,GCA_004363515.1,24570.0,26707.0,yes,,,yes
+Balaenoptera bonaerensis,Antarctic minke whale,HLbalBon1,GCA_000978805.1,8410.0,20082.0,yes,,,
+Hippopotamus amphibius,hippopotamus,HLhipAmp3,GCA_004027065.2,76609.0,4444377.0,,,,
+Bos taurus,cattle,bosTau9,GCF_002263795.1,25896116.0,103308737.0,,,,
+Capra aegagrus,wild goat,HLcapAeg1,GCA_000765075.1,51868.0,1750063.0,,,,
+Ammotragus lervia,aoudad,HLammLer1,GCA_002201775.1,52017.0,1301762.0,,,,
+Bubalus bubalis,water buffalo,HLbubBub2,GCA_003121395.1,22441509.0,117219835.0,,,,
+Moschus moschiferus,Siberian musk deer,HLmosMos1,GCA_004024705.2,34785.0,11728851.0,,,,
+Capra hircus,goat,HLcapHir2,GCA_001704415.1,26244591.0,87277232.0,,,,
+Odocoileus virginianus,white-tailed deer,HLodoVir2,DNA Zoo Consortium,114510.0,69881861.0,,,,
+Antilocapra americana,pronghorn,HLantAme1,GCA_007570785.1,220431.0,18739554.0,,,,
+Catagonus wagneri,Chacoan peccary,HLcatWag1,GCA_004024745.2,65965.0,19204659.0,,,,
+Sus scrofa,pig,susScr11,GCF_000003025.6,48231277.0,88231837.0,,,,
+Camelus ferus,Wild Bactrian camel,HLcamFer3,GCA_009834535.1,5365398.0,76025729.0,,,,
+Camelus dromedarius,Arabian camel,HLcamDro2,GCA_000803125.3,236391.0,70369702.0,,,,
+Hyaena hyaena,striped hyena,HLhyaHya1,GCA_003009895.1,311202.0,2001327.0,,,,
+Felis catus,domestic cat,felCat9,GCF_000181335.3,41915695.0,83967707.0,,,,
+Acinonyx jubatus,cheetah,HLaciJub2,GCF_003709585.1,179924.0,48500042.0,,,,
+Odobenus rosmarus,walrus,HLodoRos1,DNA Zoo Consortium,85053.0,154349455.0,yes,,,
+Canis lupus familiaris,dog,canFam5,GCA_005444595.1,4722218.0,64204256.0,,,,
+Pteronura brasiliensis,giant otter,HLpteBra2,DNA Zoo Consortium,97105.0,133376390.0,,,,
+Panthera pardus,leopard,HLpanPar1,GCA_001857705.1,20993.0,21701857.0,,,,
+Zalophus californianus,California sea lion,HLzalCal1,GCA_009762305.1,60554208.0,146931682.0,yes,,,
+Cryptoprocta ferox,fossa,HLcryFer2,DNA Zoo Consortium,123817.0,107277967.0,,,,
+Panthera onca,jaguar,HLpanOnc1,GCA_004023805.1,62836.0,116574.0,,,,
+Canis lupus dingo,dingo,HLcanLupDin1,GCA_003254725.1,5390770.0,34446301.0,,,,
+Neomonachus schauinslandi,Hawaiian monk seal,neoSch1,GCF_002201575.1,112698.0,29518589.0,yes,,,
+Tapirus indicus,Asiatic tapir,HLtapInd1,GCA_004024905.1,225792.0,308930.0,,,,
+Diceros bicornis,black rhinoceros,HLdicBic1,GCA_004027315.2,91002.0,14664201.0,,,,
+Equus caballus,horse,equCab3,GCF_002863925.1,1502753.0,87230776.0,,,,
+Tapirus terrestris,Brazilian tapir,HLtapTer1,GCA_004025025.1,164193.0,186384.0,,,,
+Manis pentadactyla,Chinese pangolin,HLmanPen2,GCA_014570555.1,151937.0,7836868.0,,,,
+Manis javanica,Malayan pangolin,HLmanJav2,GCA_014570535.1,83964.0,13854118.0,,,,
+Scalopus aquaticus,eastern mole,HLscaAqu1,GCA_004024925.1,72421.0,94879.0,,yes,,
+Erinaceus europaeus,western European hedgehog,eriEur2,GCF_000296755.1,21359.0,3264618.0,,,,
+Condylura cristata,star-nosed mole,conCri1,GCF_000260355.1,46163.0,55520359.0,,yes,,
+Daubentonia madagascariensis,aye-aye,HLdauMad1,GCA_004027145.1,298834.0,379919.0,,,,
+Prolemur simus,greater bamboo lemur,HLproSim1,GCA_003258685.1,47757.0,2710671.0,,,,
+Pongo abelii,Sumatran orangutan,ponAbe3,GCF_002880775.1,11074009.0,98475126.0,,,,
+Lemur catta,Ring-tailed lemur,HLlemCat1,GCA_004024665.1,158439.0,215715.0,,,,
+Pan troglodytes,chimpanzee,panTro6,GCF_002880755.1,12268567.0,53103722.0,,,,
+Eulemur flavifrons,Sclaters lemur,HLeulFla1,DNA Zoo Consortium,26840.0,156661540.0,,,,
+Otolemur garnettii,small-eared galago,otoGar3,GCF_000181295.1,27100.0,13852661.0,,,,
+Eulemur macaco,black lemur,eulMac1,GCA_001262655.1,20038.0,405987.0,,,,
+Mus musculus,house mouse,mm10,GCF_000001635.20,32273079.0,52589046.0,,,,
+Rattus norvegicus,Norway rat,HLratNor7,GCA_015227675.1,29198295.0,135012528.0,,,,
+Cricetulus griseus,Chinese hamster,HLcriGri3,GCA_003668045.1,2098530.0,19581774.0,,,,
+Mus pahari,shrew mouse,HLmusPah1,GCA_900095145.2,29465.0,111406228.0,,,,
+Mus caroli,Ryukyu mouse,HLmusCar1,GCA_900094665.2,30916.0,122627250.0,,,,
+Mus spretus,western wild mouse,HLmusSpr1,GCA_001624865.1,17887.0,131945496.0,,,,
+Psammomys obesus,fat sand rat,HLpsaObe1,GCA_002215935.2,76389.0,10472398.0,,,,
+Microtus ochrogaster,prairie vole,micOch1,GCF_000317375.1,21250.0,17270019.0,,,,
+Ctenodactylus gundi,northern gundi,HLcteGun1,GCA_004027205.1,218543.0,354548.0,,,,
+Onychomys torridus,southern grasshopper mouse,HLonyTor1,GCA_903995425.1,2276141.0,112723509.0,,,,
+Xerus inauris,South African ground squirrel,HLxerIna1,GCA_004024805.1,64054.0,83865.0,,,,
+Dinomys branickii,pacarana,HLdinBra1,GCA_004027595.1,64805.0,77918.0,,,,
+Ochotona princeps,American pika,ochPri3,GCF_000292845.1,42347.0,26863993.0,,,yes,
+Oryctolagus cuniculus,rabbit,oryCun2,GCF_000003625.2,64648.0,35972871.0,,,,
+Lepus americanus,snowshoe hare,HLlepAme1,GCA_004026855.1,15057.0,16725.0,,,,
+Tupaia chinensis,Chinese tree shrew,tupChi1,GCF_000334495.1,25938.0,3670124.0,,,,
+Galeopterus variegatus,Sunda flying lemur,HLgalVar2,GCA_004027255.2,34666.0,7885395.0,,,,
+Chrysochloris asiatica,Cape golden mole,chrAsi1,GCF_000296735.1,19631.0,13470186.0,,yes,,
+Procavia capensis,Cape rock hyrax,HLproCap3,GCA_004026925.2,38095.0,9071062.0,,,,
+Trichechus manatus,West Indian manatee,HLtriManLat2,DNA Zoo Consortium,33836.0,143724118.0,yes,,,
+Loxodonta africana,African savanna elephant,HLloxAfr4,ftp://ftp.broadinstitute.org/pub/assemblies/mammals/elephant/loxAfr4/,65481.0,94531929.0,,,,
+Elephantulus edwardii,Cape elephant shrew,eleEdw1,GCF_000299155.1,24219.0,15011382.0,,,,
+Heterohyrax brucei,yellow-spotted hyrax,HLhetBru1,GCA_004026845.1,62841.0,67904.0,,,,
+Choloepus didactylus,southern two-toed sloth,HLchoDid2,GCF_015220235.1,20994632.0,146178362.0,,,,
+Choloepus hoffmanni,Hoffmanns two-fingered sloth,HLchoHof3,DNA Zoo Consortium,62424.0,140950122.0,,,,
+Myrmecophaga tridactyla,giant anteater,HLmyrTri1,GCA_004026745.1,36434.0,41255.0,,,,
+Mirounga angustirostris,Northern elephant seal,HLmirAng2,DNA Zoo Consortium,75715.0,139676048.0,yes,,,
+Leptonychotes weddellii,Weddell seal,lepWed1,GCF_000349705.1,23664.0,904031.0,yes,,,
+Castor canadensis,American beaver,HLcasCan3,DNA Zoo Consortium,266367.0,136673807.0,,,,
+Ondatra zibethicus,muskrat,HLondZib1,GCA_004026605.1,73746.0,89093.0,,,,
+Heterocephalus glaber,naked mole-rat,HLhetGla3,DNA Zoo Consortium,40135.0,100148522.0,,yes,,
+Fukomys damarensis,Damara mole-rat,HLfukDam2,GCA_012274545.1,44756.0,62586000.0,,yes,,
+Ctenomys sociabilis,social tuco-tuco,HLcteSoc1,GCA_004027165.1,37562.0,49073.0,,yes,,
+Nannospalax galili,Upper Galilee mountains blind mole rat,nanGal1,GCF_000622305.1,30353.0,3618479.0,,yes,,
+Ellobius talpinus,Northern mole vole,HLellTal1,GCA_001685095.1,8259.0,15246.0,,yes,,
+Bos mutus,wild yak,HLbosMut2,GCA_007646595.3,90625.0,16589160.0,,,yes,
+Pantholops hodgsonii,chiru,panHod1,GCF_000400835.1,18674.0,2772860.0,,,yes,
+Vicugna pacos,alpaca,vicPac2,GCF_000164845.1,24617.0,7263804.0,,,yes,
+Thryonomys swinderianus,Greater cane rat,HLthrSwi1,GCA_004025085.1,18955.0,21523.0,,,,
+Mellivora capensis,ratel,HLmelCap1,GCA_004024625.1,50213.0,59143.0,,,,
