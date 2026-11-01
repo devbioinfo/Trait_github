@@ -47,7 +47,8 @@ def lookup(r):
     if r["doi"]:
         return get("https://api.crossref.org/works/" + urllib.parse.quote(r["doi"]))["message"]
     q = urllib.parse.urlencode({"query.bibliographic": f'{r["title"]} {r["journal"]} {r["year"]}',
-                                "query.author": r["first"], "rows": 1})
+                                "query.author": r["first"], "rows": 1,
+                                "filter": "type:journal-article"})
     items = get("https://api.crossref.org/works?" + q)["message"]["items"]
     return items[0] if items else None
 
