@@ -1,0 +1,127 @@
+15703 genes, 115 species, 226 branches; missing branch values 5.2%
+hypoxia_subterranean: 8 species, 6 origins, 10 foreground branches; kept out of controls: Ochotona_princeps, Ondatra_zibethicus, Castor_canadensis, Vicugna_pacos, Hippopotamus_amphibius, Eubalaena_japonica, Eschrichtius_robustus, Balaenoptera_bonaerensis, Kogia_breviceps, Mesoplodon_bidens, Inia_geoffrensis, Lipotes_vexillifer, Phocoena_phocoena, Delphinapterus_leucas, Monodon_monoceros, Tursiops_truncatus, Orcinus_orca, Bos_mutus, Pantholops_hodgsonii, Pteronura_brasiliensis, Zalophus_californianus, Odobenus_rosmarus, Neomonachus_schauinslandi, Leptonychotes_weddellii, Mirounga_angustirostris, Trichechus_manatus
+control trait sets: 0 for checking
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+loss model: fragility kappa > 1 for 74% of genes
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+intersection-union check: 20 calls, 18 with p < 0.01 whichever single origin is held at its observed states
+loss layer: 5438 testable genes (lost = L)
+hypoxia_subterranean: 0 genes at q = 0.1 [rate]
+hypoxia_subterranean: 17 genes at q = 0.1 [loss]
+hypoxia_subterranean: 2 genes at q = 0.1 [final]
+(1807s)
+
+Genes of interest:
+symbol  p_rate  p_loss  p_final  z_rate_nucleotide  z_rate_protein  z_selection_proxy  z_loss  n_lost_trait  n_lost_other signature
+   HBB     NaN   0.123    0.123                NaN             NaN                NaN  0.0324             0             8          
+ EGLN1     NaN   0.154    0.154                NaN             NaN                NaN -0.0753             0             3          
+  HBA2     NaN   0.402    0.402                NaN             NaN                NaN -0.0911             1            13          
+  CYGB   0.511     NaN    0.511              0.862           0.519             0.0688     NaN           NaN           NaN          
+  HBA1     NaN   0.563    0.563                NaN             NaN                NaN  -0.331             2            25          
+ EPAS1   0.652     NaN    0.652              0.117          0.0364             -0.136     NaN           NaN           NaN          
+ HIF1A   0.813     NaN    0.813              -1.16          -0.233              0.493     NaN           NaN           NaN          
+   NGB   0.928   0.911     0.92             -0.505           -1.58             -0.984   -1.42             0             3          
+
+Top 30:
+ symbol   p_rate   p_loss  p_final  z_rate_nucleotide  z_rate_protein  z_selection_proxy  z_loss  n_lost_trait  n_lost_other signature
+   LGSN        1 3.84e-06 7.69e-06                NaN             NaN                NaN    9.64             5             0      loss
+ B3GNT4        1 5.29e-06 1.06e-05                NaN             NaN                NaN    7.41             7             5      loss
+TPD52L3        1 1.26e-05 2.53e-05                NaN             NaN                NaN    5.99             7             8          
+   LCTL        1 3.48e-05 6.98e-05             -0.309           0.431              0.528    7.45             4             0          
+   DLG4 7.95e-05      NaN 7.95e-05             -0.887             3.9               4.79     NaN           NaN           NaN          
+  BFSP1     0.95 4.27e-05 8.54e-05             -0.639          -0.314             -0.114       8             4             0          
+  CRYGS    0.399 4.39e-05 8.78e-05              0.805            2.19               1.85    7.96             4             0          
+ANKRD33        1 4.58e-05  9.2e-05              0.308          -0.376             -0.732     7.1             5             1          
+ DDIT4L    0.529 5.68e-05 0.000114              0.584           0.981             0.0519    8.04             4             0          
+  IMPG1        1 6.17e-05 0.000124               1.01           0.779              0.177    6.84             5             3          
+  PPM1N      NaN 0.000144 0.000144                NaN             NaN                NaN     4.7             7            13          
+   RSKR        1 8.61e-05 0.000174             0.0102           0.663                1.3    7.27             4             0          
+ CRYBB1        1 9.22e-05 0.000186              -0.62         -0.0411             0.0806    7.07             5             2          
+LACTBL1        1  0.00012 0.000244                NaN             NaN                NaN    6.13             4             1          
+   ROM1        1 0.000124 0.000252              0.509          0.0563             -0.965    6.36             4             1          
+ CRYBA1        1 0.000127 0.000258              -1.45           -2.58               -2.2    6.92             4             0          
+   RPS8 0.000375      NaN 0.000375              -0.54            4.14               4.06     NaN           NaN           NaN          
+  GJA10      NaN  0.00044  0.00044                NaN             NaN                NaN    4.37             6            12          
+SERINC4      NaN 0.000455 0.000455                NaN             NaN                NaN    3.37             7            16          
+  ABCA4    0.394 0.000233 0.000466              0.103           0.869                2.3    6.65             3             0          
+ ZNF862        1  0.00025 0.000513             -0.856          -0.808             -0.864       5             5            11          
+  LBHD1      NaN 0.000517 0.000517                NaN             NaN                NaN    3.95             6            10          
+    RRH 0.000658      NaN 0.000658               4.29            4.02               2.15     NaN           NaN           NaN          
+   GNB3 0.000751      NaN 0.000751              0.387            4.17               3.95     NaN           NaN           NaN          
+ ZNF114      NaN 0.000878 0.000878                NaN             NaN                NaN    3.09             4            16          
+  WDFY1 0.000987      NaN 0.000987                1.7            4.01               3.01     NaN           NaN           NaN          
+   CRB1      NaN 0.000995 0.000995                NaN             NaN                NaN    4.03             6            18          
+ PRSS56    0.402 0.000574  0.00115                2.3            1.54               0.12    5.11             4             2          
+   ERI3  0.00133      NaN  0.00133              0.708            3.82               4.27     NaN           NaN           NaN          
+    NRL  0.00135      NaN  0.00135               2.11            3.75               3.37     NaN           NaN           NaN          
+{
+  "intact_states": "I,PI,UL",
+  "false_intact": 0.001,
+  "loss_cap": 0.5,
+  "cov_shrink": 0.0,
+  "trait": "hypoxia_subterranean",
+  "genes": 15703,
+  "species": 115,
+  "trait_species": 8,
+  "origins": 6,
+  "loss_states": "L",
+  "loss_null": "sim",
+  "control_sets": 0,
+  "loss_sims": 100,
+  "tail_n": 250,
+  "loss_test": "iut",
+  "match_losses": false,
+  "calls_rate": 0,
+  "calls_loss": 17,
+  "calls_final": 2,
+  "calls_loss_iut_p_below_0.01": 18,
+  "calls_loss_iut_p_below_0.001": 16
+}

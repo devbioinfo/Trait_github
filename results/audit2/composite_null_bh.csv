@@ -1,0 +1,5 @@
+analysis,loss_tested,global_calls,iut_replicates,discoveries,genes,discoveries_at_mc_upper95,first_bh_threshold
+"Subterranean, L+UL (primary)",12851,15,1000000,2,"LGSN, CRYGS",1,7.781495603454984e-06
+"Subterranean, L only (UL missing)",5425,26,200000,9,"LGSN, LCTL, RSKR, CRYGS, BFSP1, CRYBA1, ABCA4, DDIT4L, ROM1",8,1.8433179723502307e-05
+"Subterranean, UL as intact",5438,17,200000,8,"LGSN, CRYGS, RSKR, LCTL, BFSP1, DDIT4L, CRYBA1, ABCA4",8,1.8389113644722325e-05
+"Marine, L+UL (primary)",12851,48,100000,0,,0,7.781495603454984e-06

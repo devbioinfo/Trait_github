@@ -1,0 +1,205 @@
+marine: 18 species, 3 origins, 12851 testable genes; 300 genes x 2000 replicates per scenario
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+k = 0: 300 genes; share p <= 0.05: 0.017, <= 0.01: 0.000
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+k = 1: 300 genes; share p <= 0.05: 0.043, <= 0.01: 0.020
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: divide by zero encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+k = 2: 300 genes; share p <= 0.05: 0.713, <= 0.01: 0.397
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+/Users/devbioinfo/Trait_github/mlconv/gls.py:48: RuntimeWarning: invalid value encountered in divide
+  t = b[:, 1] / np.sqrt(s2 * inv[1, 1])
+k = 3: 300 genes; share p <= 0.05: 0.907, <= 0.01: 0.810
+                       genes  share_p_le_0_05  share_p_le_0_01  median_p
+scenario_true_origins                                                   
+0                        300         0.016667         0.000000  0.509745
+1                        300         0.043333         0.020000  0.445527
+2                        300         0.713333         0.396667  0.014993
+3                        300         0.906667         0.810000  0.000500

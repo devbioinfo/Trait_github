@@ -1,0 +1,98 @@
+/Users/devbioinfo/Trait_github/scripts/audit2_summary.py:53: DtypeWarning: Columns (32: signature) have mixed types. Specify dtype option on import or set low_memory=False.
+  g = pd.read_csv(f)
+/Users/devbioinfo/Trait_github/scripts/audit2_summary.py:53: DtypeWarning: Columns (32: signature) have mixed types. Specify dtype option on import or set low_memory=False.
+  g = pd.read_csv(f)
+/Users/devbioinfo/Trait_github/scripts/audit2_summary.py:53: DtypeWarning: Columns (32: signature) have mixed types. Specify dtype option on import or set low_memory=False.
+  g = pd.read_csv(f)
+# Second-audit verification
+
+## Conservative composite-null BH (untested genes p = 1)
+
+| analysis | loss_tested | global_calls | iut_replicates | discoveries | genes | discoveries_at_mc_upper95 | first_bh_threshold |
+|---|---|---|---|---|---|---|---|
+| Subterranean, L+UL (primary) | 12851 | 15 | 1000000 | 2 | LGSN, CRYGS | 1 | 7.78e-06 |
+| Subterranean, L only (UL missing) | 5425 | 26 | 200000 | 9 | LGSN, LCTL, RSKR, CRYGS, BFSP1, CRYBA1, ABCA4, DDIT4L, ROM1 | 8 | 1.84e-05 |
+| Subterranean, UL as intact | 5438 | 17 | 200000 | 8 | LGSN, CRYGS, RSKR, LCTL, BFSP1, DDIT4L, CRYBA1, ABCA4 | 8 | 1.84e-05 |
+| Marine, L+UL (primary) | 12851 | 48 | 100000 | 0 |  | 0 | 7.78e-06 |
+
+## Evidence table
+
+| index | ABCA4 | BFSP1 | CABP5 | CRYBA1 | CRYGS | DDIT4L | LACTBL1 | LCTL | LGSN | MPP4 | RGS11 | ROM1 | RSKR | TPD52L3 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| primary_global_p | 0.0171 | 2.1e-05 | 2.47e-05 | 0.000292 | 3.86e-06 | 0.000498 | 1.7e-05 | 1.32e-06 | 5.04e-09 | 1.58e-06 | 1.35e-05 | 8.93e-06 | 3.91e-06 | 8.34e-05 |
+| primary_global_call | False | True | True | False | True | False | True | True | True | True | True | True | True | True |
+| primary_iut_p_mc | nan | 0.000319 | 0.000108 | nan | 1.3e-05 | nan | 0.00192 | 0.00012 | 1e-06 | 3.7e-05 | 0.00366 | 0.000121 | 0.000322 | 0.00474 |
+| primary_iut_p_upper95 | nan | 0.000349 | 0.000126 | nan | 1.94e-05 | nan | 0.002 | 0.000139 | 3e-06 | 4.75e-05 | 0.00376 | 0.00014 | 0.000352 | 0.00486 |
+| primary_exceedances_by_origin |  | 0;7;0;42;0;318 | 0;15;0;0;1;107 |  | 0;0;0;1;0;12 |  | 18;671;86;1278;1924;1700 | 0;24;1;74;108;119 | 0;0;0;0;0;0 | 0;2;1;9;36;6 | 110;1638;301;3204;3663;3052 | 0;4;0;11;3;120 | 1;44;2;149;262;321 | 2495;3065;3520;3620;4744;3909 |
+| primary_replicates | nan | 1e+06 | 1e+06 | nan | 1e+06 | nan | 1e+06 | 1e+06 | 1e+06 | 1e+06 | 1e+06 | 1e+06 | 1e+06 | 1e+06 |
+| primary_bh_rank | nan | 7 | 4 | nan | 2 | nan | 10 | 5 | 1 | 3 | 12 | 6 | 8 | 13 |
+| primary_bh_adjusted | 1 | 0.517 | 0.259 | 1 | 0.0835 | 1 | 1 | 0.259 | 0.0129 | 0.158 | 1 | 0.259 | 0.517 | 1 |
+| primary_discovery | False | False | False | False | True | False | False | False | True | False | False | False | False | False |
+| primary_trait_species_lost | Fukomys_damarensis;Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Chrysochloris_asiatica | Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Ctenomys_sociabilis;Scalopus_aquaticus | Heterocephalus_glaber;Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Nannospalax_galili;Ellobius_talpinus;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Ctenomys_sociabilis;Nannospalax_galili;Ellobius_talpinus;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica |
+| Lonly_global_p | 0.000122 | 2.21e-05 | 0.00123 | 0.000118 | 2.14e-05 | 7.78e-05 | 1.02e-05 | 5.21e-07 | 3.27e-08 | 4.86e-05 | 0.000356 | 5.45e-05 | 5.76e-07 | 2.39e-07 |
+| Lonly_global_call | True | True | False | True | True | True | True | True | True | True | True | True | True | True |
+| Lonly_iut_p_mc | 4.5e-05 | 1.5e-05 | 0.00916 | 1.5e-05 | 1e-05 | 8.5e-05 | 0.000515 | 5e-06 | 5e-06 | 0.00337 | 0.0117 | 0.000155 | 5e-06 | 0.00067 |
+| Lonly_iut_p_upper95 | 7.22e-05 | 3.15e-05 | 0.00952 | 3.15e-05 | 2.37e-05 | 0.000122 | 0.000601 | 1.5e-05 | 1.5e-05 | 0.00359 | 0.0121 | 0.000203 | 1.5e-05 | 0.000768 |
+| Lonly_exceedances_by_origin | 0;8;0;5;0;0 | 0;0;0;0;0;2 | 4;9;5;9;564;1832 | 0;1;0;2;0;0 | 0;0;0;0;0;1 | 2;0;1;1;3;16 | 1;77;1;102;74;53 | 0;0;0;0;0;0 | 0;0;0;0;0;0 | 0;11;0;0;674;0 | 117;2338;212;2236;258;1857 | 0;5;0;30;3;3 | 0;0;0;0;0;0 | 56;109;25;123;112;133 |
+| Lonly_replicates | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 |
+| Lonly_bh_rank | 7 | 5 | nan | 6 | 4 | 8 | 12 | 2 | 1 | 20 | 24 | 9 | 3 | 14 |
+| Lonly_bh_adjusted | 0.0349 | 0.0136 | 1 | 0.0136 | 0.0136 | 0.0576 | 0.219 | 0.00904 | 0.00904 | 0.915 | 1 | 0.0934 | 0.00904 | 0.26 |
+| Lonly_discovery | True | True | False | True | True | True | False | True | True | False | False | True | True | False |
+| Lonly_trait_species_lost | Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Scalopus_aquaticus | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Chrysochloris_asiatica | Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Ctenomys_sociabilis;Scalopus_aquaticus | Heterocephalus_glaber;Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Nannospalax_galili | Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Chrysochloris_asiatica | Heterocephalus_glaber;Nannospalax_galili;Condylura_cristata;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Ctenomys_sociabilis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica |
+| ULintact_global_p | 0.000233 | 4.27e-05 | 0.00231 | 0.000127 | 4.39e-05 | 5.68e-05 | 0.00012 | 3.48e-05 | 3.84e-06 | 0.000785 | 0.00196 | 0.000124 | 8.61e-05 | 1.26e-05 |
+| ULintact_global_call | True | True | False | True | True | True | True | True | True | False | False | True | True | True |
+| ULintact_iut_p_mc | 3.5e-05 | 1e-05 | 0.0105 | 2e-05 | 5e-06 | 2e-05 | 0.00093 | 1e-05 | 5e-06 | 0.00713 | 0.0188 | 0.00063 | 5e-06 | 0.000665 |
+| ULintact_iut_p_upper95 | 5.92e-05 | 2.37e-05 | 0.0108 | 3.88e-05 | 1.5e-05 | 3.88e-05 | 0.00104 | 2.37e-05 | 1.5e-05 | 0.00744 | 0.0193 | 0.000725 | 1.5e-05 | 0.000763 |
+| ULintact_exceedances_by_origin | 0;4;0;6;0;1 | 0;0;0;0;0;1 | 5;5;5;6;599;2092 | 0;2;0;3;0;0 | 0;0;0;0;0;0 | 0;0;0;0;3;0 | 2;136;11;185;129;55 | 0;0;0;1;0;0 | 0;0;0;0;0;0 | 0;212;0;3;1425;3 | 156;3410;222;3763;196;2739 | 1;94;1;125;5;7 | 0;0;0;0;0;0 | 62;67;9;63;132;84 |
+| ULintact_replicates | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 | 2e+05 |
+| ULintact_bh_rank | 8 | 5 | nan | 6 | 3 | 7 | 16 | 4 | 1 | nan | nan | 14 | 2 | 15 |
+| ULintact_bh_adjusted | 0.0238 | 0.0109 | 1 | 0.0155 | 0.00906 | 0.0155 | 0.316 | 0.0109 | 0.00906 | 1 | 1 | 0.241 | 0.00906 | 0.241 |
+| ULintact_discovery | True | True | False | True | True | True | False | True | True | False | False | False | True | False |
+| ULintact_trait_species_lost | Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Scalopus_aquaticus | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Chrysochloris_asiatica | Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Ctenomys_sociabilis;Scalopus_aquaticus | Heterocephalus_glaber;Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Nannospalax_galili | Nannospalax_galili;Scalopus_aquaticus;Chrysochloris_asiatica | Fukomys_damarensis;Nannospalax_galili;Condylura_cristata;Chrysochloris_asiatica | Heterocephalus_glaber;Nannospalax_galili;Condylura_cristata;Chrysochloris_asiatica | Heterocephalus_glaber;Fukomys_damarensis;Ctenomys_sociabilis;Nannospalax_galili;Condylura_cristata;Scalopus_aquaticus;Chrysochloris_asiatica |
+| origins_with_loss | nan | 3 | 3 | nan | 3 | nan | 4 | 4 | 4 | 5 | 4 | 4 | 4 | 6 |
+| origins_lesion_supported | nan | 3 | 3 | nan | 3 | nan | 4 | 4 | 4 | 5 | 4 | 4 | 4 | 6 |
+| species_L | nan | 4 | 2 | nan | 4 | nan | 4 | 4 | 5 | 3 | 3 | 4 | 4 | 7 |
+| species_UL | nan | 0 | 2 | nan | 0 | nan | 2 | 2 | 1 | 3 | 2 | 1 | 2 | 1 |
+| lesions_stop | nan | 11 | 2 | nan | 3 | nan | 10 | 8 | 15 | 54 | 9 | 3 | 10 | 17 |
+| lesions_frameshift | nan | 27 | 1 | nan | 7 | nan | 23 | 15 | 33 | 88 | 25 | 15 | 12 | 62 |
+| lesions_splice | nan | 6 | 0 | nan | 0 | nan | 4 | 3 | 4 | 21 | 15 | 1 | 3 | 6 |
+| lesions_deleted_exon | nan | 6 | 1 | nan | 0 | nan | 2 | 1 | 0 | 36 | 7 | 0 | 0 | 8 |
+
+## Marine BH sequence (15 smallest)
+
+| symbol | p_prime | rank | p_adj | bh_threshold | passes_at_its_rank |
+|---|---|---|---|---|---|
+| PON1 | 4e-05 | 1 | 0.514 | 7.78e-06 | False |
+| GNAT3 | 8e-05 | 2 | 0.514 | 1.56e-05 | False |
+| OR2T1 | 0.00068 | 3 | 1 | 2.33e-05 | False |
+| OR5H15 | 0.0013 | 4 | 1 | 3.11e-05 | False |
+| ANKRD23 | 0.0014 | 5 | 1 | 3.89e-05 | False |
+| TAS2R1 | 0.00167 | 6 | 1 | 4.67e-05 | False |
+| KLK8 | 0.00178 | 7 | 1 | 5.45e-05 | False |
+| MYBPHL | 0.0018 | 8 | 1 | 6.23e-05 | False |
+| TAAR5 | 0.00184 | 9 | 1 | 7e-05 | False |
+| ACSM4 | 0.00189 | 10 | 1 | 7.78e-05 | False |
+| MYH13 | 0.00193 | 11 | 1 | 8.56e-05 | False |
+| HTRA4 | 0.00206 | 12 | 1 | 9.34e-05 | False |
+| OR51I1 | 0.00211 | 13 | 1 | 0.000101 | False |
+| SULT6B1 | 0.0022 | 14 | 1 | 0.000109 | False |
+| OR5M9 | 0.00222 | 15 | 1 | 0.000117 | False |
+
+## Simulation check: composite_null_sim_hypoxia_subterranean_summary
+
+| scenario_true_origins | genes | share_p_le_0_05 | share_p_le_0_01 | median_p |
+|---|---|---|---|---|
+| 0 | 300 | 0.0167 | 0.00333 | 0.543 |
+| 1 | 300 | 0.04 | 0.01 | 0.468 |
+| 2 | 300 | 0.327 | 0.0967 | 0.102 |
+| 3 | 300 | 0.64 | 0.347 | 0.0235 |
+
+## Simulation check: composite_null_sim_marine_summary
+
+| scenario_true_origins | genes | share_p_le_0_05 | share_p_le_0_01 | median_p |
+|---|---|---|---|---|
+| 0 | 300 | 0.0167 | 0 | 0.51 |
+| 1 | 300 | 0.0433 | 0.02 | 0.446 |
+| 2 | 300 | 0.713 | 0.397 | 0.015 |
+| 3 | 300 | 0.907 | 0.81 | 0.0005 |
+

@@ -1,0 +1,14 @@
+02 Nov 03:35  started  iut_primary_subterranean
+02 Nov 05:48  finished iut_primary_subterranean
+02 Nov 05:48  started  iut_Lonly_subterranean
+02 Nov 06:32  finished iut_Lonly_subterranean
+02 Nov 06:32  started  iut_ULintact_subterranean
+02 Nov 07:03  finished iut_ULintact_subterranean
+02 Nov 07:03  started  iut_primary_marine
+02 Nov 07:16  finished iut_primary_marine
+02 Nov 07:16  started  sim_subterranean
+02 Nov 07:33  finished sim_subterranean
+02 Nov 07:33  started  sim_marine
+02 Nov 07:38  finished sim_marine
+02 Nov 07:38  started  summary
+02 Nov 07:38  finished summary
