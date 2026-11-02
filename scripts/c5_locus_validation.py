@@ -3,7 +3,7 @@
 For each species that lost LGSN or CRYGS, the assembly TOGA used and, where they exist, independently produced
 assemblies of the same species are searched with miniprot (protein-to-genome alignment, an annotation method
 independent of TOGA) for the human LGSN and CRYGS proteins and for the three nearest protein-coding neighbours on
-each side of each gene in the human genome. For the best hit of each target protein the script reports:
+each side of each gene in the human genome (within 2 Mb). For the best hit of each target protein the script reports:
   - stop codons and frameshifts, found by translating the aligned coding segments (residue = human protein position);
   - protein coverage, identity, N content of the locus and the soft-masked (repeat) fraction of the coding bases;
   - the second-best hit elsewhere in the genome (paralogy check);
@@ -61,10 +61,18 @@ CODON = {a + b + c: aa for (a, b, c), aa in zip(
 COMP = str.maketrans("ACGTNacgtn", "TGCANtgcan")
 
 
-def rest(path):
-    req = urllib.request.Request("https://rest.ensembl.org" + path, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.load(r)
+def rest(path, tries=5):
+    """Ensembl REST GET with retries (the service returns occasional 5xx errors under load)."""
+    import time
+    for k in range(tries):
+        try:
+            req = urllib.request.Request("https://rest.ensembl.org" + path, headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                return json.load(r)
+        except Exception as e:  # noqa: BLE001
+            if k == tries - 1:
+                raise RuntimeError(f"Ensembl REST failed for {path}: {e}")
+            time.sleep(5 * (k + 1))
 
 
 def human_proteins():
@@ -78,7 +86,8 @@ def human_proteins():
         t = rest(f"/lookup/id/{tx}")
         recs.append((f"{gene}|target|{tx}", rest(f"/sequence/id/{tx}?type=protein")["seq"]))
         chrom, start, end = t["seq_region_name"], t["start"], t["end"]
-        genes = rest(f"/overlap/region/human/{chrom}:{max(1, start - 3_000_000)}-{end + 3_000_000}"
+        # Ensembl limits region queries to 5 Mb, so the window is +-2 Mb around the gene
+        genes = rest(f"/overlap/region/human/{chrom}:{max(1, start - 2_000_000)}-{end + 2_000_000}"
                      f"?feature=gene;biotype=protein_coding")
         genes = [g for g in genes if g.get("external_name") not in (gene, None)]
         up = sorted([g for g in genes if g["end"] < start], key=lambda g: start - g["end"])[:3]
