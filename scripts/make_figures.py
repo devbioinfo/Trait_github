@@ -1172,7 +1172,14 @@ def volcano_panel(ax, key, label, colour, Y, trait, letter, n_label=8):
     ax.scatter(diff[call], y[call], s=9, color=colour, lw=0, zorder=3)
     st1 = pd.read_csv(RES / "extra" / "supplementary_table1_convergent_losses.csv")
     core = set(st1[st1.high_confidence == True].gene)  # noqa: E712
-    comp = set(", ".join(pd.read_csv(RES / "review" / "composite_null_tier.csv").genes.fillna("")).split(", ")) - {""}
+    # genes significant after the conservative genome-wide correction of the single-origin check, primary coding
+    a2 = RES / "audit2" / "composite_null_bh.csv"
+    if a2.exists():
+        t = pd.read_csv(a2)
+        t = t[t.analysis.str.contains("primary")]
+    else:
+        t = pd.read_csv(RES / "review" / "composite_null_tier.csv")
+    comp = set(", ".join(t.genes.fillna("")).split(", ")) - {""}
     for genes, size, lw in ((core, 26, 0.7), (comp, 60, 0.7)):
         m_ = d.index.isin(list(genes)) & call
         ax.scatter(diff[m_], y[m_], s=size, facecolors="none", edgecolors=INK, lw=lw, zorder=4)
