@@ -1,0 +1,58 @@
+species,gene,assembly,role,kind,position,in_toga
+Heterocephalus_glaber,LGSN,HetGla_female_1.0,"short-read assembly (Broad 2012); TOGA used the DNA Zoo Hi-C version HLhetGla3, presumably built on it",stop,121,True
+Heterocephalus_glaber,LGSN,mHetGla1.1.hap1,independent long-read assembly (2026),stop,121,True
+Heterocephalus_glaber,LGSN,H.glaber_assembly_v1.0,independent long-read assembly (2025),stop,121,True
+Nannospalax_galili,LGSN,S.galili_v1.0,assembly used by TOGA (no independent assembly exists),stop,89,True
+Nannospalax_galili,LGSN,S.galili_v1.0,assembly used by TOGA (no independent assembly exists),stop,121,True
+Nannospalax_galili,LGSN,S.galili_v1.0,assembly used by TOGA (no independent assembly exists),stop,139,True
+Nannospalax_galili,LGSN,S.galili_v1.0,assembly used by TOGA (no independent assembly exists),frameshift,313,True
+Nannospalax_galili,LGSN,S.galili_v1.0,assembly used by TOGA (no independent assembly exists),frameshift,383,True
+Nannospalax_galili,CRYGS,S.galili_v1.0,assembly used by TOGA (no independent assembly exists),frameshift,23,True
+Nannospalax_galili,CRYGS,S.galili_v1.0,assembly used by TOGA (no independent assembly exists),frameshift,108,True
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),frameshift,33,False
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),stop,111,False
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),frameshift,177,True
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),frameshift,188,True
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),frameshift,214,True
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),stop,286,True
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),frameshift,303,True
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),stop,319,True
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),stop,342,True
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),frameshift,366,False
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),frameshift,382,False
+Condylura_cristata,LGSN,ConCri1.0,assembly used by TOGA (no independent assembly exists),stop,466,False
+Scalopus_aquaticus,LGSN,ScaAqu_v1_BIUU,assembly used by TOGA (no independent assembly exists),frameshift,189,True
+Scalopus_aquaticus,LGSN,ScaAqu_v1_BIUU,assembly used by TOGA (no independent assembly exists),frameshift,214,True
+Scalopus_aquaticus,LGSN,ScaAqu_v1_BIUU,assembly used by TOGA (no independent assembly exists),stop,286,True
+Scalopus_aquaticus,LGSN,ScaAqu_v1_BIUU,assembly used by TOGA (no independent assembly exists),frameshift,342,True
+Scalopus_aquaticus,LGSN,ScaAqu_v1_BIUU,assembly used by TOGA (no independent assembly exists),stop,366,True
+Scalopus_aquaticus,LGSN,ScaAqu_v1_BIUU,assembly used by TOGA (no independent assembly exists),frameshift,376,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,frameshift,27,False
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,stop,78,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,frameshift,105,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,frameshift,151,False
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,frameshift,160,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,frameshift,188,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,stop,196,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,stop,237,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,frameshift,257,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,frameshift,381,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,stop,414,True
+Chrysochloris_asiatica,LGSN,ChrAsi1.0,assembly used by TOGA,stop,482,False
+Chrysochloris_asiatica,CRYGS,ChrAsi1.0,assembly used by TOGA,frameshift,49,True
+Chrysochloris_asiatica,CRYGS,ChrAsi1.0,assembly used by TOGA,stop,66,True
+Chrysochloris_asiatica,CRYGS,ChrAsi1.0,assembly used by TOGA,stop,137,True
+Chrysochloris_asiatica,CRYGS,ChrAsi1.0,assembly used by TOGA,frameshift,164,False
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),frameshift,151,False
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),frameshift,160,True
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),frameshift,188,True
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),stop,196,True
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),stop,237,True
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),frameshift,257,True
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),frameshift,381,True
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),stop,414,True
+Chrysochloris_asiatica,LGSN,ChrAsi_v1_BIUU,independent assembly (Broad 2019),stop,482,False
+Chrysochloris_asiatica,CRYGS,ChrAsi_v1_BIUU,independent assembly (Broad 2019),frameshift,49,True
+Chrysochloris_asiatica,CRYGS,ChrAsi_v1_BIUU,independent assembly (Broad 2019),stop,66,True
+Chrysochloris_asiatica,CRYGS,ChrAsi_v1_BIUU,independent assembly (Broad 2019),stop,137,True
+Chrysochloris_asiatica,CRYGS,ChrAsi_v1_BIUU,independent assembly (Broad 2019),frameshift,164,False

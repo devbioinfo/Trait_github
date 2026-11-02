@@ -1,0 +1,4 @@
+0.18-r281
+python 3.11.16
+pandas 3.0.6
+Ensembl REST (GRCh38) proteins: data/c5/human_proteins.faa

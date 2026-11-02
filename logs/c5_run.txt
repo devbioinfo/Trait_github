@@ -1,0 +1,118 @@
+[M::mp_ntseq_read@8.706*1.00] read 2618188253 bases in 4228 contigs
+[M::mp_idx_build@8.706*1.00] 20458850 blocks
+[M::mp_idx_build@12.204*7.14] collected syncmers
+[M::mp_idx_build@18.397*5.07] 1047422995 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 184206
+[M::mp_idx_print_stat] 2413120 distinct k-mers; mean occ of infrequent k-mers: 425.00; 633 frequent k-mers accounting for 22119404 occurrences
+[M::worker_pipeline::19.347*4.90] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_000247695.1_HetGla_female_1.0_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 19.390 sec; CPU: 94.766 sec; Peak RSS: 18.230 GB
+done Heterocephalus_glaber HetGla_female_1.0
+[M::mp_ntseq_read@9.217*1.00] read 2638048820 bases in 68 contigs
+[M::mp_idx_build@9.217*1.00] 20609818 blocks
+[M::mp_idx_build@14.625*6.97] collected syncmers
+[M::mp_idx_build@20.472*5.27] 1204081534 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 184903
+[M::mp_idx_print_stat] 2413172 distinct k-mers; mean occ of infrequent k-mers: 468.28; 2352 frequent k-mers accounting for 75148668 occurrences
+[M::worker_pipeline::21.900*5.01] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_988278965.1_mHetGla1.1.hap1_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 21.953 sec; CPU: 109.831 sec; Peak RSS: 27.629 GB
+done Heterocephalus_glaber mHetGla1.1.hap1
+[M::mp_ntseq_read@8.886*1.00] read 2561275506 bases in 383 contigs
+[M::mp_idx_build@8.886*1.00] 20010328 blocks
+[M::mp_idx_build@12.820*7.47] collected syncmers
+[M::mp_idx_build@18.732*5.43] 1166013874 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 182193
+[M::mp_idx_print_stat] 2413158 distinct k-mers; mean occ of infrequent k-mers: 454.32; 2220 frequent k-mers accounting for 70684262 occurrences
+[M::worker_pipeline::20.116*5.15] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_053883595.1_H.glaber_assembly_v1.0_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 20.163 sec; CPU: 103.646 sec; Peak RSS: 21.736 GB
+done Heterocephalus_glaber H.glaber_assembly_v1.0
+[M::mp_ntseq_read@8.094*1.00] read 2334358650 bases in 73969 contigs
+[M::mp_idx_build@8.094*1.00] 18296014 blocks
+[M::mp_idx_build@12.640*6.76] collected syncmers
+[M::mp_idx_build@17.722*5.11] 1037428312 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 173935
+[M::mp_idx_print_stat] 2412981 distinct k-mers; mean occ of infrequent k-mers: 418.69; 846 frequent k-mers accounting for 27501143 occurrences
+[M::worker_pipeline::18.463*4.97] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_012274545.1_DMR_v1.0_HiC_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 18.510 sec; CPU: 91.774 sec; Peak RSS: 23.443 GB
+done Fukomys_damarensis DMR_v1.0_HiC
+[M::mp_ntseq_read@10.330*1.00] read 3061408210 bases in 154975 contigs
+[M::mp_idx_build@10.330*1.00] 24053898 blocks
+[M::mp_idx_build@14.087*6.82] collected syncmers
+[M::mp_idx_build@23.670*4.46] 1314450668 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 199188
+[M::mp_idx_print_stat] 2413354 distinct k-mers; mean occ of infrequent k-mers: 522.18; 1426 frequent k-mers accounting for 55001281 occurrences
+[M::worker_pipeline::24.589*4.36] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_000622305.1_S.galili_v1.0_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 24.661 sec; CPU: 107.272 sec; Peak RSS: 18.831 GB
+done Nannospalax_galili S.galili_v1.0
+[M::mp_ntseq_read@5.953*1.00] read 1769662895 bases in 2040 contigs
+[M::mp_idx_build@5.953*1.00] 13827568 blocks
+[M::mp_idx_build@8.546*7.48] collected syncmers
+[M::mp_idx_build@12.192*5.54] 773247902 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 151443
+[M::mp_idx_print_stat] 2411773 distinct k-mers; mean occ of infrequent k-mers: 309.43; 531 frequent k-mers accounting for 27127890 occurrences
+[M::worker_pipeline::13.168*5.23] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_000260355.1_ConCri1.0_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 13.198 sec; CPU: 68.948 sec; Peak RSS: 16.741 GB
+done Condylura_cristata ConCri1.0
+[M::mp_ntseq_read@7.192*1.00] read 2068871057 bases in 640296 contigs
+[M::mp_idx_build@7.193*1.00] 16621332 blocks
+[M::mp_idx_build@9.717*6.82] collected syncmers
+[M::mp_idx_build@17.725*4.19] 972169869 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 163746
+[M::mp_idx_print_stat] 2412082 distinct k-mers; mean occ of infrequent k-mers: 382.65; 1266 frequent k-mers accounting for 49665331 occurrences
+[M::worker_pipeline::18.641*4.06] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_004024925.1_ScaAqu_v1_BIUU_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 18.678 sec; CPU: 75.675 sec; Peak RSS: 12.078 GB
+done Scalopus_aquaticus ScaAqu_v1_BIUU
+[M::mp_ntseq_read@12.925*1.00] read 4210093806 bases in 20499 contigs
+[M::mp_idx_build@12.925*1.00] 32912242 blocks
+[M::mp_idx_build@17.836*7.13] collected syncmers
+[M::mp_idx_build@26.437*5.13] 1485436328 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 233587
+[M::mp_idx_print_stat] 2412911 distinct k-mers; mean occ of infrequent k-mers: 544.76; 4123 frequent k-mers accounting for 173221823 occurrences
+[M::worker_pipeline::27.693*4.97] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_000296735.1_ChrAsi1.0_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 27.767 sec; CPU: 137.780 sec; Peak RSS: 23.889 GB
+done Chrysochloris_asiatica ChrAsi1.0
+[M::mp_ntseq_read@17.053*1.00] read 4750461421 bases in 3428078 contigs
+[M::mp_idx_build@17.057*1.00] 40448610 blocks
+[M::mp_idx_build@22.395*6.33] collected syncmers
+[M::mp_idx_build@40.420*3.96] 2067744116 kmer-block pairs
+[M::mp_mapopt_set_max_intron] set max intron size to 248125
+[M::mp_idx_print_stat] 2412983 distinct k-mers; mean occ of infrequent k-mers: 692.36; 8833 frequent k-mers accounting for 403205787 occurrences
+[M::worker_pipeline::41.015*3.93] mapped 13 sequences
+[M::main] Version: 0.18-r281
+[M::main] CMD: miniprot -t 24 -I /Users/devbioinfo/Trait_github/data/c5/genomes/GCA_004027935.1_ChrAsi_v1_BIUU_genomic.fna.gz /Users/devbioinfo/Trait_github/data/c5/human_proteins.faa
+[M::main] Real time: 41.142 sec; CPU: 161.454 sec; Peak RSS: 27.596 GB
+done Chrysochloris_asiatica ChrAsi_v1_BIUU
+               species  gene  toga_called_lost               assembly  found  identity  protein_coverage  stops  frameshifts  miniprot_stops  miniprot_frameshifts  toga_lesions  toga_lesions_reproduced  locus_N_fraction  cds_softmasked_fraction synteny_neighbours_same_scaffold
+ Heterocephalus_glaber  LGSN              True      HetGla_female_1.0   True    0.7575             0.988    1.0          0.0             1.0                   0.0           2.0                      1.0            0.4903                    0.065                              4/5
+ Heterocephalus_glaber CRYGS             False      HetGla_female_1.0   True    0.8876             1.000    0.0          0.0             0.0                   0.0           0.0                      0.0            0.0000                    0.035                              6/6
+ Heterocephalus_glaber  LGSN              True        mHetGla1.1.hap1   True    0.7594             0.988    1.0          0.0             1.0                   0.0           2.0                      1.0            0.0000                    0.039                              4/5
+ Heterocephalus_glaber CRYGS             False        mHetGla1.1.hap1   True    0.8876             1.000    0.0          0.0             0.0                   0.0           0.0                      0.0            0.0000                    0.002                              6/6
+ Heterocephalus_glaber  LGSN              True H.glaber_assembly_v1.0   True    0.7575             0.988    1.0          0.0             1.0                   0.0           2.0                      1.0            0.0000                    0.065                              4/5
+ Heterocephalus_glaber CRYGS             False H.glaber_assembly_v1.0   True    0.8876             1.000    0.0          0.0             0.0                   0.0           0.0                      0.0            0.0000                    0.035                              6/6
+    Fukomys_damarensis  LGSN              True           DMR_v1.0_HiC  False       NaN               NaN    NaN          NaN             NaN                   NaN           NaN                      NaN               NaN                      NaN                              NaN
+    Fukomys_damarensis CRYGS             False           DMR_v1.0_HiC   True    0.9157             1.000    0.0          0.0             0.0                   0.0           0.0                      0.0            0.0000                    0.000                              6/6
+    Nannospalax_galili  LGSN              True          S.galili_v1.0   True    0.7729             0.986    3.0          2.0             3.0                   2.0           5.0                      5.0            0.0000                    0.069                              2/5
+    Nannospalax_galili CRYGS              True          S.galili_v1.0   True    0.8539             1.000    0.0          2.0             0.0                   2.0           2.0                      2.0            0.0000                    0.002                              6/6
+    Condylura_cristata  LGSN              True              ConCri1.0   True    0.5462             0.972    5.0          7.0             5.0                   7.0          15.0                      7.0            0.0000                    0.116                              4/5
+    Condylura_cristata CRYGS              True              ConCri1.0  False       NaN               NaN    NaN          NaN             NaN                   NaN           NaN                      NaN               NaN                      NaN                              NaN
+    Scalopus_aquaticus  LGSN              True         ScaAqu_v1_BIUU   True    0.6640             0.976    2.0          4.0             2.0                   4.0          10.0                      6.0            0.0000                    0.062                              0/5
+    Scalopus_aquaticus CRYGS              True         ScaAqu_v1_BIUU  False       NaN               NaN    NaN          NaN             NaN                   NaN           NaN                      NaN               NaN                      NaN                              NaN
+Chrysochloris_asiatica  LGSN              True              ChrAsi1.0   True    0.6282             0.980    5.0          7.0             5.0                   8.0          12.0                      9.0            0.0000                    0.085                              4/5
+Chrysochloris_asiatica CRYGS              True              ChrAsi1.0   True    0.6883             0.972    2.0          2.0             2.0                   2.0           3.0                      3.0            0.0000                    0.061                              6/6
+Chrysochloris_asiatica  LGSN              True         ChrAsi_v1_BIUU   True    0.6769             0.778    4.0          5.0             4.0                   6.0          12.0                      7.0            0.0000                    0.067                              0/5
+Chrysochloris_asiatica CRYGS              True         ChrAsi_v1_BIUU   True    0.6883             0.972    2.0          2.0             2.0                   2.0           3.0                      3.0            0.0000                    0.061                              0/6
