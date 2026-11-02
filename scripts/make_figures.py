@@ -1755,11 +1755,11 @@ def nee_fig5():
     save(fig, "Figure5")
 
 
-def nee_fig6(panel_b="lesions", name="Figure6"):
+def nee_fig6(panel_b="alignment", name="Figure6"):
     """Subterranean: the eye pathway map, panel b, enrichment.
 
-    panel_b="lesions": LGSN and CRYGS lesions from TOGA and miniprot across independent assemblies (current).
-    panel_b="alignment": the original LGSN codon alignment (kept as Figure6_original_alignment)."""
+    panel_b="lesions": LGSN and CRYGS lesion map (preview variant, saved as Figure6_variant_lesions; not used).
+    panel_b="alignment": the LGSN codon alignment (main figure)."""
     import alignment_detail as AD
     from mlconv.tree import subtree
     tree, names, Y, trait = loss_setup()
