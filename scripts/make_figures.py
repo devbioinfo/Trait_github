@@ -1755,8 +1755,11 @@ def nee_fig5():
     save(fig, "Figure5")
 
 
-def nee_fig6():
-    """Subterranean: the eye pathway map, LGSN alignment, enrichment."""
+def nee_fig6(panel_b="lesions", name="Figure6"):
+    """Subterranean: the eye pathway map, panel b, enrichment.
+
+    panel_b="lesions": LGSN and CRYGS lesions from TOGA and miniprot across independent assemblies (current).
+    panel_b="alignment": the original LGSN codon alignment (kept as Figure6_original_alignment)."""
     import alignment_detail as AD
     from mlconv.tree import subtree
     tree, names, Y, trait = loss_setup()
@@ -1772,14 +1775,84 @@ def nee_fig6():
     gs = fig.add_gridspec(2, 1, height_ratios=[1.45, 1], hspace=0.12)
     eye_map(fig.add_subplot(gs[0]), se, "a")
     bot = gs[1].subgridspec(1, 2, width_ratios=[1.9, 1], wspace=0.3)
-    alignment_panel(fig.add_subplot(bot[0]), "LGSN", ((186, 189), (375, 386)), n2, common, subt, C3, "b",
-                    "LGSN codons 186\u2013189 and 375\u2013386", shared=(376,))
+    if panel_b == "alignment":
+        alignment_panel(fig.add_subplot(bot[0]), "LGSN", ((186, 189), (375, 386)), n2, common, subt, C3, "b",
+                        "LGSN codons 186\u2013189 and 375\u2013386", shared=(376,))
+    else:
+        lesion_tracks(fig, bot[0], "b")
     en = bot[1].subgridspec(2, 1, hspace=0.9)
     k = "hypoxia_subterranean"
     enrichment_bars(fig.add_subplot(en[0]), tis[tis.trait == k], C3, "c", "Tissue (Human Protein Atlas)", n=2)
     enrichment_bars(fig.add_subplot(en[1]), go[go.trait == k], C3, "d", "GO biological process", n=3, max_size=450,
                     rename={"lens development in camera-type eye": "lens development"})
-    save(fig, "Figure6")
+    save(fig, name)
+
+
+
+def lesion_tracks(fig, spec, letter):
+    """Compact LGSN + CRYGS lesion map (two axes sharing rows): TOGA calls (open) above the miniprot
+    re-annotation (filled) of the TOGA assembly and of independently sequenced assemblies (\u2020)."""
+    les = pd.read_csv(RES / "c5" / "lesions.csv")
+    toga = pd.read_csv(RES / "c5" / "toga_lesions.csv")
+    val = pd.read_csv(RES / "c5" / "locus_validation.csv")
+    found = {(r.species, r.gene, r.assembly): bool(r.found) for r in val.itertuples()}
+    sym = {"stop": ("v", C2), "frameshift": ("D", C5)}
+    tested = {g: {sp for sp, _, _ in v} for g, v in C5_ROWS.items()}
+    rows, y = [], 0                       # (y, species, assembly or None, label)
+    for sp, common, asms in C5_ROWS["LGSN"]:
+        rows.append((y, sp, None, f"{common} (TOGA)"))
+        for j, (asm, lab, indep) in enumerate(asms):
+            rows.append((y + 1 + j, sp, asm, lab.split(" (")[0] + ("  \u2020" if indep else "")))
+        y += len(asms) + 1.5
+    sub = spec.subgridspec(1, 2, width_ratios=[509, 230], wspace=0.06)
+    axes = [fig.add_subplot(sub[0]), None]
+    axes[1] = fig.add_subplot(sub[1], sharey=axes[0])
+    for ax, gene in zip(axes, ("LGSN", "CRYGS")):
+        L = PROTEIN_LEN[gene]
+        for yy, sp, asm, _ in rows:
+            yy = -yy
+            if sp not in tested[gene]:
+                if asm is None:
+                    ax.text(L / 2, yy, "not examined", fontsize=5, color=MUTED, ha="center", va="center")
+                continue
+            if asm is None:
+                t = toga[(toga.species == sp) & (toga.gene == gene)]
+                ax.plot([1, L], [yy, yy], color=GRID, lw=2, solid_capstyle="butt", zorder=1)
+                for r in t.itertuples():
+                    m, c = sym[r.kind]
+                    ax.scatter(r.codon, yy, marker=m, s=9, facecolor="white", edgecolor=c, lw=0.7, zorder=3)
+                if not len(t):
+                    ax.text(L / 2, yy, "none recorded", fontsize=5, color=MUTED, ha="center", va="center")
+            elif found.get((sp, gene, asm), False):
+                ax.plot([1, L], [yy, yy], color=PALE, lw=2, solid_capstyle="butt", zorder=1)
+                t = les[(les.species == sp) & (les.gene == gene) & (les.assembly == asm)]
+                for r in t.itertuples():
+                    m, c = sym[r.kind]
+                    ax.scatter(r.position, yy, marker=m, s=9, color=c, lw=0, zorder=3)
+            else:
+                ax.text(L / 2, yy, "not aligned", fontsize=5, color=MUTED, ha="center", va="center",
+                        style="italic")
+        ax.set_xlim(-L * 0.03, L * 1.03)
+        ax.set_xticks([0, 100, 200, 300, 400, 500] if gene == "LGSN" else [0, 100])
+        ax.tick_params(axis="x", labelsize=5)
+        ax.set_xlabel(f"{gene} codon", fontsize=5.5, labelpad=1)
+        grid(ax, "x")
+        ax.spines["left"].set_visible(False)
+        ax.tick_params(axis="y", length=0)
+        ax.text(0.5, 1.01, gene, transform=ax.transAxes, ha="center", va="bottom", fontsize=6, style="italic")
+    axes[0].set_yticks([-r[0] for r in rows], [r[3] for r in rows], fontsize=5)
+    for t, r in zip(axes[0].get_yticklabels(), rows):
+        if r[2] is None:
+            t.set_color(C3)
+    plt.setp(axes[1].get_yticklabels(), visible=False)
+    axes[0].set_ylim(-rows[-1][0] - 0.8, 0.8)
+    panel(axes[0], letter, "LGSN and CRYGS lesions across methods and assemblies", pad=9)
+    handles = [plt.Line2D([], [], marker="v", ls="", color=C2, ms=3.5, label="stop"),
+               plt.Line2D([], [], marker="D", ls="", color=C5, ms=3, label="frameshift"),
+               plt.Line2D([], [], marker="o", ls="", mfc="white", mec=INK2, ms=3.5, label="open: TOGA; filled: miniprot"),
+               plt.Line2D([], [], ls="", label="\u2020 independent assembly")]
+    axes[0].legend(handles=handles, loc="upper left", bbox_to_anchor=(-0.02, -0.16), ncol=4, fontsize=5,
+                   frameon=False, handletextpad=0.2, columnspacing=0.9, handlelength=1)
 
 
 def ed_loss_matrix():
