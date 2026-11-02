@@ -123,8 +123,21 @@ def genome(acc, name):
         raise SystemExit(f"NCBI folder for {acc} not found")
     url = f"https://ftp.ncbi.nlm.nih.gov/genomes/all/{p}/{dirs[0]}/{dirs[0]}_genomic.fna.gz"
     print("downloading", url, flush=True)
-    subprocess.run(["curl", "-fL", "--retry", "5", "-C", "-", "-o", str(f) + ".part", url], check=True)
-    Path(str(f) + ".part").rename(f)
+    part = str(f) + ".part"
+    for attempt in range(1, 11):
+        # resume (-C -) after stalls or dropped connections; a transfer below 10 kB/s for 60 s counts as stalled
+        r = subprocess.run(["curl", "-fL", "--retry", "5", "--retry-all-errors", "--speed-limit", "10000",
+                            "--speed-time", "60", "-C", "-", "-o", part, url])
+        if r.returncode == 0:
+            break
+        print(f"download interrupted (curl exit {r.returncode}); resuming, attempt {attempt + 1} of 10", flush=True)
+    else:
+        raise SystemExit(f"download of {url} failed after 10 attempts")
+    # integrity check before use: a resumed download must decompress completely
+    if subprocess.run(["gzip", "-t", part]).returncode != 0:
+        Path(part).unlink()
+        raise SystemExit(f"{part} is corrupt and was removed; rerun to download it again")
+    Path(part).rename(f)
     return f
 
 
