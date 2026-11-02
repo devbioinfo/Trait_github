@@ -59,3 +59,21 @@ pangolins in V+ only. With so few discordant origins, power is limited and this 
 - A null result in the river dolphins is reported as such; with one non-subterranean origin it cannot
   exclude visual regression as the driver.
 - Associations do not establish adaptive loss or mechanism.
+
+## Amendment 1 (before any analysis): phenotype schema and feasibility
+- The single eye scale was replaced, on the authors' review, by four variables recorded separately with an
+  explicit `unknown` state and an evidence level per cell: eye morphology (no documented gross regression /
+  reduced / severely regressed or subcutaneous / unresolved / unknown), image-forming vision (supported /
+  impaired / absent / unknown), light detection (supported / absent / unknown) and burrowing ecology
+  (independently defined and cited). The earlier single-scale draft with the reviewed sources is kept as
+  `data/phenotypes/visual_phenotypes_v1_singlescale.csv`. States are entered only where species-matched
+  evidence supports them; codes are provisional and not frozen. No code is changed to improve power.
+- Feasibility: the lineages that would separate visual regression from habitat (the tuco-tuco, *Ctenomys
+  sociabilis*, and the river dolphins *Inia* and *Lipotes*) are those whose eye phenotype is unknown or
+  unresolved on species-matched evidence. With the present 115 species the planned contrast is therefore not
+  yet defined. Options: (a) obtain species-matched phenotype evidence for these lineages; (b) improve sampling
+  with species that TOGA annotates but that are absent from the Zoonomia 447-species tree (South Asian river
+  dolphins *Platanista gangetica* and *P. minor*; franciscana *Pontoporia blainvillei*; Iberian mole *Talpa
+  occidentalis*; hoary bamboo rat *Rhizomys pruinosus*; gracile shrew mole *Uropsilus gracilis*), which requires
+  placing them on the tree from a published phylogeny and a species-set extension used only for Section C.
+  Analyses 1-4 are not run until the phenotype matrix is approved.
