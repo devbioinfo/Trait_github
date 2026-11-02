@@ -164,6 +164,7 @@ def parse_gff(path):
         if f[2] == "mRNA":
             mrna[a["ID"]] = dict(id=a["ID"], seq=f[0], start=int(f[3]), end=int(f[4]), strand=f[6],
                                  rank=int(a.get("Rank", 99)), identity=float(a.get("Identity", "nan")),
+                                 mp_frameshift=int(a.get("Frameshift", 0)), mp_stop=int(a.get("StopCodon", 0)),
                                  protein=tgt[0], pstart=int(tgt[1]), pend=int(tgt[2]))
         elif f[2] == "CDS":
             cds.setdefault(a["Parent"], []).append(dict(start=int(f[3]), end=int(f[4]), phase=int(f[7]) if f[7] != "." else 0,
@@ -187,26 +188,69 @@ def load_scaffolds(gfile, names):
     return seqs
 
 
-def lesions(m, segs, seq):
-    """Stops and frameshifts along the aligned coding segments, in human protein positions."""
-    segs = sorted(segs, key=lambda s: s["ps"])
-    out, cds_bases, lower = [], 0, 0
-    for i, s in enumerate(segs):
-        nt = seq[s["start"] - 1:s["end"]]
-        if m["strand"] == "-":
-            nt = nt.translate(COMP)[::-1]
-        cds_bases += len(nt)
-        lower += sum(c.islower() for c in nt)
-        nt = nt.upper()
-        for k in range(s["phase"], len(nt) - 2, 3):
-            if CODON.get(nt[k:k + 3]) == "*":
-                out.append(("stop", s["ps"] + (k - s["phase"]) // 3 + (1 if s["phase"] else 0)))
-        if i:
-            p = segs[i - 1]
-            gap = (s["start"] - p["end"] - 1) if m["strand"] == "+" else (p["start"] - s["end"] - 1)
-            if gap < 30:
-                out.append(("frameshift", p["pe"]))
-    return out, cds_bases, lower
+CS_OP = re.compile(r"(:\d+)|(\*[a-z]+[A-Z*])|(\+[A-Z*]+)|(-[a-z]+)|(~[a-z]{2}\d+[a-z]{2})")
+
+
+def lesions_from_cs(cs, start0):
+    """Stops and frameshifts from miniprot's cs tag (human protein positions, 1-based).
+    ':N' N matched residues; '*codonA' one codon aligned to residue A; '+AA' residues without genomic sequence;
+    '-nnn' genomic bases without residues; '~xxNNNyy' an intron. A partial codon that is completed across an intron
+    ('*tE~gt..ag-ga') is a split codon, not a frameshift; any other 1- or 2-nt codon, or a '-' run that is not a
+    multiple of 3, is a frameshift; a stop codon aligned to a residue is a premature stop."""
+    ops = [m.group(0) for m in CS_OP.finditer(cs)]
+    pos, out, i = start0, [], 0
+    while i < len(ops):
+        op = ops[i]
+        if op[0] == ":":
+            pos += int(op[1:])
+        elif op[0] == "*":
+            codon = op[1:-1].upper()
+            pos += 1
+            if len(codon) < 3 and i + 2 < len(ops) and ops[i + 1][0] == "~" and ops[i + 2][0] == "-" \
+                    and len(codon) + len(ops[i + 2]) - 1 == 3:
+                codon = codon + ops[i + 2][1:].upper()      # split codon across the intron
+                i += 2
+            if len(codon) < 3:
+                out.append(("frameshift", pos))
+            elif codon in ("TAA", "TAG", "TGA"):
+                out.append(("stop", pos))
+        elif op[0] == "+":
+            pos += len(op) - 1
+        elif op[0] == "-":
+            if (len(op) - 1) % 3:
+                out.append(("frameshift", pos))
+        i += 1
+    return out
+
+
+def run_miniprot_paf(gfile, threads):
+    out = gfile.with_suffix(".miniprot.paf")
+    if not out.exists():
+        with open(out.with_suffix(".part"), "w") as fh:
+            subprocess.run(["miniprot", "-t", str(threads), "-I", str(gfile), str(DATA / "human_proteins.faa")],
+                           stdout=fh, check=True)
+        out.with_suffix(".part").rename(out)
+    best = {}
+    for ln in open(out):
+        if ln.startswith("#"):
+            continue
+        f = ln.rstrip("\n").split("\t")
+        tags = dict((t[:2], t[5:]) for t in f[12:])
+        score = int(tags.get("AS", 0))
+        if f[0] not in best or score > best[f[0]]["score"]:
+            best[f[0]] = dict(score=score, contig=f[5], start=int(f[7]), end=int(f[8]), pstart0=int(f[2]),
+                              fs=int(tags.get("fs", 0)), st=int(tags.get("st", 0)), cs=tags.get("cs", ""))
+    return best
+
+
+def masking(m, segs, seq):
+    """Coding bases of the best alignment and how many of them are soft-masked (repeats)."""
+    nb = low = 0
+    for sg in segs:
+        nt = seq[sg["start"] - 1:sg["end"]]
+        nb += len(nt)
+        low += sum(c.islower() for c in nt)
+    return nb, low
 
 
 def main():
@@ -236,6 +280,7 @@ def main():
         for acc, name, role in asms:
             g = genome(acc, name)
             mrna, cds = parse_gff(run_miniprot(g, args.threads))
+            paf = run_miniprot_paf(g, args.threads)
             by_prot = {}
             for m in mrna.values():
                 by_prot.setdefault(m["protein"], []).append(m)
@@ -253,7 +298,9 @@ def main():
                     continue
                 m = hits[0]
                 seq = seqs[m["seq"]]
-                les, nb, low = lesions(m, cds[m["id"]], seq)
+                pb = paf.get(f"{gene}|target|{tx}")
+                les = lesions_from_cs(pb["cs"], pb["pstart0"]) if pb and pb["contig"] == m["seq"] else []
+                nb, low = masking(m, cds[m["id"]], seq)
                 span = seq[m["start"] - 1:m["end"]]
                 cov = sum(c["pe"] - c["ps"] + 1 for c in cds[m["id"]]) / lengths[f"{gene}|target|{tx}"]
                 second = next((h for h in hits[1:] if h["seq"] != m["seq"] or abs(h["start"] - m["start"]) > 100_000), None)
@@ -268,6 +315,7 @@ def main():
                                  identity=m["identity"], protein_coverage=round(min(cov, 1), 3),
                                  stops=sum(k == "stop" for k, _ in les), frameshifts=sum(k == "frameshift" for k, _ in les),
                                  lesion_positions=";".join(f"{k}@{p}" for k, p in les),
+                                 miniprot_frameshifts=m["mp_frameshift"], miniprot_stops=m["mp_stop"],
                                  toga_lesions=len(tg), toga_lesions_reproduced=matched,
                                  locus_N_fraction=round(span.upper().count("N") / max(len(span), 1), 4),
                                  cds_softmasked_fraction=round(low / max(nb, 1), 3),
@@ -283,8 +331,8 @@ def main():
     toga.to_csv(OUT / "toga_lesions.csv", index=False)
     (OUT / "VERSIONS.txt").write_text(f"{ver}\npython {sys.version.split()[0]}\npandas {pd.__version__}\n"
                                       f"Ensembl REST (GRCh38) proteins: data/c5/human_proteins.faa\n")
-    cols = ["species", "gene", "toga_called_lost", "assembly", "role", "found", "identity", "protein_coverage", "stops",
-            "frameshifts", "toga_lesions", "toga_lesions_reproduced", "locus_N_fraction", "cds_softmasked_fraction",
+    cols = ["species", "gene", "toga_called_lost", "assembly", "found", "identity", "protein_coverage", "stops",
+            "frameshifts", "miniprot_stops", "miniprot_frameshifts", "toga_lesions", "toga_lesions_reproduced", "locus_N_fraction", "cds_softmasked_fraction",
             "synteny_neighbours_same_scaffold"]
     s = t[[c for c in cols if c in t]].to_string(index=False)
     (OUT / "summary.md").write_text("# C5 locus validation\n\n```\n" + s + "\n```\n")
