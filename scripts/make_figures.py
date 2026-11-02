@@ -2076,6 +2076,150 @@ def study_summary():
     save(fig, "StudySummary")
 
 
+# ---------------------------------------------------------------------------------------
+# Supplementary figures after the second audit
+# ---------------------------------------------------------------------------------------
+
+C5_ROWS = {  # gene: [(species, common name, [(assembly, label, independent)])]
+    "LGSN": [("Heterocephalus_glaber", "Naked mole-rat", [("HetGla_female_1.0", "HetGla_female_1.0 (2012)", False),
+                                                           ("mHetGla1.1.hap1", "mHetGla1.1.hap1 (2026)", True),
+                                                           ("H.glaber_assembly_v1.0", "H.glaber_assembly_v1.0 (2025)", True)]),
+             ("Fukomys_damarensis", "Damara mole-rat", [("DMR_v1.0_HiC", "DMR_v1.0_HiC", False)]),
+             ("Nannospalax_galili", "Blind mole-rat", [("S.galili_v1.0", "S.galili_v1.0", False)]),
+             ("Condylura_cristata", "Star-nosed mole", [("ConCri1.0", "ConCri1.0", False)]),
+             ("Scalopus_aquaticus", "Eastern mole", [("ScaAqu_v1_BIUU", "ScaAqu_v1_BIUU", False)]),
+             ("Chrysochloris_asiatica", "Golden mole", [("ChrAsi1.0", "ChrAsi1.0 (2012)", False),
+                                                         ("ChrAsi_v1_BIUU", "ChrAsi_v1_BIUU (2019)", True)])],
+    "CRYGS": [("Nannospalax_galili", "Blind mole-rat", [("S.galili_v1.0", "S.galili_v1.0", False)]),
+              ("Condylura_cristata", "Star-nosed mole", [("ConCri1.0", "ConCri1.0", False)]),
+              ("Scalopus_aquaticus", "Eastern mole", [("ScaAqu_v1_BIUU", "ScaAqu_v1_BIUU", False)]),
+              ("Chrysochloris_asiatica", "Golden mole", [("ChrAsi1.0", "ChrAsi1.0 (2012)", False),
+                                                          ("ChrAsi_v1_BIUU", "ChrAsi_v1_BIUU (2019)", True)])],
+}
+PROTEIN_LEN = {"LGSN": 509, "CRYGS": 178}     # human proteins aligned (Ensembl canonical transcripts)
+
+
+def supp_lesion_map():
+    """Supplementary Fig. 1: LGSN and CRYGS lesions from TOGA and from an independent re-annotation (miniprot),
+    in the assembly TOGA used and in independently sequenced assemblies."""
+    les = pd.read_csv(RES / "c5" / "lesions.csv")
+    toga = pd.read_csv(RES / "c5" / "toga_lesions.csv")
+    val = pd.read_csv(RES / "c5" / "locus_validation.csv")
+    found = {(r.species, r.gene, r.assembly): bool(r.found) for r in val.itertuples()}
+    sym = {"stop": ("v", C2), "frameshift": ("D", C5)}
+    nrow = {g: sum(1 + len(a) for _, _, a in v) for g, v in C5_ROWS.items()}
+    fig = plt.figure(figsize=(183 * MM, 112 * MM))
+    gs = fig.add_gridspec(1, 2, width_ratios=[2.3, 1], wspace=0.62, left=0.2, right=0.98, top=0.9, bottom=0.12)
+    for k, gene in enumerate(("LGSN", "CRYGS")):
+        ax = fig.add_subplot(gs[0, k])
+        L = PROTEIN_LEN[gene]
+        y, ticks, labels = 0, [], []
+        for sp, common, asms in C5_ROWS[gene]:
+            rows = [("TOGA", "TOGA calls", None)] + asms
+            ax.text(-0.02 * L if k else -0.02 * L, y + 0.15, "", fontsize=5)
+            for j, (asm, lab, indep) in enumerate(rows):
+                yy = -(y + j)
+                if asm == "TOGA":
+                    t = toga[(toga.species == sp) & (toga.gene == gene)]
+                    ax.plot([1, L], [yy, yy], color=GRID, lw=2.2, solid_capstyle="butt", zorder=1)
+                    for r in t.itertuples():
+                        m, c = sym[r.kind]
+                        ax.scatter(r.codon, yy, marker=m, s=13, facecolor="white", edgecolor=c, lw=0.8, zorder=3)
+                    if not len(t):
+                        ax.text(L / 2, yy, "no stop codon or frameshift recorded", fontsize=5, color=MUTED,
+                                ha="center", va="center")
+                    labels.append(f"{common}: TOGA calls")
+                else:
+                    ok = found.get((sp, gene, asm), False)
+                    if ok:
+                        ax.plot([1, L], [yy, yy], color=PALE, lw=2.2, solid_capstyle="butt", zorder=1)
+                        t = les[(les.species == sp) & (les.gene == gene) & (les.assembly == asm)]
+                        for r in t.itertuples():
+                            m, c = sym[r.kind]
+                            ax.scatter(r.position, yy, marker=m, s=13, color=c, lw=0, zorder=3)
+                    else:
+                        ax.text(L / 2, yy, "not aligned at default settings", fontsize=5, color=MUTED,
+                                ha="center", va="center", style="italic")
+                    labels.append(("    " + lab) + ("  †" if indep else ""))
+                ticks.append(yy)
+            y += len(rows) + 0.6
+        ax.set_yticks(ticks, labels, fontsize=5)
+        ax.tick_params(axis="y", length=0)
+        ax.spines["left"].set_visible(False)
+        ax.set_xlim(-L * 0.02, L * 1.02)
+        ax.set_ylim(min(ticks) - 0.8, 0.8)
+        ax.set_xlabel(f"Position in human {gene} (codon)")
+        grid(ax, "x")
+        panel(ax, "ab"[k], gene)
+    handles = [plt.Line2D([], [], marker="v", ls="", color=C2, ms=4, label="stop codon"),
+               plt.Line2D([], [], marker="D", ls="", color=C5, ms=3.5, label="frameshift"),
+               plt.Line2D([], [], marker="o", ls="", mfc="white", mec=INK2, ms=4, label="open: TOGA; filled: miniprot")]
+    fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.2, 0.0), ncol=3, fontsize=5.5,
+               handletextpad=0.3, columnspacing=1.2)
+    fig.text(0.98, 0.015, "† independently sequenced assembly", fontsize=5, color=INK2, ha="right")
+    save(fig, "SupplementaryFigure1")
+
+
+def supp_coding_robustness():
+    """Supplementary Fig. 2: conservative genome-wide single-origin support for subterranean genes under three
+    loss codings (genes not called by the screen of a coding get P = 1)."""
+    runs = [("iut_primary_subterranean", "Lost and uncertain\n(primary)"),
+            ("iut_Lonly_subterranean", "Confident\nlosses only"),
+            ("iut_ULintact_subterranean", "Uncertain\ncounted intact")]
+    cols, ntest = {}, []
+    for run, lab in runs:
+        g = pd.read_csv(RES / "audit2" / run / "hypoxia_subterranean_genes.csv", low_memory=False)
+        g = g[g.p_loss.notna()]
+        called = g.call_loss.astype(bool)
+        pp = np.where(called & g.p_loss_iut_mc.notna(), g.p_loss_iut_mc, 1.0)
+        n = len(pp)
+        o = np.argsort(pp)
+        adj = np.minimum.accumulate((pp[o] * n / np.arange(1, n + 1))[::-1])[::-1]
+        a = np.empty(n)
+        a[o] = np.minimum(adj, 1)
+        cols[lab] = pd.DataFrame({"adj": a, "called": called.to_numpy()}, index=g.symbol.to_numpy())
+        ntest.append(n)
+    genes = sorted(set().union(*[set(c.index[c.called]) for c in cols.values()]))
+    order = sorted(genes, key=lambda x: tuple(cols[l].adj.get(x, 1.0) for _, l in runs))
+    M = np.full((len(order), len(runs)), np.nan)
+    state = np.full(M.shape, "", dtype=object)
+    for j, (_, lab) in enumerate(runs):
+        c = cols[lab]
+        for i, gname in enumerate(order):
+            if gname not in c.index:
+                state[i, j] = "untested"
+            elif not c.called.get(gname):
+                state[i, j] = "not called"
+            else:
+                M[i, j] = -np.log10(max(c.adj[gname], 1e-6))
+    fig, ax = plt.subplots(figsize=(89 * MM, (20 + 3.5 * len(order)) * MM))
+    from matplotlib.colors import LinearSegmentedColormap
+    cmap = LinearSegmentedColormap.from_list("sub", [PALE, "#9fdcc4", C3, "#0d6b49"])
+    im = ax.imshow(M, cmap=cmap, vmin=0, vmax=2.5, aspect="auto")
+    for i in range(len(order)):
+        for j in range(len(runs)):
+            if state[i, j] == "not called":
+                ax.text(j, i, "·", ha="center", va="center", fontsize=6, color=MUTED)
+            elif state[i, j] == "untested":
+                ax.text(j, i, "–", ha="center", va="center", fontsize=5, color=MUTED)
+            elif M[i, j] >= 1:
+                ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False, ec=INK, lw=0.9))
+    eye = set(MAP_EYE_GENES) | {"ABCA4", "IMPG1", "RTBDN", "GJA10", "GJE1", "RBP7", "SLC16A8"}
+    ax.set_yticks(range(len(order)), [g + ("  *" if g in eye else "") for g in order], fontsize=5.5, style="italic")
+    ax.set_xticks(range(len(runs)), [f"{lab}\n{n:,} genes" for (_, lab), n in zip(runs, ntest)], fontsize=5.5)
+    ax.xaxis.tick_top()
+    ax.tick_params(length=0)
+    for sp_ in ax.spines.values():
+        sp_.set_visible(False)
+    cb = fig.colorbar(im, ax=ax, fraction=0.06, pad=0.03, shrink=0.5, anchor=(0, 1))
+    cb.set_label("−log$_{10}$ adjusted P", fontsize=5.5)
+    cb.ax.tick_params(labelsize=5)
+    cb.ax.axhline(1, color=INK, lw=0.8)
+    fig.text(0.02, 0.01, "Outlined: q ≤ 0.1.  · not called by the screen under this coding (P\u2032 = 1).  – not loss-tested.  "
+             "* ocular gene", fontsize=5, color=INK2)
+    save(fig, "SupplementaryFigure2")
+
+
 if __name__ == "__main__":
     figure_tree()          # Fig. 1
     figure1()              # Fig. 2
