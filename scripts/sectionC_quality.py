@@ -10,6 +10,9 @@ Gene-level observation states of hypothesis-relevant genes are outcome data and 
 unblinding step will be added only after the authors decide to unblind.
 
 Usage: python3 scripts/sectionC_quality.py --mca /path/to/MultipleCodonAlignments
+   or: python3 scripts/sectionC_quality.py --sample 2000      (downloads a fixed random sample of alignment files
+       from TOGA into data/toga_cache_sectionC/mca_sample; seed 20261102; the coverage is then an estimate with a
+       binomial 95% interval, computed on the same genes for every species)
 """
 import argparse
 import gzip
@@ -17,6 +20,7 @@ from collections import Counter
 from pathlib import Path
 
 import pandas as pd
+from scipy.stats import beta
 
 ROOT = Path(__file__).resolve().parents[1]
 SPECIES = {"Platanista_gangetica": "HLplaGan1", "Platanista_minor": "HLplaMin1", "Talpa_occidentalis": "HLtalOcc1",
@@ -27,11 +31,33 @@ SPECIES = {"Platanista_gangetica": "HLplaGan1", "Platanista_minor": "HLplaMin1",
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mca", required=True, help="folder of TOGA multiple codon alignments (*.fasta.gz)")
+    ap.add_argument("--mca", help="folder of TOGA multiple codon alignments (*.fasta.gz)")
+    ap.add_argument("--sample", type=int, default=0, help="download this many randomly chosen alignment files instead")
     args = ap.parse_args()
-    files = sorted(Path(args.mca).glob("*.fasta.gz"))
+    if args.sample:
+        import random, re, subprocess
+        base = "https://genome.senckenberg.de/download/TOGA/human_hg38_reference/MultipleCodonAlignments"
+        listing = subprocess.run(["curl", "-sfL", "--max-time", "300", base + "/"], capture_output=True, text=True).stdout
+        names = sorted(set(re.findall(r'href="(ENST[^"]+\.fasta\.gz)"', listing)))
+        if not names:
+            raise SystemExit("could not list the TOGA alignment folder")
+        pick = random.Random(20261102).sample(names, min(args.sample, len(names)))
+        mca = ROOT / "data/toga_cache_sectionC/mca_sample"
+        mca.mkdir(parents=True, exist_ok=True)
+        for i, n in enumerate(pick, 1):
+            f = mca / n
+            if not f.exists():
+                subprocess.run(["curl", "-sfL", "--retry", "3", "--max-time", "300", "-o", str(f), f"{base}/{n}"])
+            if i % 200 == 0:
+                print(f"downloaded {i} of {len(pick)}", flush=True)
+        (ROOT / "results/sectionC/quality_sample_genes.txt").write_text("\n".join(sorted(pick)) + "\n")
+        files = sorted(mca / n for n in pick)
+    else:
+        if not args.mca:
+            raise SystemExit("give --mca FOLDER or --sample N")
+        files = sorted(Path(args.mca).glob("*.fasta.gz"))
     if not files:
-        raise SystemExit(f"no *.fasta.gz files in {args.mca}")
+        raise SystemExit("no *.fasta.gz alignment files found")
     single, multi, readable = Counter(), Counter(), 0
     labels_seen = set()
     for f in files:
@@ -53,6 +79,9 @@ def main():
                          alignment_files_readable=readable,
                          genes_1to1=single[asm], genes_multiple=multi[asm],
                          coverage_1to1=round(single[asm] / readable, 4) if readable else None,
+                         ci95_low=round(beta.ppf(0.025, single[asm], readable - single[asm] + 1), 4) if single[asm] else 0.0,
+                         ci95_high=round(beta.ppf(0.975, single[asm] + 1, readable - single[asm]), 4) if single[asm] < readable else 1.0,
+                         sampled=bool(args.sample),
                          coverage_in_coverage_paper_tsv=cov.get(asm),
                          passes_0_85=(single[asm] / readable >= 0.85) if readable else None,
                          intact_share_loss_matrix=feas.intact.get(sp)))
