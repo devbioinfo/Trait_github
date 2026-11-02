@@ -1,0 +1,12 @@
+species,assembly,in_alignments,alignment_files_readable,genes_1to1,genes_multiple,coverage_1to1,ci95_low,ci95_high,sampled,coverage_in_coverage_paper_tsv,passes_0_85,intact_share_loss_matrix
+Platanista_gangetica,HLplaGan1,False,1999,0,0,0.0,0.0,0.0018,True,,False,0.5935
+Platanista_minor,HLplaMin1,True,1999,1752,17,0.8764,0.8612,0.8906,True,,True,0.8219
+Talpa_occidentalis,HLtalOcc1,True,1999,1808,85,0.9045,0.8907,0.917,True,,True,0.8824
+Rhizomys_pruinosus,HLrhiPru1,True,1999,1798,100,0.8994,0.8854,0.9123,True,,True,0.8598
+Ctenomys_sociabilis,HLcteSoc1,True,1999,1803,31,0.902,0.8881,0.9146,True,0.9055,True,0.8696
+Inia_geoffrensis,HLlniGeo1,True,1999,1797,12,0.8989,0.8849,0.9118,True,0.9017,True,0.8415
+Lipotes_vexillifer,lipVex1,True,1999,1808,18,0.9045,0.8907,0.917,True,0.9071,True,0.8381
+Ellobius_talpinus,HLellTal1,True,1999,1691,19,0.8459,0.8293,0.8615,True,0.8347,False,
+Condylura_cristata,conCri1,True,1999,1742,9,0.8714,0.856,0.8858,True,0.8575,True,0.8149
+Nannospalax_galili,nanGal1,True,1999,1842,22,0.9215,0.9088,0.9329,True,0.9221,True,0.8791
+Scalopus_aquaticus,HLscaAqu1,True,1999,1828,16,0.9145,0.9013,0.9264,True,0.9174,True,0.8772
