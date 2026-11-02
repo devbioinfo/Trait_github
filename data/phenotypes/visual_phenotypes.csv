@@ -1,0 +1,13 @@
+species,common_name,eye_state,fossoriality,uncertainty,basis_to_verify,source
+Nannospalax_galili,Upper Galilee blind mole-rat,2,2,low,"eyes atrophied and subcutaneous, no image-forming vision; light entrains circadian rhythm",TO ADD
+Chrysochloris_asiatica,Cape golden mole,2,2,low,"eyes vestigial and covered by skin",TO ADD
+Scalopus_aquaticus,eastern mole,2,2,medium,"eyes minute and covered by skin or fused lids",TO ADD
+Condylura_cristata,star-nosed mole,1,2,medium,"small eyes, poor vision; semi-aquatic foraging",TO ADD
+Heterocephalus_glaber,naked mole-rat,1,2,low,"small eyes with light perception, poor acuity",TO ADD
+Fukomys_damarensis,Damara mole-rat,1,2,low,"small eyes with light perception, poor acuity",TO ADD
+Ellobius_talpinus,northern mole vole,1,2,high,"small eyes; retains visual function (treated as sighted in Extended Data Fig. 9)",TO ADD
+Ctenomys_sociabilis,social tuco-tuco,0,2,medium,"functional eyes; forages at the surface near burrow openings",TO ADD
+Inia_geoffrensis,Amazon river dolphin (boto),1,0,medium,"small eyes, functional vision in turbid water",TO ADD
+Lipotes_vexillifer,Yangtze river dolphin (baiji),1,0,medium,"greatly reduced eyes, poor vision",TO ADD
+Manis_javanica,Sunda pangolin,1,1,high,"small eyes, poor vision; burrowing (sensitivity analysis only)",TO ADD
+Manis_pentadactyla,Chinese pangolin,1,1,high,"small eyes, poor vision; burrowing (sensitivity analysis only)",TO ADD
