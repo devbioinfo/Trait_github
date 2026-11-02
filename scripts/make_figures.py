@@ -392,7 +392,7 @@ def figure1():           # saved as Figure2 (method overview)
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
     ax.set_axis_off()
-    boxes = [(8.0, "Matched control trait sets\non real genomes\n(every call is false)", C3),
+    boxes = [(8.0, "Matched control trait sets\non real genomes\n(calls assumed false)", C3),
              (5.0, "Simulated null for gene loss\n(loss rate × gene fragility ×\nspecies error rate)", C2),
              (1.8, "FDR (Benjamini–Hochberg)\nper layer, q = 0.1", C1)]
     for yy, text, c in boxes:
@@ -1172,7 +1172,14 @@ def volcano_panel(ax, key, label, colour, Y, trait, letter, n_label=8):
     ax.scatter(diff[call], y[call], s=9, color=colour, lw=0, zorder=3)
     st1 = pd.read_csv(RES / "extra" / "supplementary_table1_convergent_losses.csv")
     core = set(st1[st1.high_confidence == True].gene)  # noqa: E712
-    comp = set(", ".join(pd.read_csv(RES / "review" / "composite_null_tier.csv").genes.fillna("")).split(", ")) - {""}
+    # genes significant after the conservative genome-wide correction of the single-origin check, primary coding
+    a2 = RES / "audit2" / "composite_null_bh.csv"
+    if a2.exists():
+        t = pd.read_csv(a2)
+        t = t[t.analysis.str.contains("primary")]
+    else:
+        t = pd.read_csv(RES / "review" / "composite_null_tier.csv")
+    comp = set(", ".join(t.genes.fillna("")).split(", ")) - {""}
     for genes, size, lw in ((core, 26, 0.7), (comp, 60, 0.7)):
         m_ = d.index.isin(list(genes)) & call
         ax.scatter(diff[m_], y[m_], s=size, facecolors="none", edgecolors=INK, lw=lw, zorder=4)
@@ -2062,7 +2069,7 @@ def study_summary():
     axd.spines["left"].set_visible(False)
     axd.tick_params(axis="y", length=0)
     axd.text(-0.55, 1.16, "d", transform=axd.transAxes, fontsize=8, fontweight="bold", va="bottom")
-    axd.text(-0.45, 1.16, "False calls are controlled", transform=axd.transAxes, fontsize=7, va="bottom")
+    axd.text(-0.45, 1.16, "False calls in simulations", transform=axd.transAxes, fontsize=7, va="bottom")
     axd.text(0, -0.48, "Real genomes: 13% of 500 control traits had any loss call", transform=axd.transAxes,
              fontsize=5.5, color=INK2, va="top")
     fig.text(0.985, 0.004, "Silhouettes: game-icons.net (CC BY 3.0)", fontsize=5, color=MUTED, va="bottom", ha="right")
