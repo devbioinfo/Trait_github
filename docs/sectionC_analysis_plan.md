@@ -99,3 +99,14 @@ current species. These are outcome data. They were seen by the analyst (the AI a
 deleted, the script now reports data availability only, and the per-gene states were not passed to the authors,
 who code the phenotypes. Any later prediction test involving *Platanista*, *Talpa* or *Rhizomys* is therefore not
 analyst-blind and must be reported as such; phenotype coding remains author-blind.
+
+## Amendment 3 (before any analysis): quality-rule reconciliation
+The intact share used in the first feasibility table (genes of the loss matrix whose most intact transcript is I or
+PI) is not the manuscript's selection metric. The manuscript's metric (fraction of TOGA multiple-codon-alignment genes
+with exactly one sequence, threshold 0.85; trait species may enter by exception) was estimated on a fixed random sample
+of 2,000 alignment files (seed 20261102; `scripts/sectionC_quality.py`, Mac run, `results/sectionC/quality_*`). For the
+seven current species the estimates agree with the full-alignment values within 0.013. *P. minor* 0.876 (95% interval
+0.861-0.891), *Talpa occidentalis* 0.905, *Rhizomys pruinosus* 0.899: all pass the existing rule; no alternative rule
+is needed. *P. gangetica* is absent from the alignments (0.000) and fails the existing rule. The current trait species
+*Ellobius talpinus* (0.846) remains the documented exception. Gene-level observation states of hypothesis-relevant
+genes remain sealed until the phenotypes are frozen.
