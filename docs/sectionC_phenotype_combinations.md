@@ -19,7 +19,7 @@ are counted per trait as a range over alternative ancestral histories.
 | Boto and baiji (*Inia*, *Lipotes*) | current | non-burrowing (aquatic) | *I.* reduced (I); *L.* U (unresolved) | U | U |
 | Indus river dolphin (*Platanista minor*) | exploratory candidate | non-burrowing (aquatic) | severely regressed (P, I) | absent (I: authors' anatomical inference) | U |
 | Ganges river dolphin (*P. gangetica*) | excluded (assembly) | non-burrowing (aquatic) | severely regressed (S, I; one juvenile) | U | U |
-| Iberian mole (*Talpa occidentalis*) | validation candidate | subterranean (secondary) | severely regressed (S, I; papers not yet read in full) | U | supported (S, papers not yet read in full) |
+| Iberian mole (*Talpa occidentalis*) | validation candidate | subterranean (secondary) | severely regressed (S, I: closed, skin-covered eyelids; incomplete lens fibres) | U (not tested) | supported (S: Y-maze photo-avoidance, 4 adults) |
 | Hoary bamboo rat (*Rhizomys pruinosus*) | deferred | burrow-dwelling (secondary) | U | U | U |
 
 ## Origins per trait under alternative histories (proposed sample, *P. gangetica* excluded)
