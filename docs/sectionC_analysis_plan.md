@@ -77,3 +77,25 @@ pangolins in V+ only. With so few discordant origins, power is limited and this 
   occidentalis*; hoary bamboo rat *Rhizomys pruinosus*; gracile shrew mole *Uropsilus gracilis*), which requires
   placing them on the tree from a published phylogeny and a species-set extension used only for Section C.
   Analyses 1-4 are not run until the phenotype matrix is approved.
+
+## Amendment 2 (before any analysis): authors' review, candidate additions and feasibility
+Adopted from the authors' review: (1) the evidence search for *Ctenomys sociabilis*, *Inia* and *Lipotes*
+stays open; (2) *Platanista* is a candidate contrast only, with eye morphology, image-forming vision and light
+detection established separately and the species applicability of pre-2021 studies (*P. gangetica* sensu lato)
+checked; (3) species are not counted as independent origins automatically; (4) sampling feasibility (assembly
+identity, TOGA version, annotation completeness, relevant gene coverage, published placement) is checked before any
+tree placement; (5) any expansion is exploratory, with its own filtering, covariance estimation, null fitting,
+controls and multiple-testing definitions, and the 115-species analysis stays the fixed baseline.
+
+Deliverable: `results/sectionC/feasibility_matrix.csv` (phenotype variables, identifiers, TOGA completeness,
+placement and uncertainty, phenotype-habitat combination, independence, recommendation), built from
+`data/phenotypes/visual_phenotypes.csv` (16 rows, all provisional) and `results/sectionC/feasibility_toga.csv`
+(`scripts/sectionC_feasibility.py`, log `logs/sectionC_feasibility.txt`). No tree placement, model or computing
+estimate is committed to.
+
+**Disclosure.** A first version of `scripts/sectionC_feasibility.py` (2 Nov 2026) also printed the TOGA status of
+the 30 ocular genes of Fig. 6a and of the 15 subterranean candidates in the four candidate species and in six
+current species. These are outcome data. They were seen by the analyst (the AI assistant) only; the output file was
+deleted, the script now reports data availability only, and the per-gene states were not passed to the authors,
+who code the phenotypes. Any later prediction test involving *Platanista*, *Talpa* or *Rhizomys* is therefore not
+analyst-blind and must be reported as such; phenotype coding remains author-blind.
